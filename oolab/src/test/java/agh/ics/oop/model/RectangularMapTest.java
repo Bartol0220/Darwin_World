@@ -14,7 +14,7 @@ class RectangularMapTest {
         // give
         List<MoveDirection> directions1 = new ArrayList<>();
         List<Vector2d> positions1 = List.of(new Vector2d(1,1), new Vector2d(3,3));
-        RectangularMap map1 = new RectangularMap(5, 5);
+        RectangularMap map1 = new RectangularMap(5, 5, 0);
 
         // when
         Simulation simulation1 = new Simulation(positions1, map1, directions1);
@@ -37,7 +37,7 @@ class RectangularMapTest {
         // give
         List<MoveDirection> directions1 = List.of(MoveDirection.FORWARD, MoveDirection.FORWARD);
         List<Vector2d> positions1 = List.of(new Vector2d(1,1), new Vector2d(3,3));
-        RectangularMap map1 = new RectangularMap(5, 5);
+        RectangularMap map1 = new RectangularMap(5, 5, 0);
 
         // when
         Simulation simulation1 = new Simulation(positions1, map1, directions1);
@@ -71,7 +71,7 @@ class RectangularMapTest {
                 new Vector2d(1,1),
                 new Vector2d(2,2),
                 new Vector2d(3,3));
-        RectangularMap map1 = new RectangularMap(5, 5);
+        RectangularMap map1 = new RectangularMap(5, 5, 0);
 
         // when
         Simulation simulation1 = new Simulation(positions1, map1, directions1);

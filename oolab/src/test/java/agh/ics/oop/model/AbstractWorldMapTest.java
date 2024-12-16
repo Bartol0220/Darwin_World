@@ -11,7 +11,7 @@ class AbstractWorldMapTest {
         // given
         List<MoveDirection> directions1 = List.of(MoveDirection.FORWARD);
         List<Vector2d> positions1 = List.of(new Vector2d(1,1), new Vector2d(1,1));
-        RectangularMap map1 = new RectangularMap(5, 5);
+        RectangularMap map1 = new RectangularMap(5, 5, 0);
         Animal animal1 = new Animal(positions1.getFirst());
         Animal animal2 = new Animal(positions1.getLast());
 

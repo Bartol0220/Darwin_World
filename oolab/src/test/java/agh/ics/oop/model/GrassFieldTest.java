@@ -17,7 +17,7 @@ class GrassFieldTest {
         List<Vector2d> positions1 = List.of(
                 new Vector2d(-1,-1)
         );
-        GrassField map1 = new GrassField(20);
+        GrassField map1 = new GrassField(20, 0);
         Simulation simulation1 = new Simulation(positions1, map1, directions1);
 
         // when
@@ -42,7 +42,7 @@ class GrassFieldTest {
         List<Vector2d> positions1 = List.of(
                 new Vector2d(-1,-1) // pozycja poza obszarem losowania dla trawy
         );
-        GrassField map1 = new GrassField(20);
+        GrassField map1 = new GrassField(20, 0);
         Simulation simulation1 = new Simulation(positions1, map1, directions1);
 
         // when

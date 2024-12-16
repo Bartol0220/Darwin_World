@@ -14,8 +14,8 @@ public class Simulation implements Runnable {
         this.directions = directions;
         this.map = map;
 
-        for(Vector2d p : positions) {
-            Animal animal = new Animal(p);
+        for(Vector2d position : positions) {
+            Animal animal = new Animal(position);
             try {
                 map.place(animal);
                 animals.add(animal);
@@ -31,6 +31,7 @@ public class Simulation implements Runnable {
 
     public void run(){
         if(animals.isEmpty()) return;
+        int animals_size = animals.size();
         int i = 0;
         for(MoveDirection direction : directions) {
             try {
@@ -38,9 +39,8 @@ public class Simulation implements Runnable {
             } catch (InterruptedException e) {
                 // ignore
             }
-            map.move(animals.get(i), direction);
+            map.move(animals.get(i % animals_size), direction);
             i ++;
-            if(i >= animals.size()) i = 0;
         }
     }
 }

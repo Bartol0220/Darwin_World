@@ -10,9 +10,9 @@ import java.util.Map;
 
 public abstract class AbstractWorldMap implements WorldMap {
     protected final Map<Vector2d, Animal> animalsMap = new HashMap<>();
-    protected final MapVisualizer mapVisualizer = new MapVisualizer(this);
-    protected final List<MapChangeListener> observers = new ArrayList<>();
-    protected final int id;
+    private final MapVisualizer mapVisualizer = new MapVisualizer(this);
+    private final List<MapChangeListener> observers = new ArrayList<>();
+    private final int id;
 
     protected AbstractWorldMap(int id) {
         this.id = id;
@@ -26,7 +26,7 @@ public abstract class AbstractWorldMap implements WorldMap {
         observers.remove(observer);
     }
 
-    private void mapChanged(String message){
+    private void notifyObservers(String message){
         for(MapChangeListener observer : observers){
             observer.mapChanged(this, message);
         }
@@ -36,7 +36,7 @@ public abstract class AbstractWorldMap implements WorldMap {
     public void place(Animal animal) throws IncorrectPositionException{
         if(canMoveTo(animal.getPosition())) {
             animalsMap.put(animal.getPosition(), animal);
-            mapChanged("Animal placed at %s.".formatted(animal.getPosition()));
+            notifyObservers("Animal placed at %s.".formatted(animal.getPosition()));
         }
         else {
             throw new IncorrectPositionException(animal.getPosition());
@@ -45,20 +45,18 @@ public abstract class AbstractWorldMap implements WorldMap {
 
     @Override
     public void move(Animal animal, MoveDirection direction) {
-        animalsMap.remove(animal.getPosition());
-
         Vector2d previousPosition = animal.getPosition();
         MapDirection previousOrientation = animal.getOrientation();
 
+        animalsMap.remove(animal.getPosition());
         animal.move(direction, this);
-
         animalsMap.put(animal.getPosition(), animal);
 
         if(!animal.getPosition().equals(previousPosition)) {
-            mapChanged("Animal moved from %s to %s.".formatted(previousPosition, animal.getPosition()));
+            notifyObservers("Animal moved from %s to %s.".formatted(previousPosition, animal.getPosition()));
         }
         else if(!animal.getOrientation().equals(previousOrientation)) {
-            mapChanged("Animal at %s turned to the %s.".formatted(previousPosition, animal.getOrientation()));
+            notifyObservers("Animal at %s turned to the %s.".formatted(previousPosition, animal.getOrientation()));
         }
 
     }
