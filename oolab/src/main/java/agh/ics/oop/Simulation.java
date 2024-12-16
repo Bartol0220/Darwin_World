@@ -36,7 +36,7 @@ public class Simulation implements Runnable {
             try {
                 Thread.sleep(700);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                // ignore
             }
             map.move(animals.get(i), direction);
             i ++;
