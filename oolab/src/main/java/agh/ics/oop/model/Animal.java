@@ -45,7 +45,7 @@ public class Animal implements WorldElement{
     public void move(MoveValidator validator) {
         orientation = orientation.nextOrientation(gens[geneIndex]);
         geneIndex = (geneIndex + 1) % gens.length;
-        Vector2d newPosition = position.add(orientation.toUnitVector());
+        Vector2d newPosition = validator.specialMove(position.add(orientation.toUnitVector()));
         if (validator.canMoveTo(newPosition)) {
             position = newPosition;
         } else {

@@ -29,9 +29,6 @@ public class Globe extends AbstractWorldMap{
     @Override
     public Vector2d specialMove(Vector2d position){
         //dziala, poniewaz mapa zaczyna sie od (0,0)
-        if (canMoveTo(position)){
-            return new Vector2d(position.getX()%width, position.getY());
-        }
-        return position;
+        return new Vector2d(position.getX()%width, position.getY());
     }
 }

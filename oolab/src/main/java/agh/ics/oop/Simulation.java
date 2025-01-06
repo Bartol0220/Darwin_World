@@ -18,7 +18,7 @@ public class Simulation implements Runnable {
         this.startingEnergy = startingEnergy;
 
 
-        int[] arr = {0, 0};
+        int[] arr = {1, 1};
         for(Vector2d position : positions) {
             Animal animal = new Animal(position, startingEnergy, arr);
             try {
