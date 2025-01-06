@@ -9,13 +9,18 @@ public class Simulation implements Runnable {
     private final List<MoveDirection> directions;
     private final WorldMap map;
     private final List<Animal> animals = new ArrayList<>();
+    private final int startingEnergy;
 
-    public Simulation(List<Vector2d> positions, WorldMap map, List<MoveDirection> directions) {
+
+    public Simulation(List<Vector2d> positions, WorldMap map, List<MoveDirection> directions, int startingEnergy) {
         this.directions = directions;
         this.map = map;
+        this.startingEnergy = startingEnergy;
 
+
+        int[] arr = {0, 0};
         for(Vector2d position : positions) {
-            Animal animal = new Animal(position);
+            Animal animal = new Animal(position, startingEnergy, arr);
             try {
                 map.place(animal);
                 animals.add(animal);
@@ -29,17 +34,18 @@ public class Simulation implements Runnable {
         return List.copyOf(animals);
     }
 
+
     public void run(){
         if(animals.isEmpty()) return;
         int animals_size = animals.size();
         int i = 0;
-        for(MoveDirection direction : directions) {
+        for(int j = 0; j<10;j++) {
             try {
                 Thread.sleep(700);
             } catch (InterruptedException e) {
                 // ignore
             }
-            map.move(animals.get(i % animals_size), direction);
+            map.move(animals.get(i % animals_size));
             i ++;
         }
     }

@@ -44,12 +44,12 @@ public abstract class AbstractWorldMap implements WorldMap {
     }
 
     @Override
-    public void move(Animal animal, MoveDirection direction) {
+    public void move(Animal animal) {
         Vector2d previousPosition = animal.getPosition();
         MapDirection previousOrientation = animal.getOrientation();
 
         animalsMap.remove(animal.getPosition());
-        animal.move(direction, this);
+        animal.move(this);
         animalsMap.put(animal.getPosition(), animal);
 
         if(!animal.getPosition().equals(previousPosition)) {
@@ -78,6 +78,11 @@ public abstract class AbstractWorldMap implements WorldMap {
     @Override
     public boolean canMoveTo(Vector2d position) {
         return !isOccupiedByAnimal(position);
+    }
+
+    @Override
+    public Vector2d specialMove(Vector2d position) {
+        return position;
     }
 
     @Override

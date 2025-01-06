@@ -1,17 +1,29 @@
 package agh.ics.oop.model;
 
+import agh.ics.oop.model.util.RandomVector2d;
+
+import java.util.ArrayList;
+import java.util.Random;
+
 public class Animal implements WorldElement{
     private MapDirection orientation = MapDirection.NORTH;
     private Vector2d position;
+    private int energy;
+    private final int[] gens;
+    private int geneIndex;
+    private Random random = new Random();
 
-    public Animal(Vector2d position){
+    public Animal(Vector2d position, int energy, int[] gens){
         this.position = position;
+        this.energy = energy;
+        this.gens = gens;
+        this.geneIndex = random.nextInt(gens.length);
     }
 
     //w mniejszym uzywam wiekszego
-    public Animal(){
-        //facing defaultowo na NORTH
-        this(new Vector2d(2, 2));
+    public Animal(int energy, int[] gens){
+        //orientation defaultowo na NORTH
+        this(new Vector2d(2, 2), energy, gens);
     }
 
     public String toString() {
@@ -30,22 +42,15 @@ public class Animal implements WorldElement{
         return orientation;
     }
 
-    public void move(MoveDirection direction, MoveValidator validator) {
-        switch (direction){
-            case FORWARD -> {
-                Vector2d newPosition = position.add(orientation.toUnitVector());
-                if (validator.canMoveTo(newPosition)) {
-                    position = newPosition;
-                }
-            }
-            case BACKWARD -> {
-                Vector2d newPosition = position.add(orientation.toUnitVector().opposite());
-                if (validator.canMoveTo(newPosition)) {
-                    position = newPosition;
-                }
-            }
-            case LEFT -> orientation = orientation.previous();
-            case RIGHT -> orientation = orientation.next();
+    public void move(MoveValidator validator) {
+        orientation = orientation.nextOrientation(gens[geneIndex]);
+        geneIndex = (geneIndex + 1) % gens.length;
+        Vector2d newPosition = position.add(orientation.toUnitVector());
+        if (validator.canMoveTo(newPosition)) {
+            position = newPosition;
+        } else {
+            // obroc sie w przeciwna strone
+            orientation = orientation.nextOrientation(4);
         }
     }
 }
