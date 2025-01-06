@@ -1,29 +1,35 @@
 package agh.ics.oop.model;
 
-import agh.ics.oop.model.util.RandomVector2d;
-
-import java.util.ArrayList;
+import javax.crypto.spec.PSource;
 import java.util.Random;
 
 public class Animal implements WorldElement{
     private MapDirection orientation = MapDirection.NORTH;
     private Vector2d position;
     private int energy;
-    private final int[] gens;
+    private final int[] genes;
     private int geneIndex;
     private Random random = new Random();
 
-    public Animal(Vector2d position, int energy, int[] gens){
+    public Animal(Vector2d position, int energy, int[] genes){
         this.position = position;
         this.energy = energy;
-        this.gens = gens;
-        this.geneIndex = random.nextInt(gens.length);
+        this.genes = genes;
+        this.geneIndex = random.nextInt(genes.length);
+    }
+
+    public int getEnergy(){
+        return energy;
+    }
+
+    private void decreaseEnergy(){
+        energy -= 1;
     }
 
     //w mniejszym uzywam wiekszego
-    public Animal(int energy, int[] gens){
+    public Animal(int energy, int[] genes){
         //orientation defaultowo na NORTH
-        this(new Vector2d(2, 2), energy, gens);
+        this(new Vector2d(2, 2), energy, genes);
     }
 
     public String toString() {
@@ -43,8 +49,8 @@ public class Animal implements WorldElement{
     }
 
     public void move(MoveValidator validator) {
-        orientation = orientation.nextOrientation(gens[geneIndex]);
-        geneIndex = (geneIndex + 1) % gens.length;
+        orientation = orientation.nextOrientation(genes[geneIndex]);
+        geneIndex = (geneIndex + 1) % genes.length;
         Vector2d newPosition = validator.specialMove(position.add(orientation.toUnitVector()));
         if (validator.canMoveTo(newPosition)) {
             position = newPosition;
@@ -52,5 +58,6 @@ public class Animal implements WorldElement{
             // obroc sie w przeciwna strone
             orientation = orientation.nextOrientation(4);
         }
+        decreaseEnergy();
     }
 }

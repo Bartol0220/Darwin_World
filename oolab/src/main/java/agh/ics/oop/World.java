@@ -12,12 +12,12 @@ import java.util.Random;
 
 public class World {
     public static void main(String[] args) {
-        Globe globe = new Globe(5, 5, 0);
+        Globe globe = new Globe(10, 10, 0);
         List<MoveDirection> directions1 = new ArrayList<>();
         MapChangeListener listener = new ConsoleMapDisplay();
         globe.registerObserver(listener);
-        List<Vector2d> positions1 = List.of(new Vector2d(2,2), new Vector2d(4,4));
-        Simulation simulation1 = new Simulation(positions1, globe, directions1, 10);
+        List<Vector2d> positions1 = List.of(new Vector2d(3,3), new Vector2d(4,3));
+        Simulation simulation1 = new Simulation(positions1, globe, directions1, 10, 3);
         simulation1.run();
 }
 }
