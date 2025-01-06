@@ -13,3 +13,6 @@ Bartosz Konieczny
 Adrian Glanowski
 - zwierzak: Cupak
 - https://github.com/AdrianGlanowski/PO_2024_PN1315_GLANOWSKI
+
+Temat projektu
+https://github.com/Soamid/obiektowe-lab/tree/master/proj
