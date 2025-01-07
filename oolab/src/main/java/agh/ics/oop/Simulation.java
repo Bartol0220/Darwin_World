@@ -13,6 +13,7 @@ public class Simulation implements Runnable {
     private final WorldMap map;
     private final List<Animal> animals = new ArrayList<>();
     private final int startingEnergy;
+    private int dayNumber = 0;
 
 
     public Simulation(List<Vector2d> positions, WorldMap map, List<MoveDirection> directions, int startingEnergy, int numberOfGenes) {
@@ -22,8 +23,7 @@ public class Simulation implements Runnable {
 
         for(Vector2d position : positions) {
             // własny zestaw genów dla każdego zwierzaka
-            //int[] genes = new Random().ints(numberOfGenes, 0, 8).toArray();
-            int[] genes = {2, 2};
+            int[] genes = new Random().ints(numberOfGenes, 0, 8).toArray();
 
             Animal animal = new Animal(position, startingEnergy, genes);
             System.out.println(Arrays.toString(genes));
@@ -40,22 +40,29 @@ public class Simulation implements Runnable {
         return List.copyOf(animals);
     }
 
+    private void runDay(){
+        //usmierc zwierzaki z listy (sprawdz, czy energia nadal 0)
+        for (Animal animal : animals) {
+            try {
+                Thread.sleep(700);
+            } catch (InterruptedException e) {
+                // ignore
+            }
+            map.move(animal);
+            /*if energia rowna 0 to dodaj do listy usmiercania*/
+        }
+        // jedzenie
+        // rozmnazanie najedzonych
+        // wzrost roslin
+    }
 
     public void run(){
         while (!animals.isEmpty()) {
-            //usmierc zwierzaki z listy (sprawdz, czy energia nadal 0)
-            for (Animal animal : animals) {
-                try {
-                    Thread.sleep(700);
-                } catch (InterruptedException e) {
-                    // ignore
-                }
-                map.move(animal);
-                /*if energia rowna 0 to dodaj do listy usmiercania*/
+            dayNumber++;
+            runDay();
+            if (dayNumber == 5){
+                animals.clear();
             }
-            // jedzenie
-            // rozmnazanie najedzonych
-            // wzrost roslin
         }
     }
 }

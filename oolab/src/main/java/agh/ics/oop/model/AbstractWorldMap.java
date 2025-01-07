@@ -43,7 +43,6 @@ public abstract class AbstractWorldMap implements WorldMap {
             } else {
                 animalsMap.get(animal.getPosition()).add(animal);
             }
-//            animalsMap.put(animal.getPosition(), animal);
             notifyObservers("Animal placed at %s.".formatted(animal.getPosition()));
         }
         else {
@@ -61,7 +60,6 @@ public abstract class AbstractWorldMap implements WorldMap {
             animalsMap.remove(animal.getPosition());
         }
 
-        //animalsMap.remove(animal.getPosition());
         animal.move(this);
         if (animalsMap.get(animal.getPosition()) == null) {
             ArrayList<Animal> animalList = new ArrayList<>();
@@ -70,7 +68,6 @@ public abstract class AbstractWorldMap implements WorldMap {
         } else {
             animalsMap.get(animal.getPosition()).add(animal);
         }
-        //animalsMap.put(animal.getPosition(), animal);
 
         if(!animal.getPosition().equals(previousPosition)) {
             notifyObservers("Animal moved from %s to %s.".formatted(previousPosition, animal.getPosition()));
@@ -107,7 +104,7 @@ public abstract class AbstractWorldMap implements WorldMap {
 
     @Override
     public ArrayList<WorldElement> getElements() {
-//        return new ArrayList<>(animalsMap.values());
+        //TODO powinno zwracac liste wszystkich zwierzakow
         return new ArrayList<>();
     }
 
