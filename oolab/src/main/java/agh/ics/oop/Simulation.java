@@ -1,12 +1,12 @@
 package agh.ics.oop;
 
 import agh.ics.oop.model.*;
+import agh.ics.oop.model.grass.AbstractGrassMaker;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.IntStream;
 
 public class Simulation implements Runnable {
     private final List<MoveDirection> directions;
@@ -14,12 +14,14 @@ public class Simulation implements Runnable {
     private final List<Animal> animals = new ArrayList<>();
     private final int startingEnergy;
     private int dayNumber = 0;
+    private final AbstractGrassMaker grassMaker;
 
 
-    public Simulation(List<Vector2d> positions, WorldMap map, List<MoveDirection> directions, int startingEnergy, int numberOfGenes) {
+    public Simulation(List<Vector2d> positions, WorldMap map, List<MoveDirection> directions, int startingEnergy, int numberOfGenes, AbstractGrassMaker grassMaker) {
         this.directions = directions;
         this.map = map;
         this.startingEnergy = startingEnergy;
+        this.grassMaker = grassMaker;
 
         for(Vector2d position : positions) {
             // własny zestaw genów dla każdego zwierzaka
@@ -54,6 +56,7 @@ public class Simulation implements Runnable {
         // jedzenie
         // rozmnazanie najedzonych
         // wzrost roslin
+        grassMaker.grow();
     }
 
     public void run(){

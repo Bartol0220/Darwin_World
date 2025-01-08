@@ -85,7 +85,10 @@ public abstract class AbstractWorldMap implements WorldMap {
 
     @Override
     public WorldElement objectAt(Vector2d position) {
-        return animalsMap.get(position).getFirst();
+        if (animalsMap.get(position) != null) {
+            return animalsMap.get(position).getFirst();
+        }
+        return null;
     }
     
     public boolean isOccupiedByAnimal(Vector2d position) {

@@ -7,6 +7,7 @@ import agh.ics.oop.SimulationEngine;
 import agh.ics.oop.model.GrassField;
 import agh.ics.oop.model.MoveDirection;
 import agh.ics.oop.model.Vector2d;
+import agh.ics.oop.model.grass.GrassMakerEquator;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -22,7 +23,7 @@ public class SetupPresenter {
         List<MoveDirection> directions = OptionsParser.parse(moves.getText().split(" "));
         GrassField map = new GrassField(4, 0);
         List<Vector2d> positions = List.of(new Vector2d(1,1), new Vector2d(3,3));
-        Simulation simulation = new Simulation(positions, map, directions, 10, 3);
+        Simulation simulation = new Simulation(positions, map, directions, 10, 3, new GrassMakerEquator(1, 1, 1, 1));
         SimulationEngine simulationEngine = new SimulationEngine(List.of(simulation));
 
         SimulationApp newSimulationApp = new SimulationApp();
