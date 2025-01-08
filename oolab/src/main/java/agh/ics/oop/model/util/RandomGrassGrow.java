@@ -5,19 +5,19 @@ import agh.ics.oop.model.Vector2d;
 import java.util.*;
 
 public class RandomGrassGrow implements Iterable<Vector2d> {
-    private final List<Vector2d> firstCategoryPositions;
-    private final List<Vector2d> secondCategoryPositions;
+    private final List<Vector2d> freeBetterGrassPositions;
+    private final List<Vector2d> freeWorseGrassPositions;
     private final int grassNumber;
     private int generated = 0;
     private final Random random = new Random();
 
-    public RandomGrassGrow(List<Vector2d> firstCategoryPositions, List<Vector2d> secondCategoryPositions, int grassNumber) {
-        this.firstCategoryPositions = firstCategoryPositions;
-        this.secondCategoryPositions = secondCategoryPositions;
+    public RandomGrassGrow(List<Vector2d> freeBetterGrassPositions, List<Vector2d> freeWorseGrassPositions, int grassNumber) {
+        this.freeBetterGrassPositions = freeBetterGrassPositions;
+        this.freeWorseGrassPositions = freeWorseGrassPositions;
         this.grassNumber = grassNumber;
 
-        Collections.shuffle(firstCategoryPositions);
-        Collections.shuffle(secondCategoryPositions);
+        Collections.shuffle(freeBetterGrassPositions);
+        Collections.shuffle(freeWorseGrassPositions);
     }
 
     private Vector2d findVector(List<Vector2d> possiblePositions) {
@@ -32,21 +32,21 @@ public class RandomGrassGrow implements Iterable<Vector2d> {
         return new Iterator<Vector2d>() {
             @Override
             public boolean hasNext() {
-                return (!firstCategoryPositions.isEmpty() || !secondCategoryPositions.isEmpty()) && generated < grassNumber ;
+                return (!freeBetterGrassPositions.isEmpty() || !freeWorseGrassPositions.isEmpty()) && generated < grassNumber ;
             }
 
             @Override
             public Vector2d next() {
                 if(hasNext()) {
-                    if (firstCategoryPositions.isEmpty()) {
-                        return findVector(secondCategoryPositions);
-                    } else if (secondCategoryPositions.isEmpty()) {
-                        return findVector(firstCategoryPositions);
+                    if (freeBetterGrassPositions.isEmpty()) {
+                        return findVector(freeWorseGrassPositions);
+                    } else if (freeWorseGrassPositions.isEmpty()) {
+                        return findVector(freeBetterGrassPositions);
                     } else {
                         if (random.nextInt(10) < 8) {
-                            return findVector(firstCategoryPositions);
+                            return findVector(freeBetterGrassPositions);
                         } else {
-                            return findVector(secondCategoryPositions);
+                            return findVector(freeWorseGrassPositions);
                         }
                     }
                 }

@@ -10,14 +10,14 @@ import java.util.Random;
 
 public class Simulation implements Runnable {
     private final List<MoveDirection> directions;
-    private final WorldMap map;
+    private final AbstractWorldMap map;
     private final List<Animal> animals = new ArrayList<>();
     private final int startingEnergy;
     private int dayNumber = 0;
     private final AbstractGrassMaker grassMaker;
 
 
-    public Simulation(List<Vector2d> positions, WorldMap map, List<MoveDirection> directions, int startingEnergy, int numberOfGenes, AbstractGrassMaker grassMaker) {
+    public Simulation(List<Vector2d> positions, AbstractWorldMap map, List<MoveDirection> directions, int startingEnergy, int numberOfGenes, AbstractGrassMaker grassMaker) {
         this.directions = directions;
         this.map = map;
         this.startingEnergy = startingEnergy;
@@ -42,7 +42,8 @@ public class Simulation implements Runnable {
         return List.copyOf(animals);
     }
 
-    private void runDay(){
+    private void runDay() {
+        map.clearAnimalsOnGrass();
         //usmierc zwierzaki z listy (sprawdz, czy energia nadal 0)
         for (Animal animal : animals) {
             try {
@@ -51,9 +52,13 @@ public class Simulation implements Runnable {
                 // ignore
             }
             map.move(animal);
-            /*if energia rowna 0 to dodaj do listy usmiercania*/
+            // if energia rowna 0 to dodaj do listy usmiercania
         }
         // jedzenie
+        List<Vector2d> positionsOfAnimalsOnGrass = map.getPositionsOfAnimalsOnGrass();
+        for (Vector2d position : positionsOfAnimalsOnGrass) {
+            // nakarm animala
+        }
         // rozmnazanie najedzonych
         // wzrost roslin
         grassMaker.grow();

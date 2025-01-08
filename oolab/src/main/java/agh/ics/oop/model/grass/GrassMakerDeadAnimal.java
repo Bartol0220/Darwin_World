@@ -13,7 +13,7 @@ public class GrassMakerDeadAnimal extends AbstractGrassMaker {
 
         for (int y=0; y < height; y++) {
             for (int x=0; x < width; x++) {
-                secondCategoryPositions.add(new Vector2d(x, y));
+                freeWorseGrassPositions.add(new Vector2d(x, y));
             }
         }
 

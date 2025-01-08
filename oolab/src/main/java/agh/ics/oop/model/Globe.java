@@ -9,16 +9,14 @@ public class Globe extends AbstractWorldMap{
     private final Vector2d upperRight;
     private final Vector2d lowerLeft;
     private final int width;
-    private final Boundary bounds;
-    private final AbstractGrassMaker grassMaker;
+    private final Boundary bounds;;
 
     public Globe(int width, int height, int id, AbstractGrassMaker grassMaker) {
-        super(id);
+        super(id, grassMaker);
         upperRight = new Vector2d(width - 1, height - 1);
         lowerLeft = new Vector2d(0, 0);
         this.width = width;
         bounds = new Boundary(lowerLeft, upperRight);
-        this.grassMaker = grassMaker;
     }
 
     @Override

@@ -1,22 +1,23 @@
 package agh.ics.oop.model;
 
+import agh.ics.oop.model.grass.AbstractGrassMaker;
 import agh.ics.oop.model.util.Boundary;
 import agh.ics.oop.model.util.MapVisualizer;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public abstract class AbstractWorldMap implements WorldMap {
     // zamiast Arraylist<Animal> mozna dac Set - pomyslec
     protected final Map<Vector2d, ArrayList<Animal>> animalsMap = new HashMap<>();
+    protected final HashSet<Vector2d> animalsOnGrass = new HashSet<>();
     private final MapVisualizer mapVisualizer = new MapVisualizer(this);
     private final List<MapChangeListener> observers = new ArrayList<>();
     private final int id;
+    protected final AbstractGrassMaker grassMaker;
 
-    protected AbstractWorldMap(int id) {
+    protected AbstractWorldMap(int id, AbstractGrassMaker grassMaker) {
         this.id = id;
+        this.grassMaker = grassMaker;
     }
 
     public void registerObserver(final MapChangeListener observer) {
@@ -31,6 +32,14 @@ public abstract class AbstractWorldMap implements WorldMap {
         for(MapChangeListener observer : observers){
             observer.mapChanged(this, message);
         }
+    }
+
+    public void clearAnimalsOnGrass() {
+        animalsOnGrass.clear();
+    }
+
+    public List<Vector2d> getPositionsOfAnimalsOnGrass() {
+        return animalsOnGrass.stream().toList();
     }
 
     @Override
@@ -67,6 +76,10 @@ public abstract class AbstractWorldMap implements WorldMap {
             animalsMap.put(animal.getPosition(), animalList);
         } else {
             animalsMap.get(animal.getPosition()).add(animal);
+        }
+
+        if (grassMaker.grassMap.containsKey(animal.getPosition())) {
+            animalsOnGrass.add(animal.getPosition());
         }
 
         if(!animal.getPosition().equals(previousPosition)) {

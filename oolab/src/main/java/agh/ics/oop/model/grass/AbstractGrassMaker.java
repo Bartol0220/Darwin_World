@@ -8,9 +8,9 @@ import java.util.*;
 public abstract class AbstractGrassMaker implements GrassMaker {
     protected final int height;
     protected final int width;
-    public final HashSet<Vector2d> allFirstCategoryPositions = new HashSet<>();
-    protected final List<Vector2d> firstCategoryPositions = new ArrayList<>();
-    protected final List<Vector2d> secondCategoryPositions = new ArrayList<>();
+    protected final HashSet<Vector2d> allBetterGrassPositions = new HashSet<>();
+    protected final List<Vector2d> freeBetterGrassPositions = new ArrayList<>();
+    protected final List<Vector2d> freeWorseGrassPositions = new ArrayList<>();
     protected final int dayGrassNumber;
     public final Map<Vector2d, WorldElement> grassMap = new HashMap<>();
 
@@ -21,8 +21,8 @@ public abstract class AbstractGrassMaker implements GrassMaker {
     }
 
     protected void growStartGrass(int startGrassNumber) {
-        allFirstCategoryPositions.addAll(firstCategoryPositions);
-        RandomGrassGrow randomPositionGenerator = new RandomGrassGrow(firstCategoryPositions, secondCategoryPositions, startGrassNumber);
+        allBetterGrassPositions.addAll(freeBetterGrassPositions);
+        RandomGrassGrow randomPositionGenerator = new RandomGrassGrow(freeBetterGrassPositions, freeWorseGrassPositions, startGrassNumber);
         for(Vector2d grassPosition : randomPositionGenerator) {
             grassMap.put(grassPosition, new Grass(grassPosition));
         }
@@ -30,29 +30,29 @@ public abstract class AbstractGrassMaker implements GrassMaker {
 
     @Override
     public void grow() {
-        RandomGrassGrow randomPositionGenerator = new RandomGrassGrow(firstCategoryPositions, secondCategoryPositions, dayGrassNumber);
+        RandomGrassGrow randomPositionGenerator = new RandomGrassGrow(freeBetterGrassPositions, freeWorseGrassPositions, dayGrassNumber);
         for(Vector2d grassPosition : randomPositionGenerator) {
             grassMap.put(grassPosition, new Grass(grassPosition));
         }
     }
 
     protected void changePositionToFirstCategory(Vector2d position) {
-        firstCategoryPositions.add(position);
-        allFirstCategoryPositions.add(position);
-        secondCategoryPositions.remove(position);
+        freeBetterGrassPositions.add(position);
+        allBetterGrassPositions.add(position);
+        freeWorseGrassPositions.remove(position);
     }
 
     protected void changePositionToSecondCategory(Vector2d position) {
-        secondCategoryPositions.add(position);
-        allFirstCategoryPositions.remove(position);
-        firstCategoryPositions.remove(position);
+        freeWorseGrassPositions.add(position);
+        allBetterGrassPositions.remove(position);
+        freeBetterGrassPositions.remove(position);
     }
 
     protected void addPositionToPossiblePositions(Vector2d position) {
-        if (allFirstCategoryPositions.contains(position)) {
-            firstCategoryPositions.add(position);
+        if (allBetterGrassPositions.contains(position)) {
+            freeBetterGrassPositions.add(position);
         } else {
-            secondCategoryPositions.add(position);
+            freeWorseGrassPositions.add(position);
         }
     }
 
