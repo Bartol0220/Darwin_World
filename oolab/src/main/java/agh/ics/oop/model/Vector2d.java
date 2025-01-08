@@ -29,6 +29,10 @@ public class Vector2d {
         return x >= other.getX() && y >= other.getY();
     }
 
+    public boolean higher(Vector2d other) {return y >= other.getY();}
+
+    public boolean lower(Vector2d other) {return y <= other.getY();}
+
     public Vector2d add(Vector2d other){
         return new Vector2d(x + other.getX(), y + other.getY());
     }
@@ -48,6 +52,7 @@ public class Vector2d {
     public Vector2d opposite(){
         return new Vector2d(-x, -y);
     }
+
 
     public int hashCode() {
         return Objects.hash(x, y);

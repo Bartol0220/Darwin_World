@@ -22,7 +22,7 @@ public class SetupPresenter {
         List<MoveDirection> directions = OptionsParser.parse(moves.getText().split(" "));
         GrassField map = new GrassField(4, 0);
         List<Vector2d> positions = List.of(new Vector2d(1,1), new Vector2d(3,3));
-        Simulation simulation = new Simulation(positions, map, directions);
+        Simulation simulation = new Simulation(positions, map, directions, 10, 3);
         SimulationEngine simulationEngine = new SimulationEngine(List.of(simulation));
 
         SimulationApp newSimulationApp = new SimulationApp();
