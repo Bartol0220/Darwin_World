@@ -14,19 +14,20 @@ public class Simulation implements Runnable {
     private final List<Animal> animals = new ArrayList<>();
     private final int startingEnergy;
     private int dayNumber = 0;
+    private final int numberOfGenes;
+
 
 
     public Simulation(List<Vector2d> positions, WorldMap map, List<MoveDirection> directions, int startingEnergy, int numberOfGenes) {
         this.directions = directions;
         this.map = map;
         this.startingEnergy = startingEnergy;
+        this.numberOfGenes = numberOfGenes;
 
         for(Vector2d position : positions) {
             // własny zestaw genów dla każdego zwierzaka
-            int[] genes = new Random().ints(numberOfGenes, 0, 8).toArray();
-
+            Genes genes = new Genes(numberOfGenes);
             Animal animal = new Animal(position, startingEnergy, genes);
-            System.out.println(Arrays.toString(genes));
             try {
                 map.place(animal);
                 animals.add(animal);

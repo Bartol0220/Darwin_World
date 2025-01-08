@@ -1,35 +1,39 @@
 package agh.ics.oop.model;
 
 import javax.crypto.spec.PSource;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 public class Animal implements WorldElement{
     private MapDirection orientation = MapDirection.NORTH;
     private Vector2d position;
     private int energy;
-    private final int[] genes;
-    private int geneIndex;
-    private Random random = new Random();
+    private final Genes genes;
 
-    public Animal(Vector2d position, int energy, int[] genes){
+
+    public Animal(Vector2d position, int energy, Genes genes){
         this.position = position;
         this.energy = energy;
         this.genes = genes;
-        this.geneIndex = random.nextInt(genes.length);
+    }
+
+    //w mniejszym uzywam wiekszego
+    public Animal(int energy, Genes genes){
+        //orientation defaultowo na NORTH
+        this(new Vector2d(2, 2), energy, genes);
     }
 
     public int getEnergy(){
         return energy;
     }
 
-    private void decreaseEnergy(){
-        energy -= 1;
+    public int[] getGenes(){
+        return genes.getGenes();
     }
 
-    //w mniejszym uzywam wiekszego
-    public Animal(int energy, int[] genes){
-        //orientation defaultowo na NORTH
-        this(new Vector2d(2, 2), energy, genes);
+    private void decreaseEnergy(){
+        energy -= 1;
     }
 
     public String toString() {
@@ -49,8 +53,7 @@ public class Animal implements WorldElement{
     }
 
     public void move(MoveValidator validator) {
-        orientation = orientation.nextOrientation(genes[geneIndex]);
-        geneIndex = (geneIndex + 1) % genes.length;
+        orientation = orientation.nextOrientation(genes.useCurrentGene());
         Vector2d newPosition = validator.specialMove(position.add(orientation.toUnitVector()));
         if (validator.canMoveTo(newPosition)) {
             position = newPosition;

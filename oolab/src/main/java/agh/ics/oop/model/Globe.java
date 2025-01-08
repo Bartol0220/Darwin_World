@@ -2,6 +2,9 @@ package agh.ics.oop.model;
 
 import agh.ics.oop.model.util.Boundary;
 
+import javax.lang.model.type.ArrayType;
+import java.util.ArrayList;
+
 public class Globe extends AbstractWorldMap{
     private final Vector2d upperRight;
     private final Vector2d lowerLeft;

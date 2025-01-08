@@ -3,14 +3,12 @@ package agh.ics.oop.model;
 import agh.ics.oop.model.util.Boundary;
 import agh.ics.oop.model.util.MapVisualizer;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public abstract class AbstractWorldMap implements WorldMap {
     // zamiast Arraylist<Animal> mozna dac Set - pomyslec
     protected final Map<Vector2d, ArrayList<Animal>> animalsMap = new HashMap<>();
+    protected final HashSet<Vector2d> whereAnimalsMeet = new HashSet<>();
     private final MapVisualizer mapVisualizer = new MapVisualizer(this);
     private final List<MapChangeListener> observers = new ArrayList<>();
     private final int id;
@@ -31,6 +29,10 @@ public abstract class AbstractWorldMap implements WorldMap {
         for(MapChangeListener observer : observers){
             observer.mapChanged(this, message);
         }
+    }
+
+    public HashSet<Vector2d> unsafeGetWhereAnimalsMeet(){
+        return whereAnimalsMeet;
     }
 
     @Override
@@ -67,7 +69,10 @@ public abstract class AbstractWorldMap implements WorldMap {
             animalsMap.put(animal.getPosition(), animalList);
         } else {
             animalsMap.get(animal.getPosition()).add(animal);
+            whereAnimalsMeet.add(animal.getPosition());
         }
+
+        
 
         if(!animal.getPosition().equals(previousPosition)) {
             notifyObservers("Animal moved from %s to %s.".formatted(previousPosition, animal.getPosition()));
@@ -75,7 +80,6 @@ public abstract class AbstractWorldMap implements WorldMap {
         else if(!animal.getOrientation().equals(previousOrientation)) {
             notifyObservers("Animal at %s turned to the %s.".formatted(previousPosition, animal.getOrientation()));
         }
-
     }
 
     @Override
@@ -87,7 +91,11 @@ public abstract class AbstractWorldMap implements WorldMap {
     public WorldElement objectAt(Vector2d position) {
         return animalsMap.get(position).getFirst();
     }
-    
+
+    public ArrayList<Animal> allAnimalsAt(Vector2d position){
+        return animalsMap.get(position);
+    }
+
     public boolean isOccupiedByAnimal(Vector2d position) {
         return (objectAt(position) instanceof Animal);
     }
