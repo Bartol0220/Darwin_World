@@ -55,7 +55,7 @@ public class Animal implements WorldElement, Comparable{
 
     public void move(MoveValidator validator) {
         orientation = orientation.nextOrientation(genes.useCurrentGene());
-        Vector2d newPosition = validator.specialMove(position.add(orientation.toUnitVector()));
+        Vector2d newPosition = validator.handleBoundsPositions(position.add(orientation.toUnitVector()));
         if (validator.canMoveTo(newPosition)) {
             position = newPosition;
         } else {

@@ -17,21 +17,21 @@ public class SimulationPresenter implements MapChangeListener {
     private static final String EMPTY_CELL = "";
     private int cellWidth;
     private int cellHeight;
-    private WorldMap worldMap;
+    private GlobeMap map;
 
     @FXML
     private GridPane mapGridPane;
     @FXML
     private Label currentMove;
 
-    private void setWorldMap(WorldMap map) {
-        worldMap = map;
+    private void setMap(GlobeMap map) {
+        this.map = map;
     }
 
-    public void newSimulation(AbstractWorldMap map, SimulationEngine simulationEngine) {
+    public void newSimulation(GlobeMap map, SimulationEngine simulationEngine) {
         map.registerObserver(this);
 
-        setWorldMap(map);
+        setMap(map);
         drawMap();
 
         simulationEngine.runAsync();
@@ -45,7 +45,7 @@ public class SimulationPresenter implements MapChangeListener {
 
     private void drawMap() {
         clearGrid();
-        Boundary currentBounds =  worldMap.getCurrentBounds();
+        Boundary currentBounds =  map.getCurrentBounds();
 
         updateMapInfo(currentBounds);
         drawHeader(currentBounds);
@@ -101,8 +101,8 @@ public class SimulationPresenter implements MapChangeListener {
     }
 
     private String drawObject(Vector2d currentPosition) {
-        if (worldMap.isOccupied(currentPosition)) {
-            Object object = worldMap.objectAt(currentPosition);
+        if (map.isOccupied(currentPosition)) {
+            Object object = map.objectAt(currentPosition);
             if (object != null) {
                 return object.toString();
             }
@@ -111,7 +111,7 @@ public class SimulationPresenter implements MapChangeListener {
     }
 
     @Override
-    public void mapChanged(WorldMap worldMap, String message) {
+    public void mapChanged(GlobeMap map, String message) {
         Platform.runLater(() -> {
             currentMove.setText(message);
             drawMap();
