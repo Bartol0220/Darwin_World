@@ -13,18 +13,18 @@ public class World {
 
         int width = 10;
         int height = 10;
+        GlobeMap globeMap = new GlobeMap(width, height, 0);
         AbstractGrassMaker grassMaker;
         if (false) {
-            grassMaker = new GrassMakerDeadAnimal(1, 1, height, width);
+            grassMaker = new GrassMakerDeadAnimal(1, 1, globeMap);
         } else {
-            grassMaker = new GrassMakerEquator(1, 1, height, width);
+            grassMaker = new GrassMakerEquator(1, 1, globeMap);
         }
-        Globe globe = new Globe(width, height, 0, grassMaker);
         List<MoveDirection> directions1 = new ArrayList<>();
         MapChangeListener listener = new ConsoleMapDisplay();
-        globe.registerObserver(listener);
+        globeMap.registerObserver(listener);
         List<Vector2d> positions1 = List.of(new Vector2d(0,1), new Vector2d(2,2));
-        Simulation simulation1 = new Simulation(positions1, globe, directions1, 10, 5, grassMaker);
+        Simulation simulation1 = new Simulation(positions1, globeMap, directions1, 10, 5, grassMaker);
         simulation1.run();
 }
 }

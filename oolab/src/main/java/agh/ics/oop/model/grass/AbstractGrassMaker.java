@@ -6,33 +6,26 @@ import agh.ics.oop.model.util.RandomGrassGrow;
 import java.util.*;
 
 public abstract class AbstractGrassMaker implements GrassMaker {
-    protected final int height;
-    protected final int width;
     protected final HashSet<Vector2d> allBetterGrassPositions = new HashSet<>();
     protected final List<Vector2d> freeBetterGrassPositions = new ArrayList<>();
     protected final List<Vector2d> freeWorseGrassPositions = new ArrayList<>();
     protected final int dayGrassNumber;
-    public final Map<Vector2d, WorldElement> grassMap = new HashMap<>();
+    protected final GlobeMap map;
 
-    protected AbstractGrassMaker(int dayGrassNumber, int height, int width) {
+    protected AbstractGrassMaker(int dayGrassNumber, GlobeMap map) {
         this.dayGrassNumber = dayGrassNumber;
-        this.height = height;
-        this.width = width;
-    }
-
-    protected void growStartGrass(int startGrassNumber) {
-        allBetterGrassPositions.addAll(freeBetterGrassPositions);
-        RandomGrassGrow randomPositionGenerator = new RandomGrassGrow(freeBetterGrassPositions, freeWorseGrassPositions, startGrassNumber);
-        for(Vector2d grassPosition : randomPositionGenerator) {
-            grassMap.put(grassPosition, new Grass(grassPosition));
-        }
+        this.map = map;
     }
 
     @Override
     public void grow() {
-        RandomGrassGrow randomPositionGenerator = new RandomGrassGrow(freeBetterGrassPositions, freeWorseGrassPositions, dayGrassNumber);
+        growNumberOfGrasss(dayGrassNumber);
+    }
+
+    protected void growNumberOfGrasss(int numberOfGrasss) {
+        RandomGrassGrow randomPositionGenerator = new RandomGrassGrow(freeBetterGrassPositions, freeWorseGrassPositions, numberOfGrasss);
         for(Vector2d grassPosition : randomPositionGenerator) {
-            grassMap.put(grassPosition, new Grass(grassPosition));
+            map.addGrass(grassPosition);
         }
     }
 

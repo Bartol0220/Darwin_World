@@ -1,6 +1,5 @@
 package agh.ics.oop.model;
 
-import javax.crypto.spec.PSource;
 import java.util.Random;
 
 public class Animal implements WorldElement{
@@ -51,7 +50,7 @@ public class Animal implements WorldElement{
     public void move(MoveValidator validator) {
         orientation = orientation.nextOrientation(genes[geneIndex]);
         geneIndex = (geneIndex + 1) % genes.length;
-        Vector2d newPosition = validator.specialMove(position.add(orientation.toUnitVector()));
+        Vector2d newPosition = validator.handleBoundsPositions(position.add(orientation.toUnitVector()));
         if (validator.canMoveTo(newPosition)) {
             position = newPosition;
         } else {
