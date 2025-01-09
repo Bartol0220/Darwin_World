@@ -27,7 +27,7 @@ public class Simulation implements Runnable {
         for(Vector2d position : positions) {
             // własny zestaw genów dla każdego zwierzaka
             Genes genes = new Genes(numberOfGenes);
-            Animal animal = new Animal(position, startingEnergy, genes);
+            Animal animal = new Animal(position, startingEnergy, genes, dayNumber);
             try {
                 map.place(animal);
                 animals.add(animal);
@@ -53,7 +53,7 @@ public class Simulation implements Runnable {
             /*if energia rowna 0 to dodaj do listy usmiercania*/
         }
         // jedzenie
-        // rozmnazanie najedzonych
+
         // wzrost roslin
     }
 

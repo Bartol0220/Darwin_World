@@ -72,7 +72,7 @@ public abstract class AbstractWorldMap implements WorldMap {
             whereAnimalsMeet.add(animal.getPosition());
         }
 
-        
+
 
         if(!animal.getPosition().equals(previousPosition)) {
             notifyObservers("Animal moved from %s to %s.".formatted(previousPosition, animal.getPosition()));
