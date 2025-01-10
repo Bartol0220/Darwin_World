@@ -5,6 +5,10 @@ import agh.ics.oop.model.util.Boundary;
 import agh.ics.oop.model.util.MapVisualizer;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.util.Collections.sort;
 
 public class GlobeMap implements MoveValidator{
     private final int id;
@@ -32,23 +36,17 @@ public class GlobeMap implements MoveValidator{
 
     public int getWidth() { return width;}
 
-    public Boundary getCurrentBounds() {
-        return bounds;
-    }
+    public Boundary getCurrentBounds() { return bounds;}
 
     public List<Vector2d> getPositionsOfAnimalsOnGrass() { return animalsOnGrass.stream().toList();}
 
-    public void clearMapOfAnimalsOnGrass() {
-        animalsOnGrass.clear();
-    }
+    public HashSet<Vector2d> getWhereAnimalsMeet() { return whereAnimalsMeet;}
 
-    public void registerObserver(final MapChangeListener observer) {
-        observers.add(observer);
-    }
+    public void clearMapOfAnimalsOnGrass() { animalsOnGrass.clear();}
 
-    public void unregisterObserver(final MapChangeListener observer) {
-        observers.remove(observer);
-    }
+    public void registerObserver(final MapChangeListener observer) { observers.add(observer);}
+
+    public void unregisterObserver(final MapChangeListener observer) { observers.remove(observer);}
 
     private void notifyObservers(String message){
         for(MapChangeListener observer : observers){
@@ -90,6 +88,13 @@ public class GlobeMap implements MoveValidator{
         return position.higher(bounds.lowerLeft()) && position.lower(bounds.upperRight());
     }
 
+    private void updateWhereAnimalsMeet(Vector2d position){
+        if (isOccupiedByAnimal(position)){
+            whereAnimalsMeet.add(position);
+        }
+
+    }
+
     public void move(Animal animal) {
         Vector2d previousPosition = animal.getPosition();
 
@@ -98,8 +103,27 @@ public class GlobeMap implements MoveValidator{
         addAnimalToMap(animal);
 
         addAnimalOnGrass(animal);
+        updateWhereAnimalsMeet(animal.getPosition());
 
         notifyObservers("Animal or: %s, pos: %s -> %s.".formatted(animal.getOrientation(), previousPosition, animal.getPosition()));
+    }
+
+    public void breedAnimals(int requiredEnergy, int energyToGive, GeneMutator geneMutator, int dayNumber){
+        for (Vector2d position : whereAnimalsMeet){
+            List<Animal> animals = animalsMap.get(position);
+            if (animals != null) {
+                List<Animal> breedingPair = animals.stream()
+                        .filter(animal -> animal.getEnergy() >= requiredEnergy)
+                        .sorted()
+                        .limit(2)
+                        .toList();
+                if (breedingPair.size() == 2){
+                    Animal kid = breedingPair.getFirst().breed(breedingPair.get(1), energyToGive, geneMutator, dayNumber);
+                    addAnimalToMap(kid);
+                }
+            }
+        }
+        whereAnimalsMeet.clear();
     }
 
     private void addAnimalOnGrass(Animal animal) {

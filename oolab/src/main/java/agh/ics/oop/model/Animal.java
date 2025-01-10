@@ -41,6 +41,10 @@ public class Animal implements WorldElement, Comparable{
         return orientation.toString();
     }
 
+    public String breedString(){
+        return "energy: %d\n children: %d\n birthday: %d\n".formatted(energy, childrenCount, birthDay);
+    }
+
     public boolean isAt(Vector2d position) {
         return this.position.equals(position);
     }
@@ -63,6 +67,16 @@ public class Animal implements WorldElement, Comparable{
             orientation = orientation.nextOrientation(4);
         }
         decreaseEnergy();
+    }
+
+    public Animal breed(Animal animal, int energyToBeGiven, GeneMutator geneMutator, int dayNumber){
+        this.energy -= energyToBeGiven;
+        this.childrenCount++;
+        animal.energy -= energyToBeGiven;
+        animal.childrenCount++;
+        Genes kidGenes = new Genes(this, animal, geneMutator, genes.getNumberOfGenes());
+        //czy on dostaje energie "od obu rodzicow" (2*energy) czy po prostu energy?
+        return new Animal(this.getPosition(), 2*energyToBeGiven, kidGenes, dayNumber);
     }
 
     @Override

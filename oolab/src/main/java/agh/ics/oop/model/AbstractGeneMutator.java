@@ -20,7 +20,6 @@ public abstract class AbstractGeneMutator implements GeneMutator {
             indexes[i] = value;
             i++;
         }
-        System.out.println("ktore zmieniono " + Arrays.toString(indexes));
         return indexes;
     }
 }

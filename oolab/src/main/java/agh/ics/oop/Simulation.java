@@ -1,12 +1,14 @@
 package agh.ics.oop;
 
 import agh.ics.oop.model.*;
+import agh.ics.oop.model.grass.AbstractGrassMaker;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
+
 
 public class Simulation implements Runnable {
     private final List<MoveDirection> directions;
@@ -15,16 +17,21 @@ public class Simulation implements Runnable {
     private final int startingEnergy;
     private int dayNumber = 0;
     private final int numberOfGenes;
-
     private final AbstractGrassMaker grassMaker;
+    private final GeneMutator geneMutator;
+    private final int energyNeededForBreeding;
+    private final int energyUsedWhileBreeding;
 
 
-    public Simulation(List<Vector2d> positions, GlobeMap map, List<MoveDirection> directions, int startingEnergy, int numberOfGenes, AbstractGrassMaker grassMaker) {
+    public Simulation(List<Vector2d> positions, GlobeMap map, List<MoveDirection> directions, int startingEnergy, int numberOfGenes, AbstractGrassMaker grassMaker, GeneMutator geneMutator, int energyNeededForBreeding, int energyUsedWhileBreeding) {
         this.directions = directions;
         this.map = map;
         this.startingEnergy = startingEnergy;
         this.numberOfGenes = numberOfGenes;
         this.grassMaker = grassMaker;
+        this.geneMutator = geneMutator;
+        this.energyNeededForBreeding = energyNeededForBreeding;
+        this.energyUsedWhileBreeding = energyUsedWhileBreeding;
 
         for(Vector2d position : positions) {
             // własny zestaw genów dla każdego zwierzaka
@@ -57,7 +64,7 @@ public class Simulation implements Runnable {
             // wybierz animala do nakarmienia
             // nakarm animala
         }
-        // rozmnazanie najedzonych
+        map.breedAnimals(energyNeededForBreeding, energyUsedWhileBreeding, geneMutator, dayNumber);
         // wzrost roslin
         grassMaker.grow();
     }
@@ -66,9 +73,9 @@ public class Simulation implements Runnable {
         while (!animals.isEmpty()) {
             dayNumber++;
             runDay();
-            if (dayNumber == 5){
-                animals.clear();
-            }
+//            if (dayNumber == 5){
+//                animals.clear();
+//            }
         }
     }
 }

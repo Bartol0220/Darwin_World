@@ -23,11 +23,10 @@ public class Genes {
         int weakerGenesCount = (int) ((double) weaker.getEnergy() / energySum * numberOfGenes);
         int strongerGenesCount = numberOfGenes - weakerGenesCount;
 
-
         int[] strongerGenes = stronger.getGenes();
         int[] weakerGenes = weaker.getGenes();
-
         int[] genes = new int[numberOfGenes];
+
         if (strongerOnTheLeft == 1){
             for (int i = 0; i < strongerGenesCount; i++){
                 genes[i] = strongerGenes[i];
@@ -43,9 +42,9 @@ public class Genes {
                 genes[j] = strongerGenes[j];
             }
         }
-        System.out.println("przed mutacja " + Arrays.toString(genes));
+
         geneMutator.mutate(genes);
-        System.out.println("po mutacji  " + Arrays.toString(genes));
+
         this.genes = genes;
     }
 
