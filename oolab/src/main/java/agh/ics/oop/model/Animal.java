@@ -1,5 +1,7 @@
 package agh.ics.oop.model;
 
+import agh.ics.oop.model.genes.GenesFactory;
+
 import java.util.Random;
 
 public class Animal implements WorldElement, Comparable{
@@ -10,19 +12,21 @@ public class Animal implements WorldElement, Comparable{
     private int childrenCount = 0;
     private final Genes genes;
     private Random random = new Random();
+    private final GenesFactory genesFactory;
 
 
-    public Animal(Vector2d position, int energy, Genes genes, int birthDay){
+    public Animal(Vector2d position, int energy, Genes genes, int birthDay, GenesFactory genesFactory){
         this.position = position;
         this.energy = energy;
         this.genes = genes;
         this.birthDay = birthDay;
+        this.genesFactory = genesFactory;
     }
 
     //w mniejszym uzywam wiekszego
-    public Animal(int energy, Genes genes, int birthDay){
+    public Animal(int energy, Genes genes, int birthDay, GenesFactory genesFactory){
         //orientation defaultowo na NORTH
-        this(new Vector2d(2, 2), energy, genes, birthDay);
+        this(new Vector2d(2, 2), energy, genes, birthDay, genesFactory);
     }
 
     public int getEnergy(){
@@ -69,14 +73,15 @@ public class Animal implements WorldElement, Comparable{
         decreaseEnergy();
     }
 
-    public Animal breed(Animal animal, int energyToBeGiven, GeneMutator geneMutator, int dayNumber){
+    public Animal breed(Animal animal, int energyToBeGiven, int dayNumber){
         this.energy -= energyToBeGiven;
         this.childrenCount++;
         animal.energy -= energyToBeGiven;
         animal.childrenCount++;
-        Genes kidGenes = new Genes(this, animal, geneMutator, genes.getNumberOfGenes());
+//        Genes kidGenes = new Genes(this, animal, geneMutator, genes.getNumberOfGenes());
+        Genes kidGenes = genesFactory.makeGenes(this, animal);
         //czy on dostaje energie "od obu rodzicow" (2*energy) czy po prostu energy?
-        return new Animal(this.getPosition(), 2*energyToBeGiven, kidGenes, dayNumber);
+        return new Animal(this.getPosition(), 2*energyToBeGiven, kidGenes, dayNumber, genesFactory);
     }
 
     @Override

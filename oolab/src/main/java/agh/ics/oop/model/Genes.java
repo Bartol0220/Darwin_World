@@ -6,16 +6,13 @@ public class Genes {
     private final int[] genes;
     private int geneIndex;
     private Random random = new Random();
-    private int numberOfGenes;
 
     public Genes(int numberOfGenes){
-        this.numberOfGenes = numberOfGenes;
         genes = random.ints(numberOfGenes, 0, 8).toArray();
         geneIndex = random.nextInt(genes.length);
     }
 
     public Genes(Animal stronger, Animal weaker, GeneMutator geneMutator, int numberOfGenes){
-        this.numberOfGenes = numberOfGenes;
         geneIndex = random.nextInt(numberOfGenes);
 
         int energySum = stronger.getEnergy() + weaker.getEnergy();
@@ -50,10 +47,6 @@ public class Genes {
 
     public int[] getGenes() {
         return Arrays.copyOf(genes, genes.length);
-    }
-
-    public int getNumberOfGenes(){
-        return numberOfGenes;
     }
 
     public int useCurrentGene(){

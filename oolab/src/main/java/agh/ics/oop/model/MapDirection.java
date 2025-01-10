@@ -39,7 +39,7 @@ public enum MapDirection {
             case SOUTH -> "S";
             case SOUTH_WEST -> "SW";
             case WEST -> "W";
-            case NORTH_WEST -> "WE";
+            case NORTH_WEST -> "NW";
         };
     }
 

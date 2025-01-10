@@ -1,6 +1,7 @@
 package agh.ics.oop;
 
 import agh.ics.oop.model.*;
+import agh.ics.oop.model.genes.GenesFactory;
 import agh.ics.oop.model.grass.AbstractGrassMaker;
 import agh.ics.oop.model.grass.GrassMakerDeadAnimal;
 import agh.ics.oop.model.grass.GrassMakerEquator;
@@ -14,8 +15,8 @@ import java.util.List;
 public class World {
     public static void main(String[] args) {
 
-        int width = 4;
-        int height = 3;
+        int width = 2;
+        int height = 2;
         GlobeMap globeMap = new GlobeMap(width, height, 0);
         AbstractGrassMaker grassMaker;
         if (false) {
@@ -26,9 +27,10 @@ public class World {
         List<MoveDirection> directions1 = new ArrayList<>();
         MapChangeListener listener = new ConsoleMapDisplay();
         globeMap.registerObserver(listener);
-        List<Vector2d> positions1 = List.of(new Vector2d(0,1), new Vector2d(2,2));
+        List<Vector2d> positions1 = List.of(new Vector2d(0,1), new Vector2d(0,0));
         GeneMutator geneMutator = new ClassicMutation();
-        Simulation simulation1 = new Simulation(positions1, globeMap, directions1, 10, 5, grassMaker, geneMutator, 0, 1);
+        GenesFactory genesFactory = new GenesFactory(geneMutator, 5);
+        Simulation simulation1 = new Simulation(positions1, globeMap, directions1, 100, grassMaker, 10, 10, genesFactory);
         simulation1.run();
 }
 }

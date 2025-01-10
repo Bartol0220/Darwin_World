@@ -108,7 +108,7 @@ public class GlobeMap implements MoveValidator{
         notifyObservers("Animal or: %s, pos: %s -> %s.".formatted(animal.getOrientation(), previousPosition, animal.getPosition()));
     }
 
-    public void breedAnimals(int requiredEnergy, int energyToGive, GeneMutator geneMutator, int dayNumber){
+    public void breedAnimals(int requiredEnergy, int energyToGive, int dayNumber){
         for (Vector2d position : whereAnimalsMeet){
             List<Animal> animals = animalsMap.get(position);
             if (animals != null) {
@@ -118,7 +118,7 @@ public class GlobeMap implements MoveValidator{
                         .limit(2)
                         .toList();
                 if (breedingPair.size() == 2){
-                    Animal kid = breedingPair.getFirst().breed(breedingPair.get(1), energyToGive, geneMutator, dayNumber);
+                    Animal kid = breedingPair.getFirst().breed(breedingPair.get(1), energyToGive, dayNumber);
                     addAnimalToMap(kid);
                 }
             }

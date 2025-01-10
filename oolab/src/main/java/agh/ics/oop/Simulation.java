@@ -1,6 +1,7 @@
 package agh.ics.oop;
 
 import agh.ics.oop.model.*;
+import agh.ics.oop.model.genes.GenesFactory;
 import agh.ics.oop.model.grass.AbstractGrassMaker;
 
 import java.util.ArrayList;
@@ -16,27 +17,22 @@ public class Simulation implements Runnable {
     private final List<Animal> animals = new ArrayList<>();
     private final int startingEnergy;
     private int dayNumber = 0;
-    private final int numberOfGenes;
     private final AbstractGrassMaker grassMaker;
-    private final GeneMutator geneMutator;
     private final int energyNeededForBreeding;
     private final int energyUsedWhileBreeding;
 
 
-    public Simulation(List<Vector2d> positions, GlobeMap map, List<MoveDirection> directions, int startingEnergy, int numberOfGenes, AbstractGrassMaker grassMaker, GeneMutator geneMutator, int energyNeededForBreeding, int energyUsedWhileBreeding) {
+    public Simulation(List<Vector2d> positions, GlobeMap map, List<MoveDirection> directions, int startingEnergy, AbstractGrassMaker grassMaker, int energyNeededForBreeding, int energyUsedWhileBreeding, GenesFactory genesFactory) {
         this.directions = directions;
         this.map = map;
         this.startingEnergy = startingEnergy;
-        this.numberOfGenes = numberOfGenes;
         this.grassMaker = grassMaker;
-        this.geneMutator = geneMutator;
         this.energyNeededForBreeding = energyNeededForBreeding;
         this.energyUsedWhileBreeding = energyUsedWhileBreeding;
 
         for(Vector2d position : positions) {
-            // własny zestaw genów dla każdego zwierzaka
-            Genes genes = new Genes(numberOfGenes);
-            Animal animal = new Animal(position, startingEnergy, genes, dayNumber);
+            Genes genes = genesFactory.makeStartingGenes();
+            Animal animal = new Animal(position, startingEnergy, genes, dayNumber, genesFactory);
             try {
                 map.place(animal);
                 animals.add(animal);
@@ -59,12 +55,13 @@ public class Simulation implements Runnable {
             // if energia rowna 0 to dodaj do listy usmiercania
         }
         // jedzenie
+
+        map.breedAnimals(energyNeededForBreeding, energyUsedWhileBreeding, dayNumber);
         List<Vector2d> positionsOfAnimalsOnGrass = map.getPositionsOfAnimalsOnGrass();
         for (Vector2d position : positionsOfAnimalsOnGrass) {
             // wybierz animala do nakarmienia
             // nakarm animala
         }
-        map.breedAnimals(energyNeededForBreeding, energyUsedWhileBreeding, geneMutator, dayNumber);
         // wzrost roslin
         grassMaker.grow();
     }
