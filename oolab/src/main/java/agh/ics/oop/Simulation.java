@@ -1,32 +1,30 @@
 package agh.ics.oop;
 
 import agh.ics.oop.model.*;
+import agh.ics.oop.model.genes.Genes;
+import agh.ics.oop.model.genes.GenesFactory;
+import agh.ics.oop.model.grass.AbstractGrassMaker;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
-import java.util.stream.IntStream;
+
 
 public class Simulation implements Runnable {
-    private final List<MoveDirection> directions;
-    private final WorldMap map;
+    private final GlobeMap map;
     private final List<Animal> animals = new ArrayList<>();
-    private final int startingEnergy;
     private int dayNumber = 0;
+    private final AbstractGrassMaker grassMaker;
+    private final Breeding breeding;
 
 
-    public Simulation(List<Vector2d> positions, WorldMap map, List<MoveDirection> directions, int startingEnergy, int numberOfGenes) {
-        this.directions = directions;
+    public Simulation(List<Vector2d> positions, GlobeMap map, int startingEnergy, AbstractGrassMaker grassMaker, Breeding breeding, GenesFactory genesFactory) {
         this.map = map;
-        this.startingEnergy = startingEnergy;
+        this.grassMaker = grassMaker;
+        this.breeding = breeding;
 
         for(Vector2d position : positions) {
-            // własny zestaw genów dla każdego zwierzaka
-            int[] genes = new Random().ints(numberOfGenes, 0, 8).toArray();
-
-            Animal animal = new Animal(position, startingEnergy, genes);
-            System.out.println(Arrays.toString(genes));
+            Genes genes = genesFactory.makeStartingGenes();
+            Animal animal = new Animal(position, startingEnergy, genes, dayNumber, genesFactory);
             try {
                 map.place(animal);
                 animals.add(animal);
@@ -36,11 +34,8 @@ public class Simulation implements Runnable {
         }
     }
 
-    List<Animal> getAnimals() {
-        return List.copyOf(animals);
-    }
-
-    private void runDay(){
+    private void runDay() {
+        map.clearMapOfAnimalsOnGrass();
         //usmierc zwierzaki z listy (sprawdz, czy energia nadal 0)
         for (Animal animal : animals) {
             try {
@@ -49,20 +44,29 @@ public class Simulation implements Runnable {
                 // ignore
             }
             map.move(animal);
-            /*if energia rowna 0 to dodaj do listy usmiercania*/
+            // if energia rowna 0 to dodaj do listy usmiercania
         }
-        // jedzenie
         // rozmnazanie najedzonych
+//        map.findAnimalsToBreed(energyNeededForBreeding, energyUsedWhileBreeding, dayNumber);
+        breeding.breedAnimals(dayNumber);
+        // jedzenie
+        // TODO pozbyc sie fora (przesniesc go gdzies indziej)
+        List<Vector2d> positionsOfAnimalsOnGrass = map.getPositionsOfAnimalsOnGrass();
+        for (Vector2d position : positionsOfAnimalsOnGrass) {
+            // wybierz animala do nakarmienia
+            // nakarm animala
+        }
         // wzrost roslin
+        grassMaker.grow();
     }
 
     public void run(){
         while (!animals.isEmpty()) {
             dayNumber++;
             runDay();
-            if (dayNumber == 5){
-                animals.clear();
-            }
+//            if (dayNumber == 5){
+//                animals.clear();
+//            }
         }
     }
 }

@@ -1,0 +1,35 @@
+package agh.ics.oop.model.genes;
+
+public class SlightCorrection extends AbstractGeneMutator {
+
+    public SlightCorrection(int minimumNumberOfMutations, int maximumNumberOfMutations) {
+        super(minimumNumberOfMutations, maximumNumberOfMutations);
+    }
+
+//    @Override
+//    public void mutate(int[] genes) {
+//        int howManyChanged = random.nextInt(minimumNumberOfMutations, maximumNumberOfMutations+1);
+//        RandomGenes genesToChange = new RandomGenes(genes.length, -1, howManyChanged);
+//
+//        for (int geneToChange : genesToChange){
+//            int increase = random.nextInt(0, 2);
+//            int value;
+//
+//            if (increase == 1) value = 1;
+//            else value = -1;
+//
+//            genes[geneToChange] = (genes[geneToChange]+value+8)%8;
+//        }
+//    }
+
+    @Override
+    protected void mutateGene(int geneToChange, int[] genes) {
+        int increase = random.nextInt(0, 2);
+        int value;
+
+        if (increase == 1) value = 1;
+        else value = -1;
+
+        genes[geneToChange] = (genes[geneToChange]+value+8)%8;
+    }
+}
