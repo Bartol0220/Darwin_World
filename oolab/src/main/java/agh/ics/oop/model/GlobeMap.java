@@ -5,10 +5,6 @@ import agh.ics.oop.model.util.Boundary;
 import agh.ics.oop.model.util.MapVisualizer;
 
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static java.util.Collections.sort;
 
 public class GlobeMap implements MoveValidator{
     private final int id;
@@ -92,7 +88,6 @@ public class GlobeMap implements MoveValidator{
         if (isOccupiedByAnimal(position)){
             whereAnimalsMeet.add(position);
         }
-
     }
 
     public void move(Animal animal) {
@@ -108,29 +103,11 @@ public class GlobeMap implements MoveValidator{
         notifyObservers("Animal or: %s, pos: %s -> %s.".formatted(animal.getOrientation(), previousPosition, animal.getPosition()));
     }
 
-//    public void breedAnimals(int requiredEnergy, int energyToGive, int dayNumber){
-//        for (Vector2d position : whereAnimalsMeet){
-//            List<Animal> animals = animalsMap.get(position);
-//            if (animals != null) {
-//                List<Animal> breedingPair = animals.stream()
-//                        .filter(animal -> animal.getEnergy() >= requiredEnergy)
-//                        .sorted()
-//                        .limit(2)
-//                        .toList();
-//                if (breedingPair.size() == 2){
-//                    Animal kid = breedingPair.getFirst().breed(breedingPair.get(1), energyToGive, dayNumber);
-//                    addAnimalToMap(kid);
-//                }
-//            }
-//        }
-//        whereAnimalsMeet.clear();
-//    }
-
-    private List<Animal> listOfBestAnimalAtPosition(Vector2d position, Breeding breeding) {
+    private List<Animal> listOfBestAnimalsAtPosition(Vector2d position, int minimalEnergy) {
         List<Animal> animals = animalsMap.get(position);
         if (animals != null) {
             return animals.stream()
-                    .filter(animal -> animal.getEnergy() >= breeding.getEnergyNeededForBreeding())
+                    .filter(animal -> animal.getEnergy() >= minimalEnergy)
                     .sorted()
                     .limit(2)
                     .toList();
@@ -138,9 +115,9 @@ public class GlobeMap implements MoveValidator{
         return Collections.emptyList();
     }
 
-    public void breedAnimals(Breeding breeding){
+    public void findAnimalsToBreed(Breeding breeding){
         for (Vector2d position : whereAnimalsMeet){
-            List<Animal> breedingPair = listOfBestAnimalAtPosition(position, breeding);
+            List<Animal> breedingPair = listOfBestAnimalsAtPosition(position, breeding.getEnergyNeededForBreeding());
             Optional<Animal> kid = breeding.breedPair(breedingPair);
             addAnimalToMap(kid);
         }
@@ -171,27 +148,12 @@ public class GlobeMap implements MoveValidator{
     }
 
     private void addAnimalToMap(Optional<Animal> animal) {
-        if (animal.isPresent()) {
-            if (animalsMap.get(animal.get().getPosition()) == null) {
-                ArrayList<Animal> animalList = new ArrayList<>();
-                animalList.add(animal.get());
-                animalsMap.put(animal.get().getPosition(), animalList);
-            } else {
-                animalsMap.get(animal.get().getPosition()).add(animal.get());
-            }
-        }
+        animal.ifPresent(this::addAnimalToMap);
     }
 
     @Override
     public Vector2d handleBoundsPositions(Vector2d position){
         return new Vector2d((position.getX()+width)%width, position.getY());
-    }
-
-    public ArrayList<WorldElement> getElements() {
-        // TODO powinno zwracac liste wszystkich zwierzakow
-        ArrayList<WorldElement> elements = new ArrayList<>();
-        elements.addAll(grassMap.values());
-        return elements;
     }
 
     public String toString() {

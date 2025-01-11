@@ -1,8 +1,6 @@
 package agh.ics.oop.model.genes;
 
 import agh.ics.oop.model.Animal;
-import agh.ics.oop.model.GeneMutator;
-import agh.ics.oop.model.Genes;
 
 public class GenesFactory {
     private final GeneMutator geneMutator;

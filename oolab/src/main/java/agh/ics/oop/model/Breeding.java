@@ -19,7 +19,7 @@ public class Breeding {
 
     public void breedAnimals(int dayNumber) {
         this.dayNumber = dayNumber;
-        map.breedAnimals(this);
+        map.findAnimalsToBreed(this);
     }
 
     public Optional<Animal> breedPair(List<Animal> breedingPair) {

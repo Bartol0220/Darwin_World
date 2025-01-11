@@ -1,18 +1,19 @@
 package agh.ics.oop.model;
 
+import agh.ics.oop.model.genes.Genes;
 import agh.ics.oop.model.genes.GenesFactory;
 
 import java.util.Random;
 
-public class Animal implements WorldElement, Comparable{
-    private MapDirection orientation = MapDirection.NORTH;
+public class Animal implements WorldElement, Comparable<Animal> {
+    private MapDirection orientation = MapDirection.randomOrientation();
     private Vector2d position;
     private int energy;
     private final int birthDay;
     private int childrenCount = 0;
     private final Genes genes;
-    private Random random = new Random();
     private final GenesFactory genesFactory;
+    private final Random random = new Random();
 
 
     public Animal(Vector2d position, int energy, Genes genes, int birthDay, GenesFactory genesFactory){
@@ -23,22 +24,18 @@ public class Animal implements WorldElement, Comparable{
         this.genesFactory = genesFactory;
     }
 
-    //w mniejszym uzywam wiekszego
-    public Animal(int energy, Genes genes, int birthDay, GenesFactory genesFactory){
-        //orientation defaultowo na NORTH
-        this(new Vector2d(2, 2), energy, genes, birthDay, genesFactory);
-    }
-
     public int getEnergy(){
         return energy;
     }
 
-    public int[] getGenes(){
-        return genes.getGenes();
+    public int[] getGenes() { return genes.getGenes();}
+
+    public Vector2d getPosition() {
+        return position;
     }
 
-    private void decreaseEnergy(){
-        energy -= 1;
+    public MapDirection getOrientation() {
+        return orientation;
     }
 
     public String toString() {
@@ -49,16 +46,12 @@ public class Animal implements WorldElement, Comparable{
         return "energy: %d\n children: %d\n birthday: %d\n".formatted(energy, childrenCount, birthDay);
     }
 
+    private void decreaseEnergy(int energy) { this.energy -= energy;}
+
+    private void addChildren() { childrenCount++;}
+
     public boolean isAt(Vector2d position) {
         return this.position.equals(position);
-    }
-
-    public Vector2d getPosition() {
-        return position;
-    }
-
-    public MapDirection getOrientation() {
-        return orientation;
     }
 
     public void move(MoveValidator validator) {
@@ -70,27 +63,26 @@ public class Animal implements WorldElement, Comparable{
             // obroc sie w przeciwna strone
             orientation = orientation.nextOrientation(4);
         }
-        decreaseEnergy();
+        decreaseEnergy(1);
     }
 
-    public Animal breed(Animal animal, int energyToBeGiven, int dayNumber){
-        this.energy -= energyToBeGiven;
-        this.childrenCount++;
-        animal.energy -= energyToBeGiven;
-        animal.childrenCount++;
-//        Genes kidGenes = new Genes(this, animal, geneMutator, genes.getNumberOfGenes());
+    public Animal breed(Animal animal, int energyUsedWhileBreeding, int dayNumber){
+        decreaseEnergy(energyUsedWhileBreeding);
+        addChildren();
+        animal.decreaseEnergy(energyUsedWhileBreeding);
+        animal.addChildren();
         Genes kidGenes = genesFactory.makeGenes(this, animal);
         //czy on dostaje energie "od obu rodzicow" (2*energy) czy po prostu energy?
-        return new Animal(this.getPosition(), 2*energyToBeGiven, kidGenes, dayNumber, genesFactory);
+        return new Animal(this.getPosition(), 2*energyUsedWhileBreeding, kidGenes, dayNumber, genesFactory);
     }
 
     @Override
-    public int compareTo(Object object) {
-        Animal other = (Animal) object;
-        if (this.energy != other.energy) return other.energy - this.energy;
-        if (this.birthDay != other.birthDay) return this.birthDay - other.birthDay;
-        if (this.childrenCount != other.childrenCount) return other.childrenCount - this.childrenCount;
-        return 0;
+    public int compareTo(Animal animal) {
+        if (this.energy != animal.energy) return animal.energy - this.energy;
+        if (this.birthDay != animal.birthDay) return this.birthDay - animal.birthDay;
+        if (this.childrenCount != animal.childrenCount) return animal.childrenCount - this.childrenCount;
+
+        return random.nextInt(-1, 2);
     }
 
 }

@@ -29,7 +29,7 @@ public class RandomGrassGrow implements Iterable<Vector2d> {
 
     @Override
     public Iterator<Vector2d> iterator() {
-        return new Iterator<Vector2d>() {
+        return new Iterator<>() {
             @Override
             public boolean hasNext() {
                 return (!freeBetterGrassPositions.isEmpty() || !freeWorseGrassPositions.isEmpty()) && generated < grassNumber ;

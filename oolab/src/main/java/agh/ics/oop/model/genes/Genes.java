@@ -1,11 +1,13 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.genes;
+
+import agh.ics.oop.model.Animal;
 
 import java.util.*;
 
 public class Genes {
     private final int[] genes;
     private int geneIndex;
-    private Random random = new Random();
+    private final Random random = new Random();
 
     public Genes(int numberOfGenes){
         genes = random.ints(numberOfGenes, 0, 8).toArray();
@@ -15,6 +17,12 @@ public class Genes {
     public Genes(Animal stronger, Animal weaker, GeneMutator geneMutator, int numberOfGenes){
         geneIndex = random.nextInt(numberOfGenes);
 
+        int[] genes = getGenesFromParents(stronger, weaker, numberOfGenes);
+        geneMutator.mutate(genes);
+        this.genes = genes;
+    }
+
+    private int[] getGenesFromParents(Animal stronger, Animal weaker, int numberOfGenes) {
         int energySum = stronger.getEnergy() + weaker.getEnergy();
         int strongerOnTheLeft = random.nextInt(0,2);
         int weakerGenesCount = (int) ((double) weaker.getEnergy() / energySum * numberOfGenes);
@@ -31,7 +39,7 @@ public class Genes {
             for (int j = strongerGenesCount; j < numberOfGenes; j++){
                 genes[j] = weakerGenes[j];
             }
-        } else if (strongerOnTheLeft == 0){
+        } else {
             for (int i = 0; i < weakerGenesCount; i++){
                 genes[i] = weakerGenes[i];
             }
@@ -40,9 +48,7 @@ public class Genes {
             }
         }
 
-        geneMutator.mutate(genes);
-
-        this.genes = genes;
+        return genes;
     }
 
     public int[] getGenes() {
