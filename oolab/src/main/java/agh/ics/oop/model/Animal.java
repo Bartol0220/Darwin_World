@@ -1,7 +1,6 @@
 package agh.ics.oop.model;
 
 import agh.ics.oop.model.genes.Genes;
-import agh.ics.oop.model.genes.GenesFactory;
 
 import java.util.Random;
 
@@ -10,18 +9,18 @@ public class Animal implements WorldElement, Comparable<Animal> {
     private Vector2d position;
     private int energy;
     private final int birthDay;
+    private final int energyProvidedByEatingGrass;
     private int childrenCount = 0;
     private final Genes genes;
-    private final GenesFactory genesFactory;
     private final Random random = new Random();
 
 
-    public Animal(Vector2d position, int energy, Genes genes, int birthDay, GenesFactory genesFactory){
+    public Animal(Vector2d position, Genes genes, int birthDay, int energy, int energyProvidedByEatingGrass){
         this.position = position;
-        this.energy = energy;
         this.genes = genes;
         this.birthDay = birthDay;
-        this.genesFactory = genesFactory;
+        this.energy = energy;
+        this.energyProvidedByEatingGrass = energyProvidedByEatingGrass;
     }
 
     public int getEnergy(){
@@ -48,6 +47,8 @@ public class Animal implements WorldElement, Comparable<Animal> {
 
     private void decreaseEnergy(int energy) { this.energy -= energy;}
 
+    private void increaseEnergy(int energy) { this.energy += energy;}
+
     private void addChildren() { childrenCount++;}
 
     public boolean isAt(Vector2d position) {
@@ -66,14 +67,17 @@ public class Animal implements WorldElement, Comparable<Animal> {
         decreaseEnergy(1);
     }
 
-    public Animal breed(Animal animal, int energyUsedWhileBreeding, int dayNumber){
+    public Animal breed(Animal animal, int energyUsedWhileBreeding, int dayNumber, AnimalCreator animalCreator){
         decreaseEnergy(energyUsedWhileBreeding);
         addChildren();
         animal.decreaseEnergy(energyUsedWhileBreeding);
         animal.addChildren();
-        Genes kidGenes = genesFactory.makeGenes(this, animal);
-        //czy on dostaje energie "od obu rodzicow" (2*energy) czy po prostu energy?
-        return new Animal(this.getPosition(), 2*energyUsedWhileBreeding, kidGenes, dayNumber, genesFactory);
+
+        return animalCreator.createAnimal(dayNumber, this, animal);
+    }
+
+    public void eat() {
+        increaseEnergy(energyProvidedByEatingGrass);
     }
 
     @Override
@@ -84,5 +88,4 @@ public class Animal implements WorldElement, Comparable<Animal> {
 
         return random.nextInt(-1, 2);
     }
-
 }

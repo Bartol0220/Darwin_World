@@ -11,11 +11,10 @@ public class GlobeMap implements MoveValidator{
     private final int width;
     private final int height;
     private final Boundary bounds;
-    // zamiast Arraylist<Animal> mozna dac Set - pomyslec
     protected final Map<Vector2d, ArrayList<Animal>> animalsMap = new HashMap<>();
     protected final HashSet<Vector2d> whereAnimalsMeet = new HashSet<>();
     protected final HashSet<Vector2d> animalsOnGrass = new HashSet<>();
-    public final Map<Vector2d, WorldElement> grassMap = new HashMap<>();
+    public final Map<Vector2d, Grass> grassMap = new HashMap<>();
     private final MapVisualizer mapVisualizer = new MapVisualizer(this);
     private final List<MapChangeListener> observers = new ArrayList<>();
 
@@ -34,12 +33,6 @@ public class GlobeMap implements MoveValidator{
 
     public Boundary getCurrentBounds() { return bounds;}
 
-    public List<Vector2d> getPositionsOfAnimalsOnGrass() { return animalsOnGrass.stream().toList();}
-
-    public HashSet<Vector2d> getWhereAnimalsMeet() { return whereAnimalsMeet;}
-
-    public void clearMapOfAnimalsOnGrass() { animalsOnGrass.clear();}
-
     public void registerObserver(final MapChangeListener observer) { observers.add(observer);}
 
     public void unregisterObserver(final MapChangeListener observer) { observers.remove(observer);}
@@ -53,6 +46,8 @@ public class GlobeMap implements MoveValidator{
     public void addGrass(Vector2d position) {
         grassMap.put(position, new Grass(position));
     }
+
+    public void removeGrass(Grass grass) { grassMap.remove(grass.getPosition()); }
 
     public void place(Animal animal) throws IncorrectPositionException{
         if(canMoveTo(animal.getPosition())) {
@@ -81,7 +76,7 @@ public class GlobeMap implements MoveValidator{
 
     @Override
     public boolean canMoveTo(Vector2d position) {
-        return position.higher(bounds.lowerLeft()) && position.lower(bounds.upperRight());
+        return position.follows(bounds.lowerLeft()) && position.precedes(bounds.upperRight());
     }
 
     private void updateWhereAnimalsMeet(Vector2d position){
@@ -119,9 +114,29 @@ public class GlobeMap implements MoveValidator{
         for (Vector2d position : whereAnimalsMeet){
             List<Animal> breedingPair = listOfBestAnimalsAtPosition(position, breeding.getEnergyNeededForBreeding());
             Optional<Animal> kid = breeding.breedPair(breedingPair);
-            addAnimalToMap(kid);
+            kid.ifPresent(this::addAnimalToMap);
         }
         whereAnimalsMeet.clear();
+    }
+
+    public List<Optional<Grass>> feedAnimals() {
+        ArrayList<Optional<Grass>> grassEaten = new ArrayList<>();
+        for (Vector2d position : animalsOnGrass.stream().toList()) {
+            Optional<Grass> grass = findAnimalToFeed(position);
+            grassEaten.add(grass);
+        }
+        animalsOnGrass.clear();
+        return grassEaten;
+    }
+
+    public Optional<Grass> findAnimalToFeed(Vector2d position){
+        List<Animal> bestAnimalsAtPosition = listOfBestAnimalsAtPosition(position, 0);
+        if (!bestAnimalsAtPosition.isEmpty()){
+            Animal animal = bestAnimalsAtPosition.getFirst();
+            animal.eat();
+            return Optional.of(grassMap.get(position));
+        }
+        return Optional.empty();
     }
 
     private void addAnimalOnGrass(Animal animal) {
@@ -145,10 +160,6 @@ public class GlobeMap implements MoveValidator{
         } else {
             animalsMap.get(animal.getPosition()).add(animal);
         }
-    }
-
-    private void addAnimalToMap(Optional<Animal> animal) {
-        animal.ifPresent(this::addAnimalToMap);
     }
 
     @Override
