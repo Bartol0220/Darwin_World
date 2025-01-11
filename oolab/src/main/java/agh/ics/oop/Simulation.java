@@ -20,6 +20,7 @@ public class Simulation implements Runnable {
     private final AbstractGrassMaker grassMaker;
     private final int energyNeededForBreeding;
     private final int energyUsedWhileBreeding;
+    private final Breeding breeding;
 
 
     public Simulation(List<Vector2d> positions, GlobeMap map, List<MoveDirection> directions, int startingEnergy, AbstractGrassMaker grassMaker, int energyNeededForBreeding, int energyUsedWhileBreeding, GenesFactory genesFactory) {
@@ -29,6 +30,8 @@ public class Simulation implements Runnable {
         this.grassMaker = grassMaker;
         this.energyNeededForBreeding = energyNeededForBreeding;
         this.energyUsedWhileBreeding = energyUsedWhileBreeding;
+
+        breeding = new Breeding(energyNeededForBreeding, energyUsedWhileBreeding, map);
 
         for(Vector2d position : positions) {
             Genes genes = genesFactory.makeStartingGenes();
@@ -54,9 +57,11 @@ public class Simulation implements Runnable {
             map.move(animal);
             // if energia rowna 0 to dodaj do listy usmiercania
         }
+        // rozmnazanie najedzonych
+//        map.breedAnimals(energyNeededForBreeding, energyUsedWhileBreeding, dayNumber);
+        breeding.breedAnimals(dayNumber);
         // jedzenie
-
-        map.breedAnimals(energyNeededForBreeding, energyUsedWhileBreeding, dayNumber);
+        // TODO pozbyc sie fora (przesniesc go gdzies indziej)
         List<Vector2d> positionsOfAnimalsOnGrass = map.getPositionsOfAnimalsOnGrass();
         for (Vector2d position : positionsOfAnimalsOnGrass) {
             // wybierz animala do nakarmienia

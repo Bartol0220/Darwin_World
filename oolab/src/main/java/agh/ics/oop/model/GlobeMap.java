@@ -108,20 +108,41 @@ public class GlobeMap implements MoveValidator{
         notifyObservers("Animal or: %s, pos: %s -> %s.".formatted(animal.getOrientation(), previousPosition, animal.getPosition()));
     }
 
-    public void breedAnimals(int requiredEnergy, int energyToGive, int dayNumber){
+//    public void breedAnimals(int requiredEnergy, int energyToGive, int dayNumber){
+//        for (Vector2d position : whereAnimalsMeet){
+//            List<Animal> animals = animalsMap.get(position);
+//            if (animals != null) {
+//                List<Animal> breedingPair = animals.stream()
+//                        .filter(animal -> animal.getEnergy() >= requiredEnergy)
+//                        .sorted()
+//                        .limit(2)
+//                        .toList();
+//                if (breedingPair.size() == 2){
+//                    Animal kid = breedingPair.getFirst().breed(breedingPair.get(1), energyToGive, dayNumber);
+//                    addAnimalToMap(kid);
+//                }
+//            }
+//        }
+//        whereAnimalsMeet.clear();
+//    }
+
+    private List<Animal> listOfBestAnimalAtPosition(Vector2d position, Breeding breeding) {
+        List<Animal> animals = animalsMap.get(position);
+        if (animals != null) {
+            return animals.stream()
+                    .filter(animal -> animal.getEnergy() >= breeding.getEnergyNeededForBreeding())
+                    .sorted()
+                    .limit(2)
+                    .toList();
+        }
+        return Collections.emptyList();
+    }
+
+    public void breedAnimals(Breeding breeding){
         for (Vector2d position : whereAnimalsMeet){
-            List<Animal> animals = animalsMap.get(position);
-            if (animals != null) {
-                List<Animal> breedingPair = animals.stream()
-                        .filter(animal -> animal.getEnergy() >= requiredEnergy)
-                        .sorted()
-                        .limit(2)
-                        .toList();
-                if (breedingPair.size() == 2){
-                    Animal kid = breedingPair.getFirst().breed(breedingPair.get(1), energyToGive, dayNumber);
-                    addAnimalToMap(kid);
-                }
-            }
+            List<Animal> breedingPair = listOfBestAnimalAtPosition(position, breeding);
+            Optional<Animal> kid = breeding.breedPair(breedingPair);
+            addAnimalToMap(kid);
         }
         whereAnimalsMeet.clear();
     }
@@ -146,6 +167,18 @@ public class GlobeMap implements MoveValidator{
             animalsMap.put(animal.getPosition(), animalList);
         } else {
             animalsMap.get(animal.getPosition()).add(animal);
+        }
+    }
+
+    private void addAnimalToMap(Optional<Animal> animal) {
+        if (animal.isPresent()) {
+            if (animalsMap.get(animal.get().getPosition()) == null) {
+                ArrayList<Animal> animalList = new ArrayList<>();
+                animalList.add(animal.get());
+                animalsMap.put(animal.get().getPosition(), animalList);
+            } else {
+                animalsMap.get(animal.get().getPosition()).add(animal.get());
+            }
         }
     }
 
