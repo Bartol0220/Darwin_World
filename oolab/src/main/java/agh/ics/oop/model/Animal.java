@@ -29,6 +29,8 @@ public class Animal implements WorldElement, Comparable<Animal> {
 
     public int[] getGenes() { return genes.getGenes();}
 
+    public int getCurrentGene() { return genes.getCurrentGene();}
+
     public Vector2d getPosition() {
         return position;
     }

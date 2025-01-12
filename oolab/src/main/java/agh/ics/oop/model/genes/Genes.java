@@ -33,19 +33,11 @@ public class Genes {
         int[] genes = new int[numberOfGenes];
 
         if (strongerOnTheLeft == 1){
-            for (int i = 0; i < strongerGenesCount; i++){
-                genes[i] = strongerGenes[i];
-            }
-            for (int j = strongerGenesCount; j < numberOfGenes; j++){
-                genes[j] = weakerGenes[j];
-            }
+            if (strongerGenesCount >= 0) System.arraycopy(strongerGenes, 0, genes, 0, strongerGenesCount);
+            if (numberOfGenes - strongerGenesCount >= 0) System.arraycopy(weakerGenes, strongerGenesCount, genes, strongerGenesCount, numberOfGenes - strongerGenesCount);
         } else {
-            for (int i = 0; i < weakerGenesCount; i++){
-                genes[i] = weakerGenes[i];
-            }
-            for (int j = weakerGenesCount; j < numberOfGenes; j++){
-                genes[j] = strongerGenes[j];
-            }
+            if (weakerGenesCount >= 0) System.arraycopy(weakerGenes, 0, genes, 0, weakerGenesCount);
+            if (numberOfGenes - weakerGenesCount >= 0) System.arraycopy(strongerGenes, weakerGenesCount, genes, weakerGenesCount, numberOfGenes - weakerGenesCount);
         }
 
         return genes;
@@ -59,6 +51,10 @@ public class Genes {
         int currentGene = genes[geneIndex];
         geneIndex = (geneIndex + 1)%genes.length;
         return currentGene;
+    }
+
+    public int getCurrentGene(){
+        return genes[geneIndex];
     }
 
     @Override

@@ -1,10 +1,7 @@
 package agh.ics.oop;
 
 import agh.ics.oop.model.*;
-import agh.ics.oop.model.genes.ClassicMutation;
-import agh.ics.oop.model.genes.GeneMutator;
-import agh.ics.oop.model.genes.GenesFactory;
-import agh.ics.oop.model.genes.SlightCorrection;
+import agh.ics.oop.model.genes.*;
 import agh.ics.oop.model.grass.AbstractGrassMaker;
 import agh.ics.oop.model.grass.GrassMakerDeadAnimal;
 import agh.ics.oop.model.grass.GrassMakerEquator;
@@ -18,7 +15,7 @@ public class World {
         int startGrassNumber = 1; // TODO wyjątek jeśli < 0
         int dayGrassNumber = 1; // TODO wyjątek jeśli < 0
         int energyProvidedByEatingGrass = 1; // TODO wyjątek jeśli < 0
-        boolean isLifeGivingDeath = false;
+        boolean isDeathGivingLife = false;
         int startNumberOfAnimals = 2; // TODO wyjątek jeśli < 0
         int startingEnergy = 10; // TODO wyjątek jeśli < 0
         int energyNeededForBreeding = 3; // TODO wyjątek jeśli < 0
@@ -33,7 +30,7 @@ public class World {
         map.registerObserver(listener);
 
         AbstractGrassMaker grassMaker;
-        if (isLifeGivingDeath) {
+        if (isDeathGivingLife) {
             grassMaker = new GrassMakerDeadAnimal(startGrassNumber, dayGrassNumber, map);
         } else {
             grassMaker = new GrassMakerEquator(startGrassNumber, dayGrassNumber, map);

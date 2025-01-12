@@ -3,6 +3,7 @@ package agh.ics.oop.model;
 import agh.ics.oop.model.grass.Grass;
 import agh.ics.oop.model.util.Boundary;
 import agh.ics.oop.model.util.MapVisualizer;
+import javafx.geometry.Orientation;
 
 import java.util.*;
 
@@ -86,7 +87,9 @@ public class GlobeMap implements MoveValidator{
     }
 
     public void move(Animal animal) {
+        MapDirection previousOrientation = animal.getOrientation();
         Vector2d previousPosition = animal.getPosition();
+        int gene = animal.getCurrentGene();
 
         removeAnimalFromMap(animal);
         animal.move(this);
@@ -95,7 +98,9 @@ public class GlobeMap implements MoveValidator{
         addAnimalOnGrass(animal);
         updateWhereAnimalsMeet(animal.getPosition());
 
-        notifyObservers("Animal or: %s, pos: %s -> %s.".formatted(animal.getOrientation(), previousPosition, animal.getPosition()));
+        notifyObservers("Animal gn: %d, or: %s -> %s, pos: %s -> %s."
+                .formatted(gene, previousOrientation, animal.getOrientation(), previousPosition, animal.getPosition())
+        );
     }
 
     private List<Animal> listOfBestAnimalsAtPosition(Vector2d position, int minimalEnergy) {
