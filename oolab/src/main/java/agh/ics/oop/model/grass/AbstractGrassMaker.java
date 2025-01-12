@@ -11,11 +11,14 @@ public abstract class AbstractGrassMaker implements GrassMaker {
     protected final List<Vector2d> freeWorseGrassPositions = new ArrayList<>();
     protected final int dayGrassNumber;
     protected final GlobeMap map;
+    protected int currentGrassNumber = 0;
 
     protected AbstractGrassMaker(int dayGrassNumber, GlobeMap map) {
         this.dayGrassNumber = dayGrassNumber;
         this.map = map;
     }
+
+    public int getCurrentGrassNumber() { return currentGrassNumber;}
 
     @Override
     public void grow() {
@@ -26,6 +29,7 @@ public abstract class AbstractGrassMaker implements GrassMaker {
         RandomGrassGrow randomPositionGenerator = new RandomGrassGrow(freeBetterGrassPositions, freeWorseGrassPositions, numberOfGrasss);
         for(Vector2d grassPosition : randomPositionGenerator) {
             map.addGrass(grassPosition);
+            currentGrassNumber++;
         }
     }
 
@@ -52,5 +56,7 @@ public abstract class AbstractGrassMaker implements GrassMaker {
     @Override
     public void grassEaten(Grass grass) {
         addPositionToPossiblePositions(grass.getPosition());
+        map.removeGrass(grass);
+        currentGrassNumber--;
     }
 }

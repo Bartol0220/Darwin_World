@@ -21,17 +21,15 @@ public class Vector2d {
         return String.format("(%d,%d)", x, y);
     }
 
-    public boolean precedes(Vector2d other){
-        return x <= other.getX() && y <= other.getY();
-    }
+    public boolean precedes(Vector2d other) { return x <= other.getX() && y <= other.getY();}
 
     public boolean follows(Vector2d other){
         return x >= other.getX() && y >= other.getY();
     }
 
-    public boolean higher(Vector2d other) {return y >= other.getY();}
-
-    public boolean lower(Vector2d other) {return y <= other.getY();}
+//    public boolean higher(Vector2d other) {return y >= other.getY();}
+//
+//    public boolean lower(Vector2d other) {return y <= other.getY();}
 
     public Vector2d add(Vector2d other){
         return new Vector2d(x + other.getX(), y + other.getY());
