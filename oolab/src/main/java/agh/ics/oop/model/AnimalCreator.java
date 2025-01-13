@@ -21,7 +21,7 @@ public class AnimalCreator {
     public Animal createStartingAnimal(Vector2d position, int dayNumber) {
         Genes genes = genesFactory.makeStartingGenes();
         stats.newAnimalPlaced(genes.getGenes());
-        return new Animal(position, genes,startingEnergy, energyProvidedByEatingGrass);
+        return new Animal(position, genes, startingEnergy, energyProvidedByEatingGrass, null, null);
     }
 
     public Animal createAnimal(int dayNumber, Animal stronger, Animal weaker) {
@@ -29,7 +29,7 @@ public class AnimalCreator {
         Vector2d position = stronger.getPosition();
         stats.newAnimalBorn(kidGenes.getGenes());
         // czy on dostaje energie "od obu rodzicow" (2*energy) czy po prostu energy?
-        return new Animal(position, kidGenes, 2*energyUsedWhileBreeding, energyProvidedByEatingGrass);
+        return new Animal(position, kidGenes, 2*energyUsedWhileBreeding, energyProvidedByEatingGrass, stronger, weaker);
     }
 
     public void reportDeadAnimal(int dayNumber, Animal animal) {

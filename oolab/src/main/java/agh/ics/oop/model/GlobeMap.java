@@ -129,7 +129,10 @@ public class GlobeMap implements MoveValidator{
         for (Vector2d position : whereAnimalsMeet){
             List<Animal> breedingPair = listOfBestAnimalsAtPosition(position, breeding.getEnergyNeededForBreeding());
             Optional<Animal> kid = breeding.breedPair(breedingPair);
-            kid.ifPresent(this::addAnimalToMap);
+            kid.ifPresent(presentKid -> {
+                this.addAnimalToMap(presentKid);
+                presentKid.getAnimalStats().increaseSuccesorCount();
+                });
         }
         whereAnimalsMeet.clear();
     }

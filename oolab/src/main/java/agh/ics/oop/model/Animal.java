@@ -12,10 +12,10 @@ public class Animal implements WorldElement, Comparable<Animal> {
     private final Random random = new Random();
 
 
-    public Animal(Vector2d position, Genes genes, int energy, int energyProvidedByEatingGrass){
+    public Animal(Vector2d position, Genes genes, int energy, int energyProvidedByEatingGrass, Animal parent1, Animal parent2){
         this.position = position;
         this.energyProvidedByEatingGrass = energyProvidedByEatingGrass;
-        this.animalStats = new AnimalStats(genes, energy);
+        this.animalStats = new AnimalStats(genes, energy, parent1, parent2);
     }
 
     public AnimalStats getAnimalStats(){

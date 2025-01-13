@@ -13,7 +13,7 @@ public class World {
         int height = 3; // TODO wyjątek jeśli < 0
         int width = 3; // TODO wyjątek jeśli < 0
         int startGrassNumber = 1; // TODO wyjątek jeśli < 0
-        int energyProvidedByEatingGrass = 1; // TODO wyjątek jeśli < 0
+        int energyProvidedByEatingGrass = 10; // TODO wyjątek jeśli < 0
         int dayGrassNumber = 1; // TODO wyjątek jeśli < 0
         boolean isDeathGivingLife = false;
         int startNumberOfAnimals = 2; // TODO wyjątek jeśli < 0
