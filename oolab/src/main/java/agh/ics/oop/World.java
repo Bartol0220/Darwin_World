@@ -44,7 +44,7 @@ public class World {
         }
         GenesFactory genesFactory = new GenesFactory(geneMutator, genesNumber);
 
-        Stats stats = new Stats(map, grassMaker, energyProvidedByEatingGrass, startGrassNumber, startingEnergy, startNumberOfAnimals);
+        Stats stats = new Stats(map, grassMaker, startGrassNumber, startingEnergy, startNumberOfAnimals);
         AnimalCreator animalCreator = new AnimalCreator(startingEnergy, energyUsedWhileBreeding, energyProvidedByEatingGrass, genesFactory, stats);
         Breeding breeding = new Breeding(energyNeededForBreeding, energyUsedWhileBreeding, map, animalCreator);
 

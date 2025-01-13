@@ -59,16 +59,19 @@ public class Simulation implements Runnable {
         moveAnimals();
         feedAnimals();
         breeding.breedAnimals(dayNumber);
+        stats.calculateAverageBirthrate(animals);
         grassMaker.grow();
     }
 
     private void removeDeadAnimals() {
         animals.removeIf(animal -> {
             if (animal.getEnergy() < 1){
-//                animalCreator.reportDeadAnimal(dayNumber, animal);
+                System.out.println(animals);
                 map.removeAnimalFromMap(animal);
+                System.out.println(animals);
                 stats.animalDied(animal.getGenes());
                 stats.calculateNewAverageLifeSpan(dayNumber - animal.getBirthDay());
+                stats.calculateAverageBirthrate(animals);
                 return true;
             }
             return false;
@@ -95,5 +98,9 @@ public class Simulation implements Runnable {
                 stats.updateUponEating();
             });
         }
+    }
+
+    public void addToAnimals(Animal animal){
+        animals.add(animal);
     }
 }
