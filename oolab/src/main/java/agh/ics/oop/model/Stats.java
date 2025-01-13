@@ -40,7 +40,6 @@ public class Stats {
         decreaseCurrentAnimalCount();
         deleteGenesFromHashMap(genes);
         maximumAnimalCount--;
-        allAnimalCount--;
     }
 
     public void newAnimalBorn(int[] genes){
@@ -49,7 +48,6 @@ public class Stats {
     }
 
     public void newAnimalPlaced(int[] genes){
-        currentAnimalCount++;
         allAnimalCount++;
         maximumAnimalCount = max(maximumAnimalCount, currentAnimalCount);
         calculateAverageBirthrate();
@@ -64,7 +62,6 @@ public class Stats {
     }
 
     private void decreaseCurrentAnimalCount(){
-        currentAnimalCount--;
         minimumAnimalCount = min(minimumAnimalCount, currentAnimalCount);
     }
 
@@ -80,8 +77,8 @@ public class Stats {
         freeSpace = map.getFreeSpace();
     }
 
-    public void calculateNewAverageEnergy(int deltaBetweenValues){
-        averageEnergy = averageEnergy + (double) (deltaBetweenValues)/currentAnimalCount;
+    public void calculateNewAverageEnergy(List<Animal> animals){
+        averageEnergy = animals.stream().mapToInt(Animal::getEnergy).average().orElse(0.0);
     }
 
     private void deleteGenesFromHashMap(int[] genes){
@@ -125,16 +122,15 @@ public class Stats {
     public void updateUponEating(){
         updateGrassCount();
         calculateFreeSpace();
-        calculateNewAverageEnergy(energyProvidedByEatingGrass);
     }
 
-    public void updateAfterMove(){
-        calculateNewAverageEnergy(-1);
-    }
 
-    public void updateGeneralStats(){
+    public void updateGeneralStats(List<Animal> animals){
+        this.currentAnimalCount = animals.size();
+
         updateGrassCount();
         calculateFreeSpace();
+        calculateNewAverageEnergy(animals);
     }
 
     @Override

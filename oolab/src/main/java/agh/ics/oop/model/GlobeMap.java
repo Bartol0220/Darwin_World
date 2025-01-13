@@ -160,7 +160,7 @@ public class GlobeMap implements MoveValidator{
         }
     }
 
-    private void removeAnimalFromMap(Animal animal) {
+    public void removeAnimalFromMap(Animal animal) {
         animalsMap.get(animal.getPosition()).remove(animal);
         if (animalsMap.get(animal.getPosition()).isEmpty()) {
             animalsMap.remove(animal.getPosition());

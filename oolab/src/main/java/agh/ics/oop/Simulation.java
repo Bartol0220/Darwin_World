@@ -45,9 +45,12 @@ public class Simulation implements Runnable {
     }
 
     public void run(){
+        stats.updateGeneralStats(animals);
         while (!animals.isEmpty()) {
             dayNumber++;
             runDay();
+            stats.updateGeneralStats(animals);
+            System.out.println(stats);
         }
     }
 
@@ -57,14 +60,15 @@ public class Simulation implements Runnable {
         feedAnimals();
         breeding.breedAnimals(dayNumber);
         grassMaker.grow();
-        stats.updateGeneralStats();
-        System.out.println(stats);
     }
 
     private void removeDeadAnimals() {
         animals.removeIf(animal -> {
             if (animal.getEnergy() < 1){
-                animalCreator.reportDeadAnimal(dayNumber, animal);
+//                animalCreator.reportDeadAnimal(dayNumber, animal);
+                map.removeAnimalFromMap(animal);
+                stats.animalDied(animal.getGenes());
+                stats.calculateNewAverageLifeSpan(dayNumber - animal.getBirthDay());
                 return true;
             }
             return false;
@@ -77,9 +81,9 @@ public class Simulation implements Runnable {
                 Thread.sleep(700);
             } catch (InterruptedException e) {
                 // TODO zamienić z ignore
+                // TODO CO TO ZA CATCH W PETLI??!
             }
             map.move(animal);
-            stats.updateAfterMove();
         }
     }
 
