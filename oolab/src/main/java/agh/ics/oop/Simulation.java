@@ -8,6 +8,7 @@ import agh.ics.oop.model.util.RandomVector2d;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 
 public class Simulation implements Runnable {
@@ -18,7 +19,7 @@ public class Simulation implements Runnable {
     private final Breeding breeding;
     private final Stats stats;
     private int dayNumber = 0;
-
+    private final Random random = new Random();
 
     public Simulation(GlobeMap map, AbstractGrassMaker grassMaker, Breeding breeding, AnimalCreator animalCreator, int startNumberOfAnimals, Stats stats) {
         this.map = map;
@@ -60,17 +61,23 @@ public class Simulation implements Runnable {
         feedAnimals();
         breeding.breedAnimals(dayNumber);
         stats.calculateAverageBirthrate(animals);
+        if (!animals.isEmpty()) {
+            int animalIndex = random.nextInt(animals.size());
+            System.out.println("INDEX: " + animalIndex);
+            Animal animalFollowed = animals.get(animalIndex);
+            System.out.println(animalFollowed.getAnimalStats());
+        }
+
         grassMaker.grow();
     }
 
     private void removeDeadAnimals() {
         animals.removeIf(animal -> {
             if (animal.getEnergy() < 1){
-                System.out.println(animals);
                 map.removeAnimalFromMap(animal);
-                System.out.println(animals);
+                animal.getAnimalStats().setDeathDate(dayNumber);
                 stats.animalDied(animal.getGenes());
-                stats.calculateNewAverageLifeSpan(dayNumber - animal.getBirthDay());
+                stats.calculateNewAverageLifeSpan(animal.getAnimalStats().getAge());
                 stats.calculateAverageBirthrate(animals);
                 return true;
             }

@@ -44,6 +44,10 @@ public class Genes {
         return genes;
     }
 
+    public int getGeneIndex(){
+        return geneIndex;
+    }
+
     public int[] getGenes() {
         return Arrays.copyOf(genes, genes.length);
     }

@@ -88,7 +88,7 @@ public class Stats {
     public void calculateAverageBirthrate(List<Animal> animals){
         // TODO policz kiedy sie dzieciak rodzi - 2*bornAnimals/allAnimals cos tam
         // averageBirthrate = (double) (2 * bornAnimalCount) /allAnimalCount+1;
-        averageBirthrate = animals.stream().mapToInt(Animal::getChildrenCount).average().orElse(0.0);
+        averageBirthrate = animals.stream().mapToInt(animal -> animal.getAnimalStats().getChildrenCount()).average().orElse(0.0);
     }
 
     public void newAnimalPlaced(int[] genes){
