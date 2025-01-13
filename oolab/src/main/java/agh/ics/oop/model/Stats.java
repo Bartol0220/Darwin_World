@@ -60,7 +60,6 @@ public class Stats {
         } else {
             genesRecords.put(arrayHashMap, 1);
         }
-        System.out.println(genesRecords.entrySet());
         setMostCommonGenes();
     }
 

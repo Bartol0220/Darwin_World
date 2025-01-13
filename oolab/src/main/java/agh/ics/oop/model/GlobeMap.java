@@ -1,5 +1,6 @@
 package agh.ics.oop.model;
 
+import agh.ics.oop.model.errors.IncorrectPositionException;
 import agh.ics.oop.model.grass.Grass;
 import agh.ics.oop.model.util.Boundary;
 import agh.ics.oop.model.util.MapVisualizer;
@@ -60,7 +61,7 @@ public class GlobeMap implements MoveValidator{
 
     public void removeGrass(Grass grass) { grassMap.remove(grass.getPosition()); }
 
-    public void place(Animal animal) throws IncorrectPositionException{
+    public void place(Animal animal) throws IncorrectPositionException {
         if(canMoveTo(animal.getPosition())) {
             addAnimalToMap(animal);
             notifyObservers("Animal placed at %s.".formatted(animal.getPosition()));

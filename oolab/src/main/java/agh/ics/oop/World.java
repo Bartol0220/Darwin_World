@@ -1,10 +1,13 @@
 package agh.ics.oop;
 
 import agh.ics.oop.model.*;
+import agh.ics.oop.model.errors.*;
 import agh.ics.oop.model.genes.*;
 import agh.ics.oop.model.grass.AbstractGrassMaker;
 import agh.ics.oop.model.grass.GrassMakerDeadAnimal;
 import agh.ics.oop.model.grass.GrassMakerEquator;
+
+import static com.sun.javafx.application.PlatformImpl.exit;
 
 public class World {
     public static void main(String[] args) {
@@ -12,7 +15,7 @@ public class World {
         // Wszystkie parametry smymulacji:
         int height = 3; // TODO wyjątek jeśli < 0
         int width = 3; // TODO wyjątek jeśli < 0
-        int startGrassNumber = 1; // TODO wyjątek jeśli < 0
+        int startGrassNumber = 5; // TODO wyjątek jeśli < 0
         int energyProvidedByEatingGrass = 10; // TODO wyjątek jeśli < 0
         int dayGrassNumber = 1; // TODO wyjątek jeśli < 0
         boolean isDeathGivingLife = false;
@@ -21,34 +24,58 @@ public class World {
         int energyNeededForBreeding = 3; // TODO wyjątek jeśli < 0
         int energyUsedWhileBreeding = 2; // TODO wyjątek jeśli < energyNeededForBreeding
         int minimumNumberOfMutations = 0; // TODO wyjątek jeśli < 0
-        int maximumNumberOfMutations = 5; // TODO wyjątek jeśli < minimumNumberOfMutations i jeśli > genesNumber
+        int maximumNumberOfMutations = -4; // TODO wyjątek jeśli < minimumNumberOfMutations i jeśli > genesNumber
         boolean isSlightCorrection = false;
         int genesNumber = 5; // TODO wyjątek jeśli < 0
 
-        GlobeMap map = new GlobeMap(width, height, 0);
-        MapChangeListener listener = new ConsoleMapDisplay();
-        map.registerObserver(listener);
+        SimulationConfig simConfig = new SimulationConfig.Builder().build();
+        ;
+        try {
+            simConfig = new SimulationConfig.Builder()
+                    .height(height)
+                    .width(width)
+                    .startGrassNumber(startGrassNumber)
+                    .energyProvidedByEatingGrass(energyProvidedByEatingGrass)
+                    .dayGrassNumber(dayGrassNumber)
+                    .isDeathGivingLife(isDeathGivingLife)
+                    .startNumberOfAnimals(startNumberOfAnimals)
+                    .startingEnergy(startingEnergy)
+                    .breedingInfo(energyNeededForBreeding, energyUsedWhileBreeding)
+                    .mutationsInfo(minimumNumberOfMutations, maximumNumberOfMutations, genesNumber)
+                    .isSlightCorrection(isSlightCorrection)
+                    .build();
 
-        AbstractGrassMaker grassMaker;
-        if (isDeathGivingLife) {
-            grassMaker = new GrassMakerDeadAnimal(startGrassNumber, dayGrassNumber, map);
-        } else {
-            grassMaker = new GrassMakerEquator(startGrassNumber, dayGrassNumber, map);
+            System.out.println(simConfig);
+            exit();
+        } catch (HasToBePositiveException | MinMaxException | BreedingCanNotKillAnimals |
+                 CanNotBeNegativeException | MutationChangesCanNotExceedSize exception) {
+            System.err.println(exception.getMessage());
+            //jak wywali blad, to uzyj defaultowych ustawien
+        } finally {
+            GlobeMap map = new GlobeMap(simConfig.width(), simConfig.height(), 0);
+            MapChangeListener listener = new ConsoleMapDisplay();
+            map.registerObserver(listener);
+            AbstractGrassMaker grassMaker;
+            if (simConfig.isDeathGivingLife()) {
+                grassMaker = new GrassMakerDeadAnimal(simConfig.startGrassNumber(), simConfig.dayGrassNumber(), map);
+            } else {
+                grassMaker = new GrassMakerEquator(simConfig.startGrassNumber(), simConfig.dayGrassNumber(), map);
+            }
+
+            GeneMutator geneMutator;
+            if (simConfig.isSlightCorrection()) {
+                geneMutator = new ClassicMutation(simConfig.minimumNumberOfMutations(), simConfig.maximumNumberOfMutations());
+            } else {
+                geneMutator = new SlightCorrection(simConfig.minimumNumberOfMutations(), simConfig.maximumNumberOfMutations());
+            }
+            GenesFactory genesFactory = new GenesFactory(geneMutator, simConfig.genesNumber());
+
+            Stats stats = new Stats(map, grassMaker, simConfig.startGrassNumber(), simConfig.startingEnergy(), simConfig.startNumberOfAnimals());
+            AnimalCreator animalCreator = new AnimalCreator(simConfig.startingEnergy(), simConfig.energyUsedWhileBreeding(), simConfig.energyProvidedByEatingGrass(), genesFactory, stats);
+            Breeding breeding = new Breeding(simConfig.energyNeededForBreeding(), simConfig.energyUsedWhileBreeding(), map, animalCreator);
+
+            Simulation simulation = new Simulation(map, grassMaker, breeding, animalCreator, simConfig.startNumberOfAnimals(), stats);
+            simulation.run();
         }
-
-        GeneMutator geneMutator;
-        if (isSlightCorrection) {
-            geneMutator = new ClassicMutation(minimumNumberOfMutations, maximumNumberOfMutations);
-        } else {
-            geneMutator = new SlightCorrection(minimumNumberOfMutations, maximumNumberOfMutations);
-        }
-        GenesFactory genesFactory = new GenesFactory(geneMutator, genesNumber);
-
-        Stats stats = new Stats(map, grassMaker, startGrassNumber, startingEnergy, startNumberOfAnimals);
-        AnimalCreator animalCreator = new AnimalCreator(startingEnergy, energyUsedWhileBreeding, energyProvidedByEatingGrass, genesFactory, stats);
-        Breeding breeding = new Breeding(energyNeededForBreeding, energyUsedWhileBreeding, map, animalCreator);
-
-        Simulation simulation = new Simulation(map, grassMaker, breeding, animalCreator, startNumberOfAnimals, stats);
-        simulation.run();
-}
+    }
 }
