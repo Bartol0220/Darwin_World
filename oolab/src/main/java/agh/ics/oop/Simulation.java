@@ -14,19 +14,23 @@ public class Simulation implements Runnable {
     private final GlobeMap map;
     private final List<Animal> animals = new LinkedList<>();
     private final AbstractGrassMaker grassMaker;
+    private final AnimalCreator animalCreator;
     private final Breeding breeding;
+    private final Stats stats;
     private int dayNumber = 0;
 
 
-    public Simulation(GlobeMap map, AbstractGrassMaker grassMaker, Breeding breeding, AnimalCreator animalCreator, int startNumberOfAnimals) {
+    public Simulation(GlobeMap map, AbstractGrassMaker grassMaker, Breeding breeding, AnimalCreator animalCreator, int startNumberOfAnimals, Stats stats) {
         this.map = map;
         this.grassMaker = grassMaker;
+        this.animalCreator = animalCreator;
         this.breeding = breeding;
+        this.stats = stats;
 
-        createAnimals(map, startNumberOfAnimals, animalCreator);
+        createAnimals(map, startNumberOfAnimals);
     }
 
-    private void createAnimals(GlobeMap map, int startNumberOfAnimals, AnimalCreator animalCreator) {
+    private void createAnimals(GlobeMap map, int startNumberOfAnimals) {
         RandomVector2d positions = new RandomVector2d(map.getWidth(), map.getHeight(), startNumberOfAnimals);
         for(Vector2d position : positions) {
             Animal animal = animalCreator.createStartingAnimal(position, dayNumber);
@@ -35,6 +39,7 @@ public class Simulation implements Runnable {
                 animals.add(animal);
             } catch (IncorrectPositionException e) {
                 System.err.println("Animal cannot be placed. " + e.getMessage());
+                stats.animalNotPlaced(animal.getGenes());
             }
         }
     }
@@ -52,10 +57,18 @@ public class Simulation implements Runnable {
         feedAnimals();
         breeding.breedAnimals(dayNumber);
         grassMaker.grow();
+        stats.updateGeneralStats();
+        System.out.println(stats);
     }
 
     private void removeDeadAnimals() {
-        animals.removeIf(animal -> animal.getEnergy() < 1);
+        animals.removeIf(animal -> {
+            if (animal.getEnergy() < 1){
+                animalCreator.reportDeadAnimal(dayNumber, animal);
+                return true;
+            }
+            return false;
+        });
     }
 
     private void moveAnimals() {
@@ -66,13 +79,17 @@ public class Simulation implements Runnable {
                 // TODO zamienić z ignore
             }
             map.move(animal);
+            stats.updateAfterMove();
         }
     }
 
     private void feedAnimals() {
         List<Optional<Grass>> grassList = map.feedAnimals();
         for (Optional<Grass> grass : grassList) {
-            grass.ifPresent(grassMaker::grassEaten);
+            grass.ifPresent(presentGrass -> {
+                grassMaker.grassEaten(presentGrass);
+                stats.updateUponEating();
+            });
         }
     }
 }

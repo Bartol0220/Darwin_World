@@ -10,11 +10,11 @@ public class World {
     public static void main(String[] args) {
 
         // Wszystkie parametry smymulacji:
-        int width = 5; // TODO wyjątek jeśli < 0
-        int height = 5; // TODO wyjątek jeśli < 0
+        int height = 3; // TODO wyjątek jeśli < 0
+        int width = 3; // TODO wyjątek jeśli < 0
         int startGrassNumber = 1; // TODO wyjątek jeśli < 0
-        int dayGrassNumber = 1; // TODO wyjątek jeśli < 0
         int energyProvidedByEatingGrass = 1; // TODO wyjątek jeśli < 0
+        int dayGrassNumber = 1; // TODO wyjątek jeśli < 0
         boolean isDeathGivingLife = false;
         int startNumberOfAnimals = 2; // TODO wyjątek jeśli < 0
         int startingEnergy = 10; // TODO wyjątek jeśli < 0
@@ -44,10 +44,11 @@ public class World {
         }
         GenesFactory genesFactory = new GenesFactory(geneMutator, genesNumber);
 
-        AnimalCreator animalCreator = new AnimalCreator(startingEnergy, energyUsedWhileBreeding, energyProvidedByEatingGrass, genesFactory);
+        Stats stats = new Stats(map, grassMaker, energyProvidedByEatingGrass, startGrassNumber, startingEnergy, startNumberOfAnimals);
+        AnimalCreator animalCreator = new AnimalCreator(startingEnergy, energyUsedWhileBreeding, energyProvidedByEatingGrass, genesFactory, stats);
         Breeding breeding = new Breeding(energyNeededForBreeding, energyUsedWhileBreeding, map, animalCreator);
 
-        Simulation simulation = new Simulation(map, grassMaker, breeding, animalCreator, startNumberOfAnimals);
+        Simulation simulation = new Simulation(map, grassMaker, breeding, animalCreator, startNumberOfAnimals, stats);
         simulation.run();
 }
 }

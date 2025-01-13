@@ -3,19 +3,19 @@ package agh.ics.oop.model;
 import agh.ics.oop.model.grass.Grass;
 import agh.ics.oop.model.util.Boundary;
 import agh.ics.oop.model.util.MapVisualizer;
-import javafx.geometry.Orientation;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 public class GlobeMap implements MoveValidator{
     private final int id;
     private final int width;
     private final int height;
     private final Boundary bounds;
-    protected final Map<Vector2d, ArrayList<Animal>> animalsMap = new HashMap<>();
-    protected final HashSet<Vector2d> whereAnimalsMeet = new HashSet<>();
-    protected final HashSet<Vector2d> animalsOnGrass = new HashSet<>();
-    public final Map<Vector2d, Grass> grassMap = new HashMap<>();
+    private final Map<Vector2d, ArrayList<Animal>> animalsMap = new HashMap<>();
+    private final HashSet<Vector2d> whereAnimalsMeet = new HashSet<>();
+    private final HashSet<Vector2d> animalsOnGrass = new HashSet<>();
+    private final Map<Vector2d, Grass> grassMap = new HashMap<>();
     private final MapVisualizer mapVisualizer = new MapVisualizer(this);
     private final List<MapChangeListener> observers = new ArrayList<>();
 
@@ -33,6 +33,16 @@ public class GlobeMap implements MoveValidator{
     public int getWidth() { return width;}
 
     public Boundary getCurrentBounds() { return bounds;}
+
+    public int getFreeSpace() {
+        return height*width - (int) Stream
+                .concat(
+                        animalsMap.keySet().stream(),
+                        grassMap.keySet().stream()
+                )
+                .distinct()
+                .count();
+    }
 
     public void registerObserver(final MapChangeListener observer) { observers.add(observer);}
 
