@@ -33,13 +33,13 @@ public abstract class AbstractGrassMaker implements GrassMaker {
         }
     }
 
-    protected void changePositionToFirstCategory(Vector2d position) {
+    protected void changePositionToBetter(Vector2d position) {
         freeBetterGrassPositions.add(position);
         allBetterGrassPositions.add(position);
         freeWorseGrassPositions.remove(position);
     }
 
-    protected void changePositionToSecondCategory(Vector2d position) {
+    protected void changePositionToWorse(Vector2d position) {
         freeWorseGrassPositions.add(position);
         allBetterGrassPositions.remove(position);
         freeBetterGrassPositions.remove(position);

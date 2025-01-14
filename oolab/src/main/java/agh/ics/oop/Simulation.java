@@ -90,6 +90,7 @@ public class Simulation implements Runnable {
         animals.removeIf(animal -> {
             if (animal.getEnergy() < 1){
                 map.removeAnimalFromMap(animal);
+                grassMaker.deadAnimal(animal);
                 animal.getAnimalStats().setDeathDate(dayNumber);
                 stats.animalDied(animal.getGenes());
                 stats.calculateNewAverageLifeSpan(animal.getAnimalStats().getAge());
