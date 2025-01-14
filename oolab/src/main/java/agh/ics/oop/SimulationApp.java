@@ -29,6 +29,7 @@ public class SimulationApp extends Application {
         primaryStage.setTitle("Simulation app");
         primaryStage.minWidthProperty().bind(viewRoot.minWidthProperty());
         primaryStage.minHeightProperty().bind(viewRoot.minHeightProperty());
+        primaryStage.setMaximized(true);
     }
 
     public SimulationPresenter showSimulation(Stage newStage) throws IOException {

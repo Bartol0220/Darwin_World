@@ -15,24 +15,24 @@ public class WorldElementBox extends VBox {
     private static final Map<String, Image> imageMap = new HashMap<>();
 
     private static Image loadImage(String name) {
-        return imageMap.computeIfAbsent(name, _ -> new Image("images/"+name));
+        return imageMap.computeIfAbsent(name, _ -> new Image("images/" + name));
     }
 
-    public WorldElementBox(WorldElement element) {
+    public WorldElementBox(WorldElement element, int cellWidth) {
         Image image = loadImage(element.getName());
         ImageView imageView = new ImageView(image);
 
-        imageView.setFitHeight(20);
-        imageView.setFitWidth(20);
+        imageView.setFitHeight(cellWidth * 0.9);
+        imageView.setFitWidth(cellWidth * 0.9);
         imageView.setPreserveRatio(true);
 
-        Label label = new Label();
-        if (element instanceof Animal) {
-            label.setText("Z "+element.getPosition().toString());
-        } else {
-            label.setText("Trawa");
-        }
-        this.getChildren().addAll(imageView, label);
+//        Label label = new Label();
+//        if (element instanceof Animal) {
+//            label.setText("Z "+element.getPosition().toString());
+//        } else {
+//            label.setText("Trawa");
+//        }
+        this.getChildren().addAll(imageView);
         this.setAlignment(Pos.CENTER);
     }
 }

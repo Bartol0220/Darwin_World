@@ -61,18 +61,20 @@ public class GlobeMap implements MoveValidator{
     }
 
     public boolean isOccupiedByAnimal(Vector2d position) {
-        return (objectAt(position) instanceof Animal);
+        return objectAt(position)
+                .map(object -> object instanceof Animal)
+                .orElse(false);
     }
 
     public boolean isOccupied(Vector2d position) {
         return animalsMap.containsKey(position) || grassMap.containsKey(position);
     }
 
-    public WorldElement objectAt(Vector2d position) {
-        if (animalsMap.get(position) != null) {
-            return animalsMap.get(position).getFirst();
+    public Optional<WorldElement> objectAt(Vector2d position) {
+        if (animalsMap.containsKey(position)) {
+            return Optional.of(animalsMap.get(position).getFirst());
         }
-        return grassMap.get(position);
+        return Optional.ofNullable(grassMap.get(position));
     }
 
     @Override

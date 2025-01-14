@@ -14,7 +14,6 @@ import agh.ics.oop.model.grass.GrassMakerEquator;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Spinner;
-import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -72,7 +71,7 @@ public class SetupPresenter {
         energyProvidedByEatingGrassSpinner.getValueFactory().setValue(10);
         startNumberOfAnimalsSpinner.getValueFactory().setValue(5);
         startingEnergySpinner.getValueFactory().setValue(30);
-        energyNeededForBreedingSpinner.getValueFactory().setValue(20);
+        energyNeededForBreedingSpinner.getValueFactory().setValue(15);
         energyUsedWhileBreedingSpinner.getValueFactory().setValue(10);
         genesNumberSpinner.getValueFactory().setValue(10);
         minimumNumberOfMutationsSpinner.getValueFactory().setValue(0);
@@ -117,14 +116,14 @@ public class SetupPresenter {
         Breeding breeding = new Breeding(energyNeededForBreeding, energyUsedWhileBreeding, map, animalCreator);
 
         Simulation simulation = new Simulation(map, grassMaker, breeding, animalCreator, startNumberOfAnimals);
-//        simulation.run();
 
         SimulationEngine simulationEngine = new SimulationEngine(List.of(simulation));
         SimulationApp newSimulationApp = new SimulationApp();
 
         try {
-            SimulationPresenter presenter = newSimulationApp.showSimulation(new Stage());
-            presenter.newSimulation(map, simulationEngine);
+            Stage stage = new Stage();
+            SimulationPresenter presenter = newSimulationApp.showSimulation(stage);
+            presenter.newSimulation(map, simulationEngine, stage);
         } catch (IOException e) {
             e.printStackTrace();
         }

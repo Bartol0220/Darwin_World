@@ -1,6 +1,7 @@
 package agh.ics.oop.presenter;
 
 import agh.ics.oop.SimulationEngine;
+import agh.ics.oop.WorldElementBox;
 import agh.ics.oop.model.*;
 import agh.ics.oop.model.util.Boundary;
 import javafx.application.Platform;
@@ -10,26 +11,38 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
+import javafx.stage.Stage;
+
+import java.util.Objects;
+import java.util.Optional;
 
 public class SimulationPresenter implements MapChangeListener {
-    private static final int MAX_MAP_WIDTH = 420;
-    private static final int MAX_MAP_HEIGHT = 420;
+    private double mapWidth;
+    private double mapHeight;
     private static final String EMPTY_CELL = "";
     private int cellWidth;
     private int cellHeight;
     private GlobeMap map;
+    private Stage stage;
 
     @FXML
     private GridPane mapGridPane;
     @FXML
     private Label currentMove;
 
+    private void setMapDimensions() {
+        mapWidth = stage.getWidth() * 0.85;
+        mapHeight = stage.getHeight() * 0.85;
+    }
+
     private void setMap(GlobeMap map) {
         this.map = map;
     }
 
-    public void newSimulation(GlobeMap map, SimulationEngine simulationEngine) {
+    public void newSimulation(GlobeMap map, SimulationEngine simulationEngine, Stage stage) {
         map.registerObserver(this);
+        this.stage = stage;
+        setMapDimensions();
 
         setMap(map);
         drawMap();
@@ -56,8 +69,8 @@ public class SimulationPresenter implements MapChangeListener {
     private void updateMapInfo(Boundary currentBounds) {
         int mapWidth = currentBounds.upperRight().getX() - currentBounds.lowerLeft().getX() + 1;
         int mapHeight = currentBounds.upperRight().getY() - currentBounds.lowerLeft().getY() + 1;
-        cellWidth = MAX_MAP_WIDTH/ mapWidth;
-        cellHeight = MAX_MAP_HEIGHT/ mapHeight;
+        cellWidth = (int) this.mapWidth / mapWidth;
+        cellHeight = (int) this.mapHeight / mapHeight;
         cellHeight = Math.min(cellHeight, Math.min(cellWidth, 40));
         cellWidth = cellHeight;
     }
@@ -93,21 +106,19 @@ public class SimulationPresenter implements MapChangeListener {
     private void drawAllObjects(Boundary currentBounds) {
         for(int y = 1; y < currentBounds.upperRight().getY() - currentBounds.lowerLeft().getY() + 2; y++) {
             for(int x = 1; x < currentBounds.upperRight().getX() - currentBounds.lowerLeft().getX() + 2; x++) {
-                Label label = new Label(drawObject(new Vector2d(currentBounds.lowerLeft().getX()+x-1, currentBounds.upperRight().getY()-y+1)));
-                GridPane.setHalignment(label, HPos.CENTER);
-                mapGridPane.add(label, x, y);
+                Optional<WorldElementBox> worldElementBox = drawObject(new Vector2d(currentBounds.lowerLeft().getX()+x-1, currentBounds.upperRight().getY()-y+1));
+                if (worldElementBox.isPresent()) {
+                    GridPane.setHalignment(worldElementBox.get(), HPos.CENTER);
+                    mapGridPane.add(worldElementBox.get(), x, y);
+                } else {
+                    mapGridPane.add(new Label(), x, y);
+                }
             }
         }
     }
 
-    private String drawObject(Vector2d currentPosition) {
-        if (map.isOccupied(currentPosition)) {
-            Object object = map.objectAt(currentPosition);
-            if (object != null) {
-                return object.toString();
-            }
-        }
-        return EMPTY_CELL;
+    private Optional<WorldElementBox> drawObject(Vector2d currentPosition) {
+        return map.objectAt(currentPosition).map(object -> new WorldElementBox(object, cellWidth));
     }
 
     @Override
