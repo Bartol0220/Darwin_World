@@ -42,8 +42,6 @@ public class Stats {
     public int getMinimumAnimalCount() { return  minimumAnimalCount;}
   
     public int getAllAnimalCount() { return  allAnimalCount;}
-
-    public int getBornAnimalCount() { return  bornAnimalCount;}
   
     public int getGrassCount() { return  grassCount;}
   
@@ -119,7 +117,6 @@ public class Stats {
     }
 
     public void newAnimalBorn(Animal animal){
-        bornAnimalCount++;
         newAnimalPlaced(animal);
     }
 
