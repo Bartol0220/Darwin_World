@@ -1,21 +1,23 @@
 package agh.ics.oop.model;
 
+import agh.ics.oop.Simulation;
+import agh.ics.oop.model.errors.IncorrectPositionException;
 import agh.ics.oop.model.grass.Grass;
 import agh.ics.oop.model.util.Boundary;
 import agh.ics.oop.model.util.MapVisualizer;
-import javafx.geometry.Orientation;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 public class GlobeMap implements MoveValidator{
     private final int id;
     private final int width;
     private final int height;
     private final Boundary bounds;
-    protected final Map<Vector2d, ArrayList<Animal>> animalsMap = new HashMap<>();
-    protected final HashSet<Vector2d> whereAnimalsMeet = new HashSet<>();
-    protected final HashSet<Vector2d> animalsOnGrass = new HashSet<>();
-    public final Map<Vector2d, Grass> grassMap = new HashMap<>();
+    private final Map<Vector2d, ArrayList<Animal>> animalsMap = new HashMap<>();
+    private final HashSet<Vector2d> whereAnimalsMeet = new HashSet<>();
+    private final HashSet<Vector2d> animalsOnGrass = new HashSet<>();
+    private final Map<Vector2d, Grass> grassMap = new HashMap<>();
     private final MapVisualizer mapVisualizer = new MapVisualizer(this);
     private final List<MapChangeListener> observers = new ArrayList<>();
 
@@ -34,6 +36,16 @@ public class GlobeMap implements MoveValidator{
 
     public Boundary getCurrentBounds() { return bounds;}
 
+    public int getFreeSpace() {
+        return height*width - (int) Stream
+                .concat(
+                        animalsMap.keySet().stream(),
+                        grassMap.keySet().stream()
+                )
+                .distinct()
+                .count();
+    }
+
     public void registerObserver(final MapChangeListener observer) { observers.add(observer);}
 
     public void unregisterObserver(final MapChangeListener observer) { observers.remove(observer);}
@@ -50,7 +62,7 @@ public class GlobeMap implements MoveValidator{
 
     public void removeGrass(Grass grass) { grassMap.remove(grass.getPosition()); }
 
-    public void place(Animal animal) throws IncorrectPositionException{
+    public void place(Animal animal) throws IncorrectPositionException {
         if(canMoveTo(animal.getPosition())) {
             addAnimalToMap(animal);
             notifyObservers("Animal placed at %s.".formatted(animal.getPosition()));
@@ -117,11 +129,15 @@ public class GlobeMap implements MoveValidator{
         return Collections.emptyList();
     }
 
-    public void findAnimalsToBreed(Breeding breeding){
+    public void findAnimalsToBreed(Breeding breeding, Simulation simulation){
         for (Vector2d position : whereAnimalsMeet){
             List<Animal> breedingPair = listOfBestAnimalsAtPosition(position, breeding.getEnergyNeededForBreeding());
             Optional<Animal> kid = breeding.breedPair(breedingPair);
-            kid.ifPresent(this::addAnimalToMap);
+            kid.ifPresent(presentKid -> {
+                this.addAnimalToMap(presentKid);
+                presentKid.getAnimalStats().increaseSuccesorCount();
+                simulation.addToAnimals(presentKid);
+                });
         }
         whereAnimalsMeet.clear();
     }
@@ -152,7 +168,7 @@ public class GlobeMap implements MoveValidator{
         }
     }
 
-    private void removeAnimalFromMap(Animal animal) {
+    public void removeAnimalFromMap(Animal animal) {
         animalsMap.get(animal.getPosition()).remove(animal);
         if (animalsMap.get(animal.getPosition()).isEmpty()) {
             animalsMap.remove(animal.getPosition());

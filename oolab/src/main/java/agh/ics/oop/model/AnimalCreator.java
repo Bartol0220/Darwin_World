@@ -8,23 +8,33 @@ public class AnimalCreator {
     private final GenesFactory genesFactory;
     private final int energyUsedWhileBreeding;
     private final int energyProvidedByEatingGrass;
+    private final Stats stats;
 
-    public AnimalCreator(int startingEnergy, int energyUsedWhileBreeding, int energyProvidedByEatingGrass, GenesFactory genesFactory) {
+    public AnimalCreator(int startingEnergy, int energyUsedWhileBreeding, int energyProvidedByEatingGrass, GenesFactory genesFactory, Stats stats) {
         this.startingEnergy = startingEnergy;
         this.genesFactory = genesFactory;
         this.energyProvidedByEatingGrass = energyProvidedByEatingGrass;
         this.energyUsedWhileBreeding = energyUsedWhileBreeding;
+        this.stats = stats;
     }
 
     public Animal createStartingAnimal(Vector2d position, int dayNumber) {
         Genes genes = genesFactory.makeStartingGenes();
-        return new Animal(position, genes, dayNumber, startingEnergy, energyProvidedByEatingGrass);
+        stats.newAnimalPlaced(genes.getGenes());
+        return new Animal(position, genes, startingEnergy, energyProvidedByEatingGrass, null, null);
     }
 
     public Animal createAnimal(int dayNumber, Animal stronger, Animal weaker) {
         Genes kidGenes = genesFactory.makeGenes(stronger, weaker);
         Vector2d position = stronger.getPosition();
+        stats.newAnimalBorn(kidGenes.getGenes());
         // czy on dostaje energie "od obu rodzicow" (2*energy) czy po prostu energy?
-        return new Animal(position, kidGenes, dayNumber, 2*energyUsedWhileBreeding, energyProvidedByEatingGrass);
+        return new Animal(position, kidGenes, 2*energyUsedWhileBreeding, energyProvidedByEatingGrass, stronger, weaker);
+    }
+
+    public void reportDeadAnimal(int dayNumber, Animal animal) {
+        stats.animalDied(animal.getGenes());
+        stats.calculateNewAverageLifeSpan(animal.getAnimalStats().getAge());
+
     }
 }
