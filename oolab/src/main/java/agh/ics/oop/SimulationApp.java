@@ -20,7 +20,6 @@ public class SimulationApp extends Application {
         SetupPresenter presenter = loader.getController();
 
         configureStage(primaryStage, viewRoot);
-
         primaryStage.show();
     }
 

@@ -43,6 +43,8 @@ public class Animal implements WorldElement, Comparable<Animal> {
         return orientation.toString();
     }
 
+    public String getName() { return "wolf_" + orientation + ".png"; }
+
     public String breedString(){
         return "energy: %d\n children: %d\n birthday: %d\n".formatted(energy, childrenCount, birthDay);
     }
