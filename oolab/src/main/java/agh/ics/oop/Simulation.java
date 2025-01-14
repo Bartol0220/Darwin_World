@@ -52,7 +52,7 @@ public class Simulation implements Runnable {
             dayNumber++;
             runDay();
             stats.updateGeneralStats(animals);
-            System.out.println(stats);
+//            System.out.println(stats);
         }
     }
 
@@ -62,12 +62,12 @@ public class Simulation implements Runnable {
         feedAnimals();
         breeding.breedAnimals(dayNumber, this);
         stats.calculateAverageBirthrate(animals);
-        if (!animals.isEmpty()) {
-            int animalIndex = random.nextInt(animals.size());
-            System.out.println("INDEX: " + animalIndex);
-            Animal animalFollowed = animals.get(animalIndex);
-            System.out.println(animalFollowed.getAnimalStats());
-        }
+//        if (!animals.isEmpty()) {
+//            int animalIndex = random.nextInt(animals.size());
+//            System.out.println("INDEX: " + animalIndex);
+//            Animal animalFollowed = animals.get(animalIndex);
+//            System.out.println(animalFollowed.getAnimalStats());
+//        }
 
         grassMaker.grow();
     }
