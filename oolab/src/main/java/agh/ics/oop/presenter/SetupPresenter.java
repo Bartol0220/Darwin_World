@@ -1,14 +1,19 @@
 package agh.ics.oop.presenter;
 
-import agh.ics.oop.OptionsParser;
 import agh.ics.oop.Simulation;
 import agh.ics.oop.SimulationApp;
 import agh.ics.oop.SimulationEngine;
-import agh.ics.oop.model.MoveDirection;
-import agh.ics.oop.model.Vector2d;
+import agh.ics.oop.model.*;
+import agh.ics.oop.model.genes.ClassicMutation;
+import agh.ics.oop.model.genes.GeneMutator;
+import agh.ics.oop.model.genes.GenesFactory;
+import agh.ics.oop.model.genes.SlightCorrection;
+import agh.ics.oop.model.grass.AbstractGrassMaker;
+import agh.ics.oop.model.grass.GrassMakerDeadAnimal;
 import agh.ics.oop.model.grass.GrassMakerEquator;
 import javafx.fxml.FXML;
-import javafx.scene.control.TextField;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Spinner;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -16,9 +21,114 @@ import java.util.List;
 
 public class SetupPresenter {
     @FXML
-    private TextField moves;
+    private Spinner<Integer> widthSpinner;
+    @FXML
+    private Spinner<Integer> heightSpinner;
+    @FXML
+    private Spinner<Integer> startGrassNumberSpinner;
+    @FXML
+    private Spinner<Integer> dayGrassNumberSpinner;
+    @FXML
+    private Spinner<Integer> energyProvidedByEatingGrassSpinner;
+    @FXML
+    private ComboBox<String> grassMakerBox;
+    @FXML
+    private Spinner<Integer> startNumberOfAnimalsSpinner;
+    @FXML
+    private Spinner<Integer> startingEnergySpinner;
+    @FXML
+    private Spinner<Integer> energyNeededForBreedingSpinner;
+    @FXML
+    private Spinner<Integer> energyUsedWhileBreedingSpinner;
+    @FXML
+    private Spinner<Integer> genesNumberSpinner;
+    @FXML
+    private Spinner<Integer> minimumNumberOfMutationsSpinner;
+    @FXML
+    private Spinner<Integer> maximumNumberOfMutationsSpinner;
+    @FXML
+    private ComboBox<String> genesMutatorBox;
 
-    public void onSimulationStartClicked() {
+    public void initialize() {
+        String [] grassMakerVariants = {"Forested equator", "Life-giving corpses"};
+        grassMakerBox.getItems().clear();
+        grassMakerBox.getItems().addAll(grassMakerVariants);
+        grassMakerBox.getSelectionModel().select(0);
+
+        String [] genesMutatorVariants = {"Complete randomness", "Slight correction"};
+        genesMutatorBox.getItems().clear();
+        genesMutatorBox.getItems().addAll(genesMutatorVariants);
+        genesMutatorBox.getSelectionModel().select(0);
+    }
+
+    public void onSetupResetClicked() {
+        initialize();
+
+        widthSpinner.getValueFactory().setValue(25);
+        heightSpinner.getValueFactory().setValue(25);
+        startGrassNumberSpinner.getValueFactory().setValue(15);
+        dayGrassNumberSpinner.getValueFactory().setValue(5);
+        energyProvidedByEatingGrassSpinner.getValueFactory().setValue(10);
+        startNumberOfAnimalsSpinner.getValueFactory().setValue(5);
+        startingEnergySpinner.getValueFactory().setValue(30);
+        energyNeededForBreedingSpinner.getValueFactory().setValue(15);
+        energyUsedWhileBreedingSpinner.getValueFactory().setValue(10);
+        genesNumberSpinner.getValueFactory().setValue(10);
+        minimumNumberOfMutationsSpinner.getValueFactory().setValue(0);
+        maximumNumberOfMutationsSpinner.getValueFactory().setValue(5);
+    }
+
+    public void onSetupStartClicked() {
+        int width = widthSpinner.getValue();
+        int height = heightSpinner.getValue();
+        int startGrassNumber = startGrassNumberSpinner.getValue();
+        int dayGrassNumber = dayGrassNumberSpinner.getValue();
+        int energyProvidedByEatingGrass = energyProvidedByEatingGrassSpinner.getValue();
+        int grassMakerVariant = grassMakerBox.getSelectionModel().getSelectedIndex();
+        int startNumberOfAnimals = startNumberOfAnimalsSpinner.getValue();
+        int startingEnergy = startingEnergySpinner.getValue();
+        int energyNeededForBreeding = energyNeededForBreedingSpinner.getValue();
+        int energyUsedWhileBreeding = energyUsedWhileBreedingSpinner.getValue();
+        int genesNumber = genesNumberSpinner.getValue();
+        int minimumNumberOfMutations = minimumNumberOfMutationsSpinner.getValue();
+        int maximumNumberOfMutations = maximumNumberOfMutationsSpinner.getValue();
+        int genesMutatorVariant = genesMutatorBox.getSelectionModel().getSelectedIndex();
+
+        GlobeMap map = new GlobeMap(width, height, 0);
+
+        AbstractGrassMaker grassMaker;
+        if (grassMakerVariant == 0) {
+            grassMaker = new GrassMakerEquator(startGrassNumber, dayGrassNumber, map);
+        } else {
+            grassMaker = new GrassMakerDeadAnimal(startGrassNumber, dayGrassNumber, map);
+        }
+
+        GeneMutator geneMutator;
+        if (genesMutatorVariant == 0) {
+            geneMutator = new ClassicMutation(minimumNumberOfMutations, maximumNumberOfMutations);
+        } else {
+            geneMutator = new SlightCorrection(minimumNumberOfMutations, maximumNumberOfMutations);
+        }
+
+        GenesFactory genesFactory = new GenesFactory(geneMutator, genesNumber);
+
+        AnimalCreator animalCreator = new AnimalCreator(startingEnergy, energyUsedWhileBreeding, energyProvidedByEatingGrass, genesFactory);
+        Breeding breeding = new Breeding(energyNeededForBreeding, energyUsedWhileBreeding, map, animalCreator);
+
+        Simulation simulation = new Simulation(map, grassMaker, breeding, animalCreator, startNumberOfAnimals);
+
+        SimulationEngine simulationEngine = new SimulationEngine(List.of(simulation));
+        SimulationApp newSimulationApp = new SimulationApp();
+
+        try {
+            Stage stage = new Stage();
+            SimulationPresenter presenter = newSimulationApp.showSimulation(stage);
+            presenter.newSimulation(map, simulationEngine, stage);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
 //        List<MoveDirection> directions = OptionsParser.parse(moves.getText().split(" "));
 //        GrassField map = new GrassField(4, 0);
 //        List<Vector2d> positions = List.of(new Vector2d(1,1), new Vector2d(3,3));

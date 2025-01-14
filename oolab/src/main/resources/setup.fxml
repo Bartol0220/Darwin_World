@@ -1,21 +1,84 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.layout.BorderPane?>
-
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.Button?>
-
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
 
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             minHeight="550.0" minWidth="850.0"
             stylesheets="simulation.css"
             fx:controller="agh.ics.oop.presenter.SetupPresenter">
+<!--    minHeight="550.0" minWidth="850.0"-->
+
 <center>
     <HBox spacing="15">
-        <TextField fx:id="moves" promptText="Enter list of moves"/>
-        <Button text="START" onAction="#onSimulationStartClicked"/>
+        <VBox spacing="5">
+            <HBox spacing="15">
+                <Label text="Map width"/>
+                <Spinner fx:id="widthSpinner" min="2" max="60" initialValue="25"/>
+            </HBox>
+            <HBox spacing="15">
+                <Label text="Map height"/>
+                <Spinner fx:id="heightSpinner" min="2" max="60" initialValue="25"/>
+            </HBox>
+            <HBox spacing="15">
+                <Label text="Initial number of grasses"/>
+                <Spinner fx:id="startGrassNumberSpinner" min="0" max="10000" initialValue="15"/>
+            </HBox>
+            <HBox spacing="15">
+                <Label text="Amount of grass growing every day"/>
+                <Spinner fx:id="dayGrassNumberSpinner" min="0" max="100" initialValue="5"/>
+            </HBox>
+            <HBox spacing="15">
+                <Label text="Energy gained from eating"/>
+                <Spinner fx:id="energyProvidedByEatingGrassSpinner" min="0" max="1000" initialValue="10"/>
+            </HBox>
+            <HBox spacing="15">
+                <Label text="Plant growth variants"/>
+                <ComboBox fx:id="grassMakerBox"/>
+            </HBox>
+            <HBox spacing="15">
+                <Label text="Initial number of animals"/>
+                <Spinner fx:id="startNumberOfAnimalsSpinner" min="0" max="2000" initialValue="5"/>
+            </HBox>
+            <HBox spacing="15">
+                <Label text="Initial energy of animals"/>
+                <Spinner fx:id="startingEnergySpinner" min="0" max="1000" initialValue="30"/>
+            </HBox>
+            <HBox spacing="15">
+                <Label text="Energy needed to consider the animal as ready to breed"/>
+                    <Spinner fx:id="energyNeededForBreedingSpinner" min="0" max="500" initialValue="15"/>
+            </HBox>
+            <HBox spacing="15">
+                <Label text="Energy used during reproduction"/>
+                <Spinner fx:id="energyUsedWhileBreedingSpinner" min="0" max="500" initialValue="10"/>
+            </HBox>
+            <HBox spacing="15">
+                <Label text="Animal genome length"/>
+                <Spinner fx:id="genesNumberSpinner" min="1" max="100" initialValue="10"/>
+            </HBox>
+            <HBox spacing="15">
+                <Label text="Minimum number of mutations"/>
+                <Spinner fx:id="minimumNumberOfMutationsSpinner" min="0" max="100" initialValue="0"/>
+            </HBox>
+            <HBox spacing="15">
+                <Label text="Maximum number of mutations"/>
+                <Spinner fx:id="maximumNumberOfMutationsSpinner" min="0" max="100" initialValue="5"/>
+            </HBox>
+            <HBox spacing="15">
+                <Label text="Mutations variants"/>
+                <ComboBox fx:id="genesMutatorBox"/>
+            </HBox>
+        </VBox>
+        <VBox spacing="25" alignment="CENTER">
+            <Button text="START" onAction="#onSetupStartClicked"/>
+            <Button text="Reset" onAction="#onSetupResetClicked"/>
+        </VBox>
     </HBox>
 </center>
 </BorderPane>

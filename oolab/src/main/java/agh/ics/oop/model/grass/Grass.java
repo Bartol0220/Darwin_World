@@ -17,4 +17,6 @@ public class Grass implements WorldElement {
     public String toString() {
         return "*";
     }
+
+    public String getName() { return "grass.png";}
 }

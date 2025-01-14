@@ -42,6 +42,8 @@ public class Animal implements WorldElement, Comparable<Animal> {
     public String toString() {
         return orientation.toString();
     }
+  
+    public String getName() { return "wolf_" + orientation + ".png"; }
 
     public boolean isAt(Vector2d position) {
         return this.position.equals(position);
