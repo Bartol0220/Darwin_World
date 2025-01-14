@@ -1,5 +1,6 @@
 package agh.ics.oop.model;
 
+import agh.ics.oop.HashArray;
 import agh.ics.oop.model.grass.AbstractGrassMaker;
 
 import java.util.*;
@@ -8,7 +9,7 @@ import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 public class Stats {
-    private final HashMap<ArrayHashMap, Integer> genesRecords = new HashMap<>();
+    private final HashMap<HashArray, Integer> genesRecords = new HashMap<>();
     private final AbstractGrassMaker grassMaker;
     private final GlobeMap map;
     private int currentAnimalCount = 0;
@@ -18,7 +19,7 @@ public class Stats {
     private int allAnimalCount = 0;
     private int grassCount;
     private int freeSpace = 0;
-    private ArrayHashMap mostCommonGenes;
+    private HashArray mostCommonGenes;
     private double averageEnergy = 0;
     private double averageLifespan = 0;
     private double averageBirthrate = 0;
@@ -33,15 +34,27 @@ public class Stats {
     }
 
     public int getCurrentAnimalCount() { return  currentAnimalCount;}
+  
     public int getDeadAnimalCount() { return  deadAnimalCount;}
+  
     public int getMaximumAnimalCount() { return  maximumAnimalCount;}
+  
     public int getMinimumAnimalCount() { return  minimumAnimalCount;}
+  
     public int getAllAnimalCount() { return  allAnimalCount;}
+
+    public int getBornAnimalCount() { return  bornAnimalCount;}
+  
     public int getGrassCount() { return  grassCount;}
+  
     public int getFreeSpace() { return  freeSpace;}
-    public ArrayHashMap getMostCommonGenes() { return  mostCommonGenes;}
+  
+    public HashArray getMostCommonGenes() { return  mostCommonGenes;}
+  
     public double getAverageEnergy() { return  averageEnergy;}
+  
     public double getAverageLifespan() { return  averageLifespan;}
+  
     public double getAverageBirthrate() { return  averageBirthrate;}
 
     private void increaseDeadAnimalCount(){
@@ -64,8 +77,8 @@ public class Stats {
         averageEnergy = animals.stream().mapToInt(Animal::getEnergy).average().orElse(0.0);
     }
 
-    private void addGenesToHashMap(int[] genes){
-        ArrayHashMap arrayHashMap = new ArrayHashMap(genes);
+    private void addGenesToHashMap(Animal animal){
+        HashArray arrayHashMap = new HashArray(animal.getGenes());
         if (genesRecords.containsKey(arrayHashMap)){
             genesRecords.replace(arrayHashMap, genesRecords.get(arrayHashMap) + 1);
         } else {
@@ -74,8 +87,8 @@ public class Stats {
         setMostCommonGenes();
     }
 
-    private void deleteGenesFromHashMap(int[] genes){
-        ArrayHashMap arrayHashMap = new ArrayHashMap(genes);
+    private void deleteGenesFromHashMap(Animal animal){
+        HashArray arrayHashMap = new HashArray(animal.getGenes());
         genesRecords.replace(arrayHashMap, genesRecords.get(arrayHashMap) - 1);
         if (genesRecords.get(arrayHashMap) < 1){
             genesRecords.remove(arrayHashMap);
@@ -95,28 +108,31 @@ public class Stats {
         averageLifespan = averageLifespan + (ageWhenDied - averageLifespan)/deadAnimalCount;
     }
 
-    public void calculateAverageBirthrate(List<Animal> animals){
-        // TODO policz kiedy sie dzieciak rodzi - 2*bornAnimals/allAnimals cos tam
-        // averageBirthrate = (double) (2 * bornAnimalCount) /allAnimalCount+1;
+    public void calculateAverageBirthRate(List<Animal> animals){
         averageBirthrate = animals.stream().mapToInt(animal -> animal.getAnimalStats().getChildrenCount()).average().orElse(0.0);
     }
 
-    public void newAnimalPlaced(int[] genes){
+    public void newAnimalPlaced(Animal animal){
         allAnimalCount++;
         maximumAnimalCount = max(maximumAnimalCount, currentAnimalCount);
-        addGenesToHashMap(genes);
+        addGenesToHashMap(animal);
     }
 
-    public void animalNotPlaced(int[] genes){
+    public void newAnimalBorn(Animal animal){
+        bornAnimalCount++;
+        newAnimalPlaced(animal);
+    }
+
+    public void animalNotPlaced(Animal animal){
         decreaseCurrentAnimalCount();
-        deleteGenesFromHashMap(genes);
+        deleteGenesFromHashMap(animal);
         maximumAnimalCount--;
     }
 
-    public void animalDied(int[] genes){
+    public void animalDied(Animal animal){
         decreaseCurrentAnimalCount();
         increaseDeadAnimalCount();
-        deleteGenesFromHashMap(genes);
+        deleteGenesFromHashMap(animal);
     }
 
     public void updateUponEating(){

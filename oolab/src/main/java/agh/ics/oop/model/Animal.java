@@ -11,6 +11,9 @@ public class Animal implements WorldElement, Comparable<Animal> {
     private final AnimalStats animalStats;
     private final Random random = new Random();
 
+    public Animal(Vector2d position, Genes genes, int energy, int energyProvidedByEatingGrass){
+        this(position, genes, energy, energyProvidedByEatingGrass, null, null);
+    }
 
     public Animal(Vector2d position, Genes genes, int energy, int energyProvidedByEatingGrass, Animal parent1, Animal parent2){
         this.position = position;
@@ -26,8 +29,7 @@ public class Animal implements WorldElement, Comparable<Animal> {
         return animalStats.getEnergy();
     }
 
-
-    public int[] getGenes() { return animalStats.getGenotype();}
+    public int[] getGenes() { return animalStats.getGenotypeArray();}
 
     public int getCurrentGene() { return animalStats.getGenes().getCurrentGene();}
 
@@ -56,34 +58,29 @@ public class Animal implements WorldElement, Comparable<Animal> {
         if (validator.canMoveTo(newPosition)) {
             position = newPosition;
         } else {
-            // obroc sie w przeciwna strone
             orientation = orientation.nextOrientation(4);
         }
         animalStats.decreaseEnergy(1);
-//        decreaseEnergy(1);
     }
 
-    public Animal breed(Animal animal, int energyUsedWhileBreeding, int dayNumber, AnimalCreator animalCreator){
-        animalStats.decreaseEnergy(energyUsedWhileBreeding);
-//        decreaseEnergy(energyUsedWhileBreeding);
-        animalStats.increaseChildrenCount();
-        animal.animalStats.decreaseEnergy(energyUsedWhileBreeding);
-//        animal.decreaseEnergy(energyUsedWhileBreeding);
-        animal.animalStats.increaseChildrenCount();
+    public Animal breed(Animal otherParent, int energyUsedWhileBreeding, int dayNumber, AnimalCreator animalCreator){
+        this.animalStats.decreaseEnergy(energyUsedWhileBreeding);
+        this.animalStats.increaseChildrenCount();
+        otherParent.animalStats.decreaseEnergy(energyUsedWhileBreeding);
+        otherParent.animalStats.increaseChildrenCount();
 
-        return animalCreator.createAnimal(dayNumber, this, animal);
+        return animalCreator.createAnimal(dayNumber, this, otherParent);
     }
 
     public void eat() {
         animalStats.increseEnergy(energyProvidedByEatingGrass);
         animalStats.increaseEatenGrass();
-//        increaseEnergy(energyProvidedByEatingGrass);
     }
 
     @Override
-    public int compareTo(Animal animal) {
-        AnimalStats thisStats = animalStats;
-        AnimalStats otherStats = animal.animalStats;
+    public int compareTo(Animal otherAnimal) {
+        AnimalStats thisStats = this.animalStats;
+        AnimalStats otherStats = otherAnimal.animalStats;
         if (thisStats.getEnergy() != otherStats.getEnergy()) return otherStats.getEnergy() - thisStats.getEnergy();
         if (thisStats.getAge() != otherStats.getAge()) return otherStats.getAge() - thisStats.getAge();
         if (thisStats.getChildrenCount() != otherStats.getChildrenCount()) return thisStats.getChildrenCount() - otherStats.getChildrenCount();

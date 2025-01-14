@@ -42,7 +42,7 @@ public class Simulation implements Runnable {
                 animals.add(animal);
             } catch (IncorrectPositionException e) {
                 System.err.println("Animal cannot be placed. " + e.getMessage());
-                stats.animalNotPlaced(animal.getGenes());
+                stats.animalNotPlaced(animal);
             }
         }
     }
@@ -57,6 +57,7 @@ public class Simulation implements Runnable {
 
     public void run() {
         stats.updateGeneralStats(animals);
+
         try {
             while (!animals.isEmpty() && running) {
                 Thread.sleep(700);
@@ -75,15 +76,8 @@ public class Simulation implements Runnable {
         moveAnimals();
         feedAnimals();
         breeding.breedAnimals(dayNumber, this);
-        stats.calculateAverageBirthrate(animals);
-//        if (!animals.isEmpty()) {
-//            int animalIndex = random.nextInt(animals.size());
-//            System.out.println("INDEX: " + animalIndex);
-//            Animal animalFollowed = animals.get(animalIndex);
-//            System.out.println(animalFollowed.getAnimalStats());
-//        }
-
         grassMaker.grow();
+        stats.calculateAverageBirthRate(animals);
     }
 
     private void removeDeadAnimals() {
@@ -92,9 +86,9 @@ public class Simulation implements Runnable {
                 map.removeAnimalFromMap(animal);
                 grassMaker.deadAnimal(animal);
                 animal.getAnimalStats().setDeathDate(dayNumber);
-                stats.animalDied(animal.getGenes());
+                stats.animalDied(animal);
                 stats.calculateNewAverageLifeSpan(animal.getAnimalStats().getAge());
-                stats.calculateAverageBirthrate(animals);
+                stats.calculateAverageBirthRate(animals);
                 return true;
             }
             return false;
