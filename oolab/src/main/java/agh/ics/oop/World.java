@@ -7,8 +7,6 @@ import agh.ics.oop.model.grass.AbstractGrassMaker;
 import agh.ics.oop.model.grass.GrassMakerDeadAnimal;
 import agh.ics.oop.model.grass.GrassMakerEquator;
 
-import static com.sun.javafx.application.PlatformImpl.exit;
-
 public class World {
     public static void main(String[] args) {
 
@@ -18,14 +16,14 @@ public class World {
         int startGrassNumber = 5; // TODO wyjątek jeśli < 0
         int energyProvidedByEatingGrass = 10; // TODO wyjątek jeśli < 0
         int dayGrassNumber = 1; // TODO wyjątek jeśli < 0
-        boolean isDeathGivingLife = false;
+        int grassMakerVariant = 0;
         int startNumberOfAnimals = 2; // TODO wyjątek jeśli < 0
         int startingEnergy = 10; // TODO wyjątek jeśli < 0
         int energyNeededForBreeding = 3; // TODO wyjątek jeśli < 0
         int energyUsedWhileBreeding = 2; // TODO wyjątek jeśli < energyNeededForBreeding
         int minimumNumberOfMutations = 0; // TODO wyjątek jeśli < 0
         int maximumNumberOfMutations = 3; // TODO wyjątek jeśli < minimumNumberOfMutations i jeśli > genesNumber
-        boolean isSlightCorrection = false;
+        int genesMutatorVariant = 0;
         int genesNumber = 5; // TODO wyjątek jeśli < 0
 
         SimulationConfig simConfig = new SimulationConfig.Builder().build();
@@ -37,18 +35,16 @@ public class World {
                     .startGrassNumber(startGrassNumber)
                     .energyProvidedByEatingGrass(energyProvidedByEatingGrass)
                     .dayGrassNumber(dayGrassNumber)
-                    .isDeathGivingLife(isDeathGivingLife)
+                    .isDeathGivingLife(grassMakerVariant)
                     .startNumberOfAnimals(startNumberOfAnimals)
                     .startingEnergy(startingEnergy)
                     .breedingInfo(energyNeededForBreeding, energyUsedWhileBreeding)
                     .mutationsInfo(minimumNumberOfMutations, maximumNumberOfMutations, genesNumber)
-                    .isSlightCorrection(isSlightCorrection)
+                    .isSlightCorrection(genesMutatorVariant)
                     .build();
 
-            System.out.println(simConfig);
-            exit();
-        } catch (HasToBePositiveException | MinMaxException | BreedingCanNotKillAnimals |
-                 CanNotBeNegativeException | MutationChangesCanNotExceedSize exception) {
+        } catch (HasToBePositiveException | MinMaxGeneException | BreedingCanNotKillAnimals |
+                 CanNotBeNegativeException | MutationChangesCanNotExceedSize | HasToBeBit exception) {
             System.err.println(exception.getMessage());
             //jak wywali blad, to uzyj defaultowych ustawien
         } finally {
@@ -56,14 +52,14 @@ public class World {
             MapChangeListener listener = new ConsoleMapDisplay();
             map.registerObserver(listener);
             AbstractGrassMaker grassMaker;
-            if (simConfig.isDeathGivingLife()) {
+            if (simConfig.grassMakerVariant()==1) {
                 grassMaker = new GrassMakerDeadAnimal(simConfig.startGrassNumber(), simConfig.dayGrassNumber(), map);
             } else {
                 grassMaker = new GrassMakerEquator(simConfig.startGrassNumber(), simConfig.dayGrassNumber(), map);
             }
 
             GeneMutator geneMutator;
-            if (simConfig.isSlightCorrection()) {
+            if (simConfig.genesMutatorVariant()==0) {
                 geneMutator = new ClassicMutation(simConfig.minimumNumberOfMutations(), simConfig.maximumNumberOfMutations());
             } else {
                 geneMutator = new SlightCorrection(simConfig.minimumNumberOfMutations(), simConfig.maximumNumberOfMutations());

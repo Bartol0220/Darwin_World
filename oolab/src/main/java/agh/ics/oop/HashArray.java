@@ -1,11 +1,11 @@
-package agh.ics.oop.model;
+package agh.ics.oop;
 
 import java.util.Arrays;
 
-public class ArrayHashMap {
+public class HashArray {
     private final int[] array;
 
-    public ArrayHashMap(int[] array) {
+    public HashArray(int[] array) {
         this.array = array.clone(); // Defensive copy to ensure immutability
     }
 
@@ -13,7 +13,7 @@ public class ArrayHashMap {
     public boolean equals(Object o) {
         if (this == o) return true; // Same object reference
         if (o == null || getClass() != o.getClass()) return false; // Type check
-        ArrayHashMap that = (ArrayHashMap) o;
+        HashArray that = (HashArray) o;
         return Arrays.equals(this.array, that.array); // Content comparison
     }
 
