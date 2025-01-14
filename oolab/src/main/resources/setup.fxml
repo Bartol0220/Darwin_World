@@ -11,9 +11,8 @@
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             minHeight="550.0" minWidth="850.0"
-            stylesheets="simulation.css"
+            stylesheets="setup.css"
             fx:controller="agh.ics.oop.presenter.SetupPresenter">
-<!--    minHeight="550.0" minWidth="850.0"-->
 
 <center>
     <HBox spacing="15">
@@ -27,7 +26,7 @@
                 <Spinner fx:id="heightSpinner" min="2" max="60" initialValue="25"/>
             </HBox>
             <HBox spacing="15">
-                <Label text="Initial number of grasses"/>
+                <Label text="Initial amount of grass"/>
                 <Spinner fx:id="startGrassNumberSpinner" min="0" max="10000" initialValue="15"/>
             </HBox>
             <HBox spacing="15">

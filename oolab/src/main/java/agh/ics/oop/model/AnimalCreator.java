@@ -30,7 +30,6 @@ public class AnimalCreator {
         Vector2d position = stronger.getPosition();
         Animal kid = new Animal(position, kidGenes, 2*energyUsedWhileBreeding, energyProvidedByEatingGrass, stronger, weaker);
         stats.newAnimalBorn(kid);
-        // czy on dostaje energie "od obu rodzicow" (2*energy) czy po prostu energy?
         return kid;
     }
 }

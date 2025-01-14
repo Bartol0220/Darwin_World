@@ -25,7 +25,7 @@ public class GrassMakerDeadAnimal extends AbstractGrassMaker {
     public void deadAnimal(Animal animal) {
         for (int y=max(animal.getPosition().getY()-1, 0); y <= min(animal.getPosition().getY()+1, map.getHeight()-1); y++) {
             for (int x=animal.getPosition().getX()-1; x <= animal.getPosition().getX()+1; x++) {
-                changePositionToFirstCategory(map.handleBoundsPositions(new Vector2d(x, y)));
+                changePositionToBetter(map.handleBoundsPositions(new Vector2d(x, y)));
             }
         }
     }

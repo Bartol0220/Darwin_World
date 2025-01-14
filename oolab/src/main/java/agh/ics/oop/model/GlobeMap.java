@@ -50,7 +50,7 @@ public class GlobeMap implements MoveValidator{
 
     public void unregisterObserver(final MapChangeListener observer) { observers.remove(observer);}
 
-    private void notifyObservers(String message){
+    public void notifyObservers(String message){
         for(MapChangeListener observer : observers){
             observer.mapChanged(this, message);
         }
@@ -65,7 +65,7 @@ public class GlobeMap implements MoveValidator{
     public void place(Animal animal) throws IncorrectPositionException {
         if(canMoveTo(animal.getPosition())) {
             addAnimalToMap(animal);
-            notifyObservers("Animal placed at %s.".formatted(animal.getPosition()));
+//            notifyObservers("Animal placed at %s.".formatted(animal.getPosition()));
         }
         else {
             throw new IncorrectPositionException(animal.getPosition());
@@ -112,9 +112,9 @@ public class GlobeMap implements MoveValidator{
         addAnimalOnGrass(animal);
         updateWhereAnimalsMeet(animal.getPosition());
 
-        notifyObservers("Animal gn: %d, or: %s -> %s, pos: %s -> %s."
-                .formatted(gene, previousOrientation, animal.getOrientation(), previousPosition, animal.getPosition())
-        );
+//        notifyObservers("Animal gn: %d, or: %s -> %s, pos: %s -> %s."
+//                .formatted(gene, previousOrientation, animal.getOrientation(), previousPosition, animal.getPosition())
+//        );
     }
 
     private List<Animal> listOfBestAnimalsAtPosition(Vector2d position, int minimalEnergy) {
