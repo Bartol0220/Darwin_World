@@ -1,5 +1,7 @@
 package agh.ics.oop.model;
 
+import agh.ics.oop.Simulation;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -19,9 +21,9 @@ public class Breeding {
 
     public int getEnergyNeededForBreeding() { return energyNeededForBreeding;}
 
-    public void breedAnimals(int dayNumber) {
+    public void breedAnimals(int dayNumber, Simulation simulation) {
         this.dayNumber = dayNumber;
-        map.findAnimalsToBreed(this);
+        map.findAnimalsToBreed(this, simulation);
     }
 
     public Optional<Animal> breedPair(List<Animal> breedingPair) {

@@ -24,7 +24,7 @@ public class World {
         int energyNeededForBreeding = 3; // TODO wyjątek jeśli < 0
         int energyUsedWhileBreeding = 2; // TODO wyjątek jeśli < energyNeededForBreeding
         int minimumNumberOfMutations = 0; // TODO wyjątek jeśli < 0
-        int maximumNumberOfMutations = -4; // TODO wyjątek jeśli < minimumNumberOfMutations i jeśli > genesNumber
+        int maximumNumberOfMutations = 3; // TODO wyjątek jeśli < minimumNumberOfMutations i jeśli > genesNumber
         boolean isSlightCorrection = false;
         int genesNumber = 5; // TODO wyjątek jeśli < 0
 

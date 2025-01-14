@@ -1,5 +1,6 @@
 package agh.ics.oop.model;
 
+import agh.ics.oop.Simulation;
 import agh.ics.oop.model.errors.IncorrectPositionException;
 import agh.ics.oop.model.grass.Grass;
 import agh.ics.oop.model.util.Boundary;
@@ -126,13 +127,14 @@ public class GlobeMap implements MoveValidator{
         return Collections.emptyList();
     }
 
-    public void findAnimalsToBreed(Breeding breeding){
+    public void findAnimalsToBreed(Breeding breeding, Simulation simulation){
         for (Vector2d position : whereAnimalsMeet){
             List<Animal> breedingPair = listOfBestAnimalsAtPosition(position, breeding.getEnergyNeededForBreeding());
             Optional<Animal> kid = breeding.breedPair(breedingPair);
             kid.ifPresent(presentKid -> {
                 this.addAnimalToMap(presentKid);
                 presentKid.getAnimalStats().increaseSuccesorCount();
+                simulation.addToAnimals(presentKid);
                 });
         }
         whereAnimalsMeet.clear();

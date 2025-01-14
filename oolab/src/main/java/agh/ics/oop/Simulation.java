@@ -60,7 +60,7 @@ public class Simulation implements Runnable {
         removeDeadAnimals();
         moveAnimals();
         feedAnimals();
-        breeding.breedAnimals(dayNumber);
+        breeding.breedAnimals(dayNumber, this);
         stats.calculateAverageBirthrate(animals);
         if (!animals.isEmpty()) {
             int animalIndex = random.nextInt(animals.size());
