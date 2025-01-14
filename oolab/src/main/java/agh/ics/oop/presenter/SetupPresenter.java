@@ -119,7 +119,7 @@ public class SetupPresenter {
 
         Simulation simulation = new Simulation(map, grassMaker, breeding, animalCreator, startNumberOfAnimals, stats);
 
-        SimulationEngine simulationEngine = new SimulationEngine(List.of(simulation));
+        SimulationEngine simulationEngine = new SimulationEngine(simulation);
         SimulationApp newSimulationApp = new SimulationApp();
 
         try {

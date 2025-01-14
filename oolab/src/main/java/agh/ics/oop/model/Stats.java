@@ -16,7 +16,6 @@ public class Stats {
     private int maximumAnimalCount = 0;
     private int minimumAnimalCount = Integer.MAX_VALUE;
     private int allAnimalCount = 0;
-    private int bornAnimalCount = 0;
     private int grassCount;
     private int freeSpace = 0;
     private ArrayHashMap mostCommonGenes;
@@ -32,6 +31,18 @@ public class Stats {
         calculateFreeSpace();
         averageEnergy = startingEnergy;
     }
+
+    public int getCurrentAnimalCount() { return  currentAnimalCount;}
+    public int getDeadAnimalCount() { return  deadAnimalCount;}
+    public int getMaximumAnimalCount() { return  maximumAnimalCount;}
+    public int getMinimumAnimalCount() { return  minimumAnimalCount;}
+    public int getAllAnimalCount() { return  allAnimalCount;}
+    public int getGrassCount() { return  grassCount;}
+    public int getFreeSpace() { return  freeSpace;}
+    public ArrayHashMap getMostCommonGenes() { return  mostCommonGenes;}
+    public double getAverageEnergy() { return  averageEnergy;}
+    public double getAverageLifespan() { return  averageLifespan;}
+    public double getAverageBirthrate() { return  averageBirthrate;}
 
     private void increaseDeadAnimalCount(){
         deadAnimalCount++;
@@ -96,11 +107,6 @@ public class Stats {
         addGenesToHashMap(genes);
     }
 
-    public void newAnimalBorn(int[] genes){
-        bornAnimalCount++;
-        newAnimalPlaced(genes);
-    }
-
     public void animalNotPlaced(int[] genes){
         decreaseCurrentAnimalCount();
         deleteGenesFromHashMap(genes);
@@ -121,6 +127,7 @@ public class Stats {
 
     public void updateGeneralStats(List<Animal> animals){
         this.currentAnimalCount = animals.size();
+        allAnimalCount = max(allAnimalCount, currentAnimalCount);
         updateGrassCount();
         calculateFreeSpace();
         calculateNewAverageEnergy(animals);

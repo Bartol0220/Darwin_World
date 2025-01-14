@@ -20,6 +20,7 @@ public class Simulation implements Runnable {
     private final Breeding breeding;
     private final Stats stats;
     private int dayNumber = 0;
+    private boolean running = true;
     private final Random random = new Random();
 
     public Simulation(GlobeMap map, AbstractGrassMaker grassMaker, Breeding breeding, AnimalCreator animalCreator, int startNumberOfAnimals, Stats stats) {
@@ -46,13 +47,26 @@ public class Simulation implements Runnable {
         }
     }
 
-    public void run(){
+    public void pause() {
+        running = false;
+    }
+
+    public void play() {
+        running = true;
+    }
+
+    public void run() {
         stats.updateGeneralStats(animals);
-        while (!animals.isEmpty()) {
-            dayNumber++;
-            runDay();
-            stats.updateGeneralStats(animals);
-//            System.out.println(stats);
+        try {
+            while (!animals.isEmpty() && running) {
+                Thread.sleep(700);
+                dayNumber++;
+                runDay();
+                map.notifyObservers("Day " + dayNumber);
+                stats.updateGeneralStats(animals);
+            }
+        } catch (InterruptedException e) {
+            // TODO
         }
     }
 
@@ -88,12 +102,12 @@ public class Simulation implements Runnable {
 
     private void moveAnimals() {
         for (Animal animal : animals) {
-            try {
-                Thread.sleep(700);
-            } catch (InterruptedException e) {
-                // TODO zamienić z ignore
-                // TODO CO TO ZA CATCH W PETLI??!
-            }
+//            try {
+//                Thread.sleep(700);
+//            } catch (InterruptedException e) {
+//                // TODO zamienić z ignore
+//                // TODO CO TO ZA CATCH W PETLI??!
+//            }
             map.move(animal);
         }
     }
@@ -108,7 +122,7 @@ public class Simulation implements Runnable {
         }
     }
 
-    public void addToAnimals(Animal animal){
-        animals.add(animal);
-    }
+    public void addToAnimals(Animal animal){ animals.add(animal); }
+
+    public Stats getStats() { return stats; }
 }

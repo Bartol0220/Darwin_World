@@ -6,17 +6,59 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.VBox?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             minHeight="550.0" minWidth="850.0"
             stylesheets="simulation.css"
             fx:controller="agh.ics.oop.presenter.SimulationPresenter">
+
+    <top>
+        <HBox spacing="15" alignment="CENTER">
+            <Label fx:id="info" text="Simulation is running" textAlignment="CENTER"/>
+            <Label fx:id="messageLabel" text="" textAlignment="CENTER"/>
+            <Button fx:id="playPauseButton" text="Pause" onAction="#onSimulationPlayPauseClicked"/>
+        </HBox>
+    </top>
     <center>
         <GridPane fx:id="mapGridPane" gridLinesVisible="true" alignment="CENTER"/>
     </center>
-    <bottom>
-        <HBox>
-            <Label fx:id="currentMove" text="Current animal move" textAlignment="CENTER"/>
-        </HBox>
-    </bottom>
+    <right>
+        <ScrollPane fitToWidth="true" vbarPolicy="ALWAYS">
+            <content>
+                <HBox spacing="15">
+                    <VBox spacing="5">
+                        <HBox spacing="10">
+                            <Label text="Number of all animals:" textAlignment="CENTER"/>
+                            <Label fx:id="allAnimalCount" text="" textAlignment="CENTER"/>
+                        </HBox>
+                        <HBox spacing="10">
+                            <Label text="Number of living animals:" textAlignment="CENTER"/>
+                            <Label fx:id="currentAnimalCount" text="" textAlignment="CENTER"/>
+                        </HBox>
+                        <HBox spacing="10">
+                            <Label text="Amount of grass on map:" textAlignment="CENTER"/>
+                            <Label fx:id="grassCount" text="" textAlignment="CENTER"/>
+                        </HBox>
+                    </VBox>
+                    <VBox spacing="5">
+                        <HBox spacing="10">
+                            <Label text="Maximum number of all animals:" textAlignment="CENTER"/>
+                            <Label fx:id="maximumAnimalCount" text="" textAlignment="CENTER"/>
+                        </HBox>
+                        <HBox spacing="10">
+                            <Label text="Minimum number of all animals:" textAlignment="CENTER"/>
+                            <Label fx:id="minimumAnimalCount" text="" textAlignment="CENTER"/>
+                        </HBox>
+                        <HBox spacing="10">
+                            <Label text="Number of free space:" textAlignment="CENTER"/>
+                            <Label fx:id="freeSpace" text="" textAlignment="CENTER"/>
+                        </HBox>
+                    </VBox>
+                </HBox>
+            </content>
+        </ScrollPane>
+    </right>
 </BorderPane>
