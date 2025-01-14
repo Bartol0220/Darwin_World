@@ -111,11 +111,13 @@ public class SetupPresenter {
         }
 
         GenesFactory genesFactory = new GenesFactory(geneMutator, genesNumber);
+        Stats stats = new Stats(map, grassMaker, startGrassNumber, startingEnergy, startNumberOfAnimals);
 
-        AnimalCreator animalCreator = new AnimalCreator(startingEnergy, energyUsedWhileBreeding, energyProvidedByEatingGrass, genesFactory);
+
+        AnimalCreator animalCreator = new AnimalCreator(startingEnergy, energyUsedWhileBreeding, energyProvidedByEatingGrass, genesFactory, stats);
         Breeding breeding = new Breeding(energyNeededForBreeding, energyUsedWhileBreeding, map, animalCreator);
 
-        Simulation simulation = new Simulation(map, grassMaker, breeding, animalCreator, startNumberOfAnimals);
+        Simulation simulation = new Simulation(map, grassMaker, breeding, animalCreator, startNumberOfAnimals, stats);
 
         SimulationEngine simulationEngine = new SimulationEngine(List.of(simulation));
         SimulationApp newSimulationApp = new SimulationApp();

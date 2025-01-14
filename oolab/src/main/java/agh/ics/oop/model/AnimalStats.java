@@ -31,7 +31,7 @@ public class AnimalStats {
         }
     }
 
-    public int[] getGenotype(){
+    public int[] getGenotypeArray(){
         return genes.getGenes();
     }
 
@@ -81,7 +81,7 @@ public class AnimalStats {
 
     @Override
     public String toString(){
-        return "genotype: " + Arrays.toString(getGenotype()) +
+        return "genotype: " + Arrays.toString(getGenotypeArray()) +
                 "\ngeneIndex: %d\nenergy: %d\nchildren: %d\nsuccesors: %d\nage: %d\neatenGrass: %d\ndeathDate: %d"
                         .formatted(getGeneIndex(), energy, childrenCount, succesorCount, age, eatenGrass, deathDate);
     }
