@@ -34,7 +34,9 @@ public class MapField {
         animals.remove(animal);
     }
 
-    private List<Animal> listOfBestAnimals(int minimalEnergy) {
+    public List<Animal> getAniamls() { return  List.copyOf(animals);}
+
+    public List<Animal> listOfBestAnimals(int minimalEnergy) {
         if (!animals.isEmpty()) {
             return animals.stream()
                     .filter(animal -> animal.getEnergy() >= minimalEnergy)

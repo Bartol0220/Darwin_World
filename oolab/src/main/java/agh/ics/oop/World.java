@@ -9,22 +9,21 @@ import agh.ics.oop.model.grass.GrassMakerEquator;
 
 public class World {
     public static void main(String[] args) {
-
         // Wszystkie parametry smymulacji:
-        int height = 3; // TODO wyjątek jeśli < 0
-        int width = 3; // TODO wyjątek jeśli < 0
-        int startGrassNumber = 5; // TODO wyjątek jeśli < 0
-        int energyProvidedByEatingGrass = 10; // TODO wyjątek jeśli < 0
-        int dayGrassNumber = 1; // TODO wyjątek jeśli < 0
+        int height = 5; // TODO wyjątek jeśli < 0
+        int width = 5; // TODO wyjątek jeśli < 0
+        int startGrassNumber = 3; // TODO wyjątek jeśli < 0
+        int energyProvidedByEatingGrass = 3; // TODO wyjątek jeśli < 0
+        int dayGrassNumber = 0; // TODO wyjątek jeśli < 0
         int grassMakerVariant = 0;
-        int startNumberOfAnimals = 2; // TODO wyjątek jeśli < 0
-        int startingEnergy = 10; // TODO wyjątek jeśli < 0
+        int startNumberOfAnimals = 3; // TODO wyjątek jeśli < 0
+        int startingEnergy = 3; // TODO wyjątek jeśli < 0
         int energyNeededForBreeding = 3; // TODO wyjątek jeśli < 0
-        int energyUsedWhileBreeding = 2; // TODO wyjątek jeśli < energyNeededForBreeding
-        int minimumNumberOfMutations = 0; // TODO wyjątek jeśli < 0
+        int energyUsedWhileBreeding = 3; // TODO wyjątek jeśli < energyNeededForBreeding
+        int minimumNumberOfMutations = 3; // TODO wyjątek jeśli < 0
         int maximumNumberOfMutations = 3; // TODO wyjątek jeśli < minimumNumberOfMutations i jeśli > genesNumber
         int genesMutatorVariant = 0;
-        int genesNumber = 5; // TODO wyjątek jeśli < 0
+        int genesNumber = 3; // TODO wyjątek jeśli < 0
 
         SimulationConfig simConfig = new SimulationConfig.Builder().build();
         ;

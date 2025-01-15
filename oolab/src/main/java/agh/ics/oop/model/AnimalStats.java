@@ -55,7 +55,7 @@ public class AnimalStats {
         return genes;
     }
 
-    public void increseEnergy(int value){
+    public void increaseEnergy(int value){
         energy += value;
     }
 

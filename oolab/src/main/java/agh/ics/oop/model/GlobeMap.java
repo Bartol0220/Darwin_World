@@ -1,5 +1,6 @@
 package agh.ics.oop.model;
 
+import agh.ics.oop.MapField;
 import agh.ics.oop.Simulation;
 import agh.ics.oop.model.errors.IncorrectPositionException;
 import agh.ics.oop.model.grass.Grass;
@@ -14,7 +15,7 @@ public class GlobeMap implements MoveValidator{
     private final int width;
     private final int height;
     private final Boundary bounds;
-    private final Map<Vector2d, ArrayList<Animal>> animalsMap = new HashMap<>();
+    private final Map<Vector2d, MapField> animalsMap = new HashMap<>();
     private final HashSet<Vector2d> whereAnimalsMeet = new HashSet<>();
     private final HashSet<Vector2d> animalsOnGrass = new HashSet<>();
     private final Map<Vector2d, Grass> grassMap = new HashMap<>();
@@ -84,7 +85,7 @@ public class GlobeMap implements MoveValidator{
 
     public Optional<WorldElement> objectAt(Vector2d position) {
         if (animalsMap.containsKey(position)) {
-            return Optional.of(animalsMap.get(position).getFirst());
+            return Optional.of(animalsMap.get(position).getAniamls().getFirst());
         }
         return Optional.ofNullable(grassMap.get(position));
     }
@@ -117,21 +118,10 @@ public class GlobeMap implements MoveValidator{
 //        );
     }
 
-    private List<Animal> listOfBestAnimalsAtPosition(Vector2d position, int minimalEnergy) {
-        List<Animal> animals = animalsMap.get(position);
-        if (animals != null) {
-            return animals.stream()
-                    .filter(animal -> animal.getEnergy() >= minimalEnergy)
-                    .sorted()
-                    .limit(2)
-                    .toList();
-        }
-        return Collections.emptyList();
-    }
 
     public void findAnimalsToBreed(Breeding breeding, Simulation simulation){
         for (Vector2d position : whereAnimalsMeet){
-            List<Animal> breedingPair = listOfBestAnimalsAtPosition(position, breeding.getEnergyNeededForBreeding());
+            List<Animal> breedingPair = animalsMap.get(position).listOfBestAnimals(breeding.getEnergyNeededForBreeding());
             Optional<Animal> kid = breeding.breedPair(breedingPair);
             kid.ifPresent(presentKid -> {
                 this.addAnimalToMap(presentKid);
@@ -153,7 +143,7 @@ public class GlobeMap implements MoveValidator{
     }
 
     public Optional<Grass> findAnimalToFeed(Vector2d position){
-        List<Animal> bestAnimalsAtPosition = listOfBestAnimalsAtPosition(position, 0);
+        List<Animal> bestAnimalsAtPosition = animalsMap.get(position).listOfBestAnimals(0);
         if (!bestAnimalsAtPosition.isEmpty()){
             Animal animal = bestAnimalsAtPosition.getFirst();
             animal.eat();
@@ -169,20 +159,17 @@ public class GlobeMap implements MoveValidator{
     }
 
     public void removeAnimalFromMap(Animal animal) {
-        animalsMap.get(animal.getPosition()).remove(animal);
-        if (animalsMap.get(animal.getPosition()).isEmpty()) {
+        animalsMap.get(animal.getPosition()).removeAnimal(animal);
+        if (animalsMap.get(animal.getPosition()).getAniamls().isEmpty()){
             animalsMap.remove(animal.getPosition());
         }
     }
 
     private void addAnimalToMap(Animal animal) {
-        if (animalsMap.get(animal.getPosition()) == null) {
-            ArrayList<Animal> animalList = new ArrayList<>();
-            animalList.add(animal);
-            animalsMap.put(animal.getPosition(), animalList);
-        } else {
-            animalsMap.get(animal.getPosition()).add(animal);
+        if (animalsMap.get(animal.getPosition()) == null){
+            animalsMap.put(animal.getPosition(), new MapField(animal.getPosition()));
         }
+        animalsMap.get(animal.getPosition()).addAnimal(animal);
     }
 
     @Override

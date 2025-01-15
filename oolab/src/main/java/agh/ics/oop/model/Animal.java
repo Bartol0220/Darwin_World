@@ -73,7 +73,7 @@ public class Animal implements WorldElement, Comparable<Animal> {
     }
 
     public void eat() {
-        animalStats.increseEnergy(energyProvidedByEatingGrass);
+        animalStats.increaseEnergy(energyProvidedByEatingGrass);
         animalStats.increaseEatenGrass();
     }
 
