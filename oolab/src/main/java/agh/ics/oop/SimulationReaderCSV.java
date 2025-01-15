@@ -21,12 +21,6 @@ public class SimulationReaderCSV {
 
     private String makeFullFileName(String fileName){
         return System.getProperty("user.dir") +
-                File.separator + "src" +
-                File.separator + "main" +
-                File.separator + "java" +
-                File.separator + "agh" +
-                File.separator + "ics" +
-                File.separator + "oop" +
                 File.separator + "simconfig" +
                 File.separator + fileName + ".csv";
     }

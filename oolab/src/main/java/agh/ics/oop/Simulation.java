@@ -6,6 +6,7 @@ import agh.ics.oop.model.grass.AbstractGrassMaker;
 import agh.ics.oop.model.grass.Grass;
 import agh.ics.oop.model.util.RandomVector2d;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -66,7 +67,7 @@ public class Simulation implements Runnable {
                 map.notifyObservers("Day " + dayNumber);
                 stats.updateGeneralStats(animals);
             }
-        } catch (InterruptedException e) {
+        } catch (InterruptedException | IOException e) {
             // TODO
         }
     }

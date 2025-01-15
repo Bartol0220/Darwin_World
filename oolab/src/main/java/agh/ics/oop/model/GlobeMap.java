@@ -6,6 +6,7 @@ import agh.ics.oop.model.grass.Grass;
 import agh.ics.oop.model.util.Boundary;
 import agh.ics.oop.model.util.MapVisualizer;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -50,7 +51,7 @@ public class GlobeMap implements MoveValidator{
 
     public void unregisterObserver(final MapChangeListener observer) { observers.remove(observer);}
 
-    public void notifyObservers(String message){
+    public void notifyObservers(String message) throws IOException {
         for(MapChangeListener observer : observers){
             observer.mapChanged(this, message);
         }
