@@ -51,9 +51,10 @@ public class MapField {
 
     public void setIsBetterPosition(boolean betterPosition) { this.isBetterPosition = betterPosition; }
 
-    public int getNumberOfAnimals(){
-        return animals.size();
-    }
+    public int getNumberOfAnimals(){ return animals.size();}
+
+    public int getLastDeathDate() { return lastDeathDate; }
+
 
     public void addAnimal(Animal animal) {
         animals.add(animal);
@@ -62,6 +63,7 @@ public class MapField {
     public void removeAnimal(Animal animal) {
         animals.remove(animal);
     }
+
 
     public List<Animal> getAnimals() { return  List.copyOf(animals);}
 

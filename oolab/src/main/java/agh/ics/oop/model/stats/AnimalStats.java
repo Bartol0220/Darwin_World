@@ -1,8 +1,10 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.stats;
 
+import agh.ics.oop.model.Animal;
 import agh.ics.oop.model.genes.Genes;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 public class AnimalStats {
     private final Genes genes;
@@ -10,7 +12,7 @@ public class AnimalStats {
     private int childrenCount=0;
     private int age=0;
     private int eatenGrass = 0;
-    private int deathDate = -1;
+    private Optional<Integer> deathDate = Optional.empty();
     private Animal parent1;
     private Animal parent2;
     private int succesorCount = 0;
@@ -76,14 +78,22 @@ public class AnimalStats {
     }
 
     public void setDeathDate(int deathDate) {
-        this.deathDate = deathDate;
+        this.deathDate = Optional.of(deathDate);
     }
 
     @Override
     public String toString(){
-        return "genotype: " + Arrays.toString(getGenotypeArray()) +
-                "\ngeneIndex: %d\nenergy: %d\nchildren: %d\nsuccesors: %d\nage: %d\neatenGrass: %d\ndeathDate: %d"
-                        .formatted(getGeneIndex(), energy, childrenCount, succesorCount, age, eatenGrass, deathDate);
+        return "Genotype: " + Arrays.toString(getGenotypeArray()) +
+                "\nCurrent gene: %d\nEnergy: %d\nNumber of children: %d\nNumber of succesors: %d\nAge [days]: %d\nAmount of grass eaten: %d\nDate of death: %s"
+                        .formatted(
+                                getGeneIndex(),
+                                energy,
+                                childrenCount,
+                                succesorCount,
+                                age,
+                                eatenGrass,
+                                deathDate.map(date -> String.format("%d", date)).orElse("alive")
+                        );
     }
 
 }

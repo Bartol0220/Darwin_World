@@ -6,6 +6,8 @@ import agh.ics.oop.model.genes.*;
 import agh.ics.oop.model.grass.AbstractGrassMaker;
 import agh.ics.oop.model.grass.GrassMakerDeadAnimal;
 import agh.ics.oop.model.grass.GrassMakerEquator;
+import agh.ics.oop.model.observers.MapChangeObserver;
+import agh.ics.oop.model.stats.Stats;
 
 import java.io.IOException;
 
@@ -30,9 +32,9 @@ public class World {
 
 
         try {
-            SimulationSaverCSV simulationSaverCSV = new SimulationSaverCSV();
-            SimulationReaderCSV simulationReaderCSV = new SimulationReaderCSV();
-            SimulationConfig simConfig = simulationReaderCSV.readFromCSV("file3");
+//            SimulationSaverCSV simulationSaverCSV = new SimulationSaverCSV();
+//            SimulationReaderCSV simulationReaderCSV = new SimulationReaderCSV();
+//            SimulationConfig simConfig = simulationReaderCSV.readFromCSV("file3");
 
             SimulationConfig createdConfig = new SimulationConfig(
                     height, width, startGrassNumber, energyProvidedByEatingGrass,
@@ -40,38 +42,43 @@ public class World {
                     energyNeededForBreeding, energyUsedWhileBreeding, minimumNumberOfMutations,
                     maximumNumberOfMutations, genesMutatorVariant, genesNumber);
 
-            simulationSaverCSV.saveToCSV(createdConfig, "file6");
+//            simulationSaverCSV.saveToCSV(createdConfig, "file6");
 
-
-            GlobeMap map = new GlobeMap(simConfig.getWidth(), simConfig.getHeight(), 0);
-            MapChangeListener listener = new ConsoleMapDisplay();
+            GlobeMap map = new GlobeMap(createdConfig.getWidth(), createdConfig.getHeight(), 0);
+            MapChangeObserver listener = new ConsoleMapDisplay();
             map.registerObserver(listener);
             AbstractGrassMaker grassMaker;
-            if (simConfig.getGrassMakerVariant()==1) {
-                grassMaker = new GrassMakerDeadAnimal(simConfig.getStartGrassNumber(), simConfig.getDayGrassNumber(), map);
+            if (createdConfig.getGrassMakerVariant()==1) {
+                grassMaker = new GrassMakerDeadAnimal(createdConfig.getStartGrassNumber(), createdConfig.getDayGrassNumber(), map);
             } else {
-                grassMaker = new GrassMakerEquator(simConfig.getStartGrassNumber(), simConfig.getDayGrassNumber(), map);
+                grassMaker = new GrassMakerEquator(createdConfig.getStartGrassNumber(), createdConfig.getDayGrassNumber(), map);
             }
 
             GeneMutator geneMutator;
-            if (simConfig.getGenesMutatorVariant()==0) {
-                geneMutator = new ClassicMutation(simConfig.getMinimumNumberOfMutations(), simConfig.getMaximumNumberOfMutations());
+            if (createdConfig.getGenesMutatorVariant()==0) {
+                geneMutator = new ClassicMutation(createdConfig.getMinimumNumberOfMutations(), createdConfig.getMaximumNumberOfMutations());
             } else {
-                geneMutator = new SlightCorrection(simConfig.getMinimumNumberOfMutations(), simConfig.getMaximumNumberOfMutations());
+                geneMutator = new SlightCorrection(createdConfig.getMinimumNumberOfMutations(), createdConfig.getMaximumNumberOfMutations());
             }
-            GenesFactory genesFactory = new GenesFactory(geneMutator, simConfig.getGenesNumber());
+            GenesFactory genesFactory = new GenesFactory(geneMutator, createdConfig.getGenesNumber());
 
-            Stats stats = new Stats(map, grassMaker, simConfig.getStartGrassNumber(), simConfig.getStartingEnergy(), simConfig.getStartNumberOfAnimals());
-            AnimalCreator animalCreator = new AnimalCreator(simConfig.getStartingEnergy(), simConfig.getEnergyUsedWhileBreeding(), simConfig.getEnergyProvidedByEatingGrass(), genesFactory, stats);
-            Breeding breeding = new Breeding(simConfig.getEnergyNeededForBreeding(), simConfig.getEnergyUsedWhileBreeding(), map, animalCreator);
+            Stats stats = new Stats(map, grassMaker, createdConfig.getStartGrassNumber(), createdConfig.getStartingEnergy(), createdConfig.getStartNumberOfAnimals());
+            AnimalCreator animalCreator = new AnimalCreator(createdConfig.getStartingEnergy(), createdConfig.getEnergyUsedWhileBreeding(), createdConfig.getEnergyProvidedByEatingGrass(), genesFactory, stats);
+            Breeding breeding = new Breeding(createdConfig.getEnergyNeededForBreeding(), createdConfig.getEnergyUsedWhileBreeding(), map, animalCreator);
 
-            StatsSaverCSV statsSaverCSV = new StatsSaverCSV(stats,"stats3");
-            map.registerObserver(statsSaverCSV);
+            Simulation simulation = new Simulation(map, grassMaker, breeding, animalCreator, createdConfig.getStartNumberOfAnimals(), stats);
+//            StatsSaverCSV statsSaverCSV = new StatsSaverCSV(stats,"stats3");
+//            map.registerObserver(statsSaverCSV);
 
-            Simulation simulation = new Simulation(map, grassMaker, breeding, animalCreator, simConfig.getStartNumberOfAnimals(), stats);
+            simulation.registerAnimalDiedObserver(stats);
+            if (grassMaker instanceof GrassMakerDeadAnimal) {
+                simulation.registerAnimalDiedObserver((GrassMakerDeadAnimal) grassMaker);
+                simulation.registerNewDayObserver((GrassMakerDeadAnimal) grassMaker);
+            }
+
             simulation.run();
 
-        } catch (MinMaxGeneException | HasToBePositiveException | CanNotBeNegativeException | IOException |
+        } catch (MinMaxGeneException | HasToBePositiveException | CanNotBeNegativeException |
                  MutationChangesCanNotExceedSize | FailedToReadConfig | HasToBeBit | BreedingCanNotKillAnimals exception) {
             System.err.println(exception.getMessage());
         }

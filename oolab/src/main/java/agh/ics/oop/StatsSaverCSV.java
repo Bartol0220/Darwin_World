@@ -1,15 +1,14 @@
 package agh.ics.oop;
 
 import agh.ics.oop.model.GlobeMap;
-import agh.ics.oop.model.MapChangeListener;
-import agh.ics.oop.model.Stats;
+import agh.ics.oop.model.stats.Stats;
+import agh.ics.oop.model.observers.MapChangeObserver;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.sql.PreparedStatement;
 
-public class StatsSaverCSV implements MapChangeListener {
+public class StatsSaverCSV implements MapChangeObserver {
     private final Stats stats;
     private final String fileName;
     private final File simulationCSV;

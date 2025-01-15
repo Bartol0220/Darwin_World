@@ -1,3 +1,29 @@
 HBox {
     -fx-padding: 5;
+    -fx-background-color: #3b3838;
 }
+
+VBox {
+    -fx-background-color: #3b3838;
+}
+
+Label {
+    -fx-text-fill: #cccccc;
+    -fx-background-color: #3b3838;
+}
+
+BorderPane {
+    -fx-background-color: #3b3838;
+}
+
+GridPane {
+    -fx-background-color: #3b3838;
+    -fx-grid-lines-color: #cccccc;
+}
+
+ScrollPane {
+    -fx-background-color: #3b3838;
+    -fx-border-width: 2px;
+    -fx-border-color: #cccccc;
+}
+

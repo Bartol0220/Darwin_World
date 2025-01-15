@@ -4,6 +4,9 @@ import agh.ics.oop.model.*;
 import agh.ics.oop.model.errors.IncorrectPositionException;
 import agh.ics.oop.model.grass.AbstractGrassMaker;
 import agh.ics.oop.model.grass.Grass;
+import agh.ics.oop.model.observers.AnimalDiedObserver;
+import agh.ics.oop.model.observers.NewDayObserver;
+import agh.ics.oop.model.stats.Stats;
 import agh.ics.oop.model.util.RandomVector2d;
 
 import java.io.IOException;
@@ -13,10 +16,13 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.*;
 
 
 public class Simulation implements Runnable {
     private final GlobeMap map;
+    private final List<AnimalDiedObserver> animalDiedObservers = new ArrayList<>();
+    private final List<NewDayObserver> newDayObservers = new ArrayList<>();
     private final List<Animal> animals = new LinkedList<>();
     private final AbstractGrassMaker grassMaker;
     private final AnimalCreator animalCreator;
@@ -24,7 +30,7 @@ public class Simulation implements Runnable {
     private final Stats stats;
     private int dayNumber = 0;
     private boolean running = true;
-    private final Random random = new Random();
+    private int threadSleepTime = 700;
 
     public Simulation(GlobeMap map, AbstractGrassMaker grassMaker, Breeding breeding, AnimalCreator animalCreator, int startNumberOfAnimals, Stats stats) {
         this.map = map;
@@ -58,16 +64,21 @@ public class Simulation implements Runnable {
         running = true;
     }
 
+    public void setThreadSleep(int time) {
+        threadSleepTime = time;
+    }
+
     public void run() {
         stats.updateGeneralStats(animals);
 
         try {
             while (!animals.isEmpty() && running) {
-                Thread.sleep(700);
+                Thread.sleep(threadSleepTime);
                 dayNumber++;
                 runDay();
-                map.notifyObservers("Day " + dayNumber);
                 stats.updateGeneralStats(animals);
+                map.notifyObservers("Day " + dayNumber);
+                notifyNewDayObservers(dayNumber);
             }
         } catch (InterruptedException | IOException e) {
             // TODO
@@ -83,13 +94,32 @@ public class Simulation implements Runnable {
         stats.calculateAverageBirthRate(animals);
     }
 
+    public void registerAnimalDiedObserver(AnimalDiedObserver observer) { animalDiedObservers.add(observer);}
+
+    public void unregisterAnimalDiedObserver(AnimalDiedObserver observer) { animalDiedObservers.remove(observer);}
+
+    public void notifyAnimalDiedObservers(Animal animal){
+        for(AnimalDiedObserver observer : animalDiedObservers){
+            observer.animalDied(animal);
+        }
+    }
+
+    public void registerNewDayObserver(NewDayObserver observer) { newDayObservers.add(observer);}
+
+    public void unregisterNewDayObserver(NewDayObserver observer) { newDayObservers.remove(observer);}
+
+    public void notifyNewDayObservers(int dayNumber){
+        for(NewDayObserver observer : newDayObservers){
+            observer.newDay(dayNumber);
+        }
+    }
+
     private void removeDeadAnimals() {
         animals.removeIf(animal -> {
             if (animal.getEnergy() < 1){
                 map.removeAnimalFromMap(animal);
-                grassMaker.deadAnimal(animal);
+                notifyAnimalDiedObservers(animal);
                 animal.getAnimalStats().setDeathDate(dayNumber);
-                stats.animalDied(animal);
                 stats.calculateNewAverageLifeSpan(animal.getAnimalStats().getAge());
                 stats.calculateAverageBirthRate(animals);
                 return true;
@@ -100,12 +130,6 @@ public class Simulation implements Runnable {
 
     private void moveAnimals() {
         for (Animal animal : animals) {
-//            try {
-//                Thread.sleep(700);
-//            } catch (InterruptedException e) {
-//                // TODO zamienić z ignore
-//                // TODO CO TO ZA CATCH W PETLI??!
-//            }
             map.move(animal);
         }
     }
