@@ -11,6 +11,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class Simulation implements Runnable {
@@ -121,4 +123,11 @@ public class Simulation implements Runnable {
     public void addToAnimals(Animal animal){ animals.add(animal); }
 
     public Stats getStats() { return stats; }
+
+    public Set<Vector2d> getPositionsWithPopularAnimal() {
+        return animals.stream()
+                .filter(animal -> stats.getMostCommonGenes().equals(new HashArray(animal.getAnimalStats().getGenotypeArray())))
+                .map(Animal::getPosition)
+                .collect(Collectors.toSet());
+    }
 }
