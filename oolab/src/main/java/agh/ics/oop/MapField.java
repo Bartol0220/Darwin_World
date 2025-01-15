@@ -23,6 +23,18 @@ public class MapField {
 
     public Vector2d getPosition() { return position;}
 
+    public boolean hasGrass() { return grass.isPresent();}
+
+    public Optional<Grass> getGrass() {
+        return grass;
+    }
+
+    public boolean isBetterPosition() { return isBetterPosition;}
+
+    public void makePositionBetter() { this.isBetterPosition = true;}
+
+    public void makePositionWorse() { this.isBetterPosition = false;}
+
     public void animalDiedOnField(int date) {
         lastDeathDate = date;
     }
@@ -39,6 +51,10 @@ public class MapField {
 
     public void setIsBetterPosition(boolean betterPosition) { this.isBetterPosition = betterPosition; }
 
+    public int getNumberOfAnimals(){
+        return animals.size();
+    }
+
     public void addAnimal(Animal animal) {
         animals.add(animal);
     }
@@ -47,7 +63,7 @@ public class MapField {
         animals.remove(animal);
     }
 
-    public List<Animal> getAniamls() { return  List.copyOf(animals);}
+    public List<Animal> getAnimals() { return  List.copyOf(animals);}
 
     public List<Animal> listOfBestAnimals(int minimalEnergy) {
         if (!animals.isEmpty()) {

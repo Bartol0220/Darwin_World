@@ -19,7 +19,7 @@ public class GlobeMap implements MoveValidator{
     private final HashSet<MapField> animalsMap = new HashSet<>();
     private final HashSet<Vector2d> whereAnimalsMeet = new HashSet<>();
     private final HashSet<Vector2d> animalsOnGrass = new HashSet<>();
-    private final Map<Vector2d, Grass> grassMap = new HashMap<>();
+    private final HashSet<MapField> grassMap = new HashSet<>();
     private final MapVisualizer mapVisualizer = new MapVisualizer(this);
     private final List<MapChangeListener> observers = new ArrayList<>();
 
@@ -48,7 +48,7 @@ public class GlobeMap implements MoveValidator{
         return height*width - (int) Stream
                 .concat(
                         animalsMap.stream().map(MapField::getPosition),
-                        grassMap.keySet().stream()
+                        grassMap.stream().map(MapField::getPosition)
                 )
                 .distinct()
                 .count();
@@ -65,14 +65,15 @@ public class GlobeMap implements MoveValidator{
     }
 
     public void addGrass(Vector2d position) {
-        Grass grass = new Grass(position);
-        allFields.get(position).addGrass(grass);
-        grassMap.put(position, grass);
+        MapField mapField = allFields.get(position);
+        mapField.addGrass(new Grass(position));
+        grassMap.add(mapField);
     }
 
     public void removeGrass(Grass grass) {
-        allFields.get(grass.getPosition()).removeGrass();
-        grassMap.remove(grass.getPosition());
+        MapField mapField = allFields.get(grass.getPosition());
+        mapField.removeGrass();
+        grassMap.remove(mapField);
     }
 
     public void place(Animal animal) throws IncorrectPositionException {
@@ -155,13 +156,13 @@ public class GlobeMap implements MoveValidator{
         if (!bestAnimalsAtPosition.isEmpty()){
             Animal animal = bestAnimalsAtPosition.getFirst();
             animal.eat();
-            return Optional.of(grassMap.get(position));
+            return allFields.get(position).getGrass();
         }
         return Optional.empty();
     }
 
     private void addAnimalOnGrass(Animal animal) {
-        if (grassMap.containsKey(animal.getPosition())) {
+        if (allFields.get(animal.getPosition()).hasGrass()) {
             animalsOnGrass.add(animal.getPosition());
         }
     }
@@ -169,7 +170,9 @@ public class GlobeMap implements MoveValidator{
     public void removeAnimalFromMap(Animal animal) {
         MapField mapField = allFields.get(animal.getPosition());
         mapField.removeAnimal(animal);
-        animalsMap.remove(mapField);
+        if (mapField.getNumberOfAnimals() < 1){
+            animalsMap.remove(mapField);
+        }
     }
 
     private void addAnimalToMap(Animal animal) {
