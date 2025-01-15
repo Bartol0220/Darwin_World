@@ -32,17 +32,18 @@ public class World {
 
 
         try {
-//            SimulationSaverCSV simulationSaverCSV = new SimulationSaverCSV();
-//            SimulationReaderCSV simulationReaderCSV = new SimulationReaderCSV();
-//            SimulationConfig simConfig = simulationReaderCSV.readFromCSV("file3");
-
             SimulationConfig createdConfig = new SimulationConfig(
                     height, width, startGrassNumber, energyProvidedByEatingGrass,
                     dayGrassNumber, grassMakerVariant, startNumberOfAnimals, startingEnergy,
                     energyNeededForBreeding, energyUsedWhileBreeding, minimumNumberOfMutations,
                     maximumNumberOfMutations, genesMutatorVariant, genesNumber);
 
-//            simulationSaverCSV.saveToCSV(createdConfig, "file6");
+            if (false){
+                SimulationSaverCSV simulationSaverCSV = new SimulationSaverCSV();
+                SimulationReaderCSV simulationReaderCSV = new SimulationReaderCSV();
+                SimulationConfig simConfig = simulationReaderCSV.readFromCSV("file3");
+                simulationSaverCSV.saveToCSV(createdConfig, "file6");
+            }
 
             GlobeMap map = new GlobeMap(createdConfig.getWidth(), createdConfig.getHeight(), 0);
             MapChangeObserver listener = new ConsoleMapDisplay();
@@ -78,7 +79,7 @@ public class World {
 
             simulation.run();
 
-        } catch (MinMaxGeneException | HasToBePositiveException | CanNotBeNegativeException |
+        } catch (MinMaxGeneException | HasToBePositiveException | CanNotBeNegativeException | IOException |
                  MutationChangesCanNotExceedSize | FailedToReadConfig | HasToBeBit | BreedingCanNotKillAnimals exception) {
             System.err.println(exception.getMessage());
         }
