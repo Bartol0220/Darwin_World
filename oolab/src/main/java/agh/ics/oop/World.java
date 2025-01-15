@@ -26,7 +26,6 @@ public class World {
         int genesNumber = 3; // TODO wyjątek jeśli < 0
 
         SimulationConfig simConfig = new SimulationConfig.Builder().build();
-        ;
         try {
             simConfig = new SimulationConfig.Builder()
                     .height(height)

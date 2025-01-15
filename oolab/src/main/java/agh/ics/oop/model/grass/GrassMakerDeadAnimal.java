@@ -23,7 +23,6 @@ public class GrassMakerDeadAnimal extends AbstractGrassMaker {
 
     @Override
     public void deadAnimal(Animal animal) {
-        //TODO usuwaj pole kiedy przestaje być lepszym
         for (int y=max(animal.getPosition().getY()-1, 0); y <= min(animal.getPosition().getY()+1, map.getHeight()-1); y++) {
             for (int x=animal.getPosition().getX()-1; x <= animal.getPosition().getX()+1; x++) {
                 changePositionToBetter(map.handleBoundsPositions(new Vector2d(x, y)));
