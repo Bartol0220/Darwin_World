@@ -246,11 +246,9 @@ public class SimulationPresenter implements MapChangeObserver, FailedToSaveObser
                         AnimalButton button = new AnimalButton(animal, selectedAnimal, cellWidth);
                         button.setOnAction(_ -> onSimulationAnimalClicked(button));
                         GridPane.setHalignment(button, HPos.CENTER);
-//                        stackPane.getChildren().add(button);
 
                         ProgressBar progressBar = new ProgressBar();
                         progressBar.setProgress(animal.getAnimalStats().getEnergy()/ stats.getDayMaximumEnergy());
-//                        stackPane.getChildren().add(progressBar);
 
                         VBox vBox = new VBox();
                         vBox.setStyle("-fx-background-color: transparent");
@@ -260,7 +258,7 @@ public class SimulationPresenter implements MapChangeObserver, FailedToSaveObser
 
                         mapGridPane.add(stackPane, x, y);
                     } else {
-                        WorldElementBox box = new WorldElementBox(worldElement.get(), selectedAnimal, cellWidth);
+                        WorldElementBox box = new WorldElementBox(worldElement.get(), selectedAnimal, simulationEngine.getStats(), cellWidth);
                         GridPane.setHalignment(box, HPos.CENTER);
                         stackPane.getChildren().add(box);
                         mapGridPane.add(stackPane, x, y);
@@ -273,7 +271,7 @@ public class SimulationPresenter implements MapChangeObserver, FailedToSaveObser
     }
 
     private Optional<WorldElementBox> drawObject(Vector2d currentPosition) {
-        return map.objectAt(currentPosition).map(object -> new WorldElementBox(object, selectedAnimal, cellWidth));
+        return map.objectAt(currentPosition).map(object -> new WorldElementBox(object, selectedAnimal, simulationEngine.getStats(), cellWidth));
     }
 
     @Override

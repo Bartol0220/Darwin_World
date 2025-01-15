@@ -2,7 +2,9 @@ package agh.ics.oop;
 
 import agh.ics.oop.model.Animal;
 import agh.ics.oop.model.WorldElement;
+import agh.ics.oop.model.stats.Stats;
 import javafx.geometry.Pos;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
@@ -18,11 +20,23 @@ public class WorldElementBox extends VBox {
         return imageMap.computeIfAbsent(name, _ -> new Image("images/" + name));
     }
 
-    public WorldElementBox(WorldElement element, Optional<Animal> selectedAnimal, int cellWidth) {
+    public WorldElementBox(WorldElement element, Optional<Animal> selectedAnimal, Stats stats, int cellWidth) {
         String name = element.getName();
         if (selectedAnimal.isPresent() && (selectedAnimal.get() == element)) {
             name = "selected-" + name;
         }
+
+//        if (element instanceof Animal) {
+//            Animal animal = (Animal) element;
+//            ProgressBar progressBar = new ProgressBar();
+//
+//            progressBar.setStyle("-fx-background-color: #73ff00; -fx-background-insets: 1 1 1 1; -fx-padding: 0.3em;");
+////            progressBar.getStylesheets().add("simulation.css");
+//
+//            progressBar.setProgress(animal.getAnimalStats().getEnergy()/ stats.getDayMaximumEnergy());
+//
+//            this.getChildren().add(progressBar);
+//        }
 
         Image image = loadImage(name);
         ImageView imageView = new ImageView(image);
@@ -33,6 +47,7 @@ public class WorldElementBox extends VBox {
 
         this.setPrefSize(cellWidth * 0.9, cellWidth * 0.9);
         this.getChildren().addAll(imageView);
+        this.setStyle("-fx-background-color: transparent");
         this.setAlignment(Pos.CENTER);
     }
 }
