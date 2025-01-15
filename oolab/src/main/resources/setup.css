@@ -1,4 +1,18 @@
+BorderPane {
+    -fx-background-color: #3b3838;
+}
+
 HBox {
     -fx-padding: 15;
-    -fx-alignment: center;
+    -fx-background-color: #3b3838;
+}
+
+VBox {
+    -fx-background-color: #3b3838;
+}
+
+Label {
+    -fx-text-fill: #cccccc;
+    -fx-font-size: 15px;
+    -fx-background-color: #3b3838;
 }

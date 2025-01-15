@@ -2,28 +2,34 @@ package agh.ics.oop.presenter;
 
 import agh.ics.oop.SimulationEngine;
 import agh.ics.oop.WorldElementBox;
-import agh.ics.oop.WorldElementButton;
+import agh.ics.oop.AnimalButton;
 import agh.ics.oop.model.*;
+import agh.ics.oop.model.observers.MapChangeObserver;
+import agh.ics.oop.model.stats.Stats;
 import agh.ics.oop.model.util.Boundary;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import java.util.Objects;
 import java.util.Optional;
 
-public class SimulationPresenter implements MapChangeListener {
-    private double mapWidth;
-    private double mapHeight;
+public class SimulationPresenter implements MapChangeObserver {
+    private double stageWidth;
+    private double stageHeight;
     private SimulationEngine simulationEngine;
     private boolean running = true;
-    private static final String EMPTY_CELL = "";
     private int cellWidth;
     private int cellHeight;
     private GlobeMap map;
@@ -50,10 +56,28 @@ public class SimulationPresenter implements MapChangeListener {
     private Label grassCount;
     @FXML
     private Label freeSpace;
+    @FXML
+    private Label averageEnergy;
+    @FXML
+    private Label averageBirthrate;
+    @FXML
+    private Label mostCommonGenes;
+    @FXML
+    private Label deadAnimalCount;
+    @FXML
+    private Label averageLifespan;
+    @FXML
+    private Label threadSleepDisplay;
+    @FXML
+    private Slider threadSleep;
+    @FXML
+    private Label animalInfo;
+    @FXML
+    private Label animalStats;
 
-    private void setMapDimensions() {
-        mapWidth = stage.getWidth() * 0.85;
-        mapHeight = stage.getHeight() * 0.85;
+    private void setStageDimensions() {
+        stageWidth = stage.getWidth() - 520;
+        stageHeight = stage.getHeight() - 120;
     }
 
     private void setMap(GlobeMap map) {
@@ -64,12 +88,18 @@ public class SimulationPresenter implements MapChangeListener {
         map.registerObserver(this);
         this.stage = stage;
         this.simulationEngine = simulationEngine;
-        setMapDimensions();
+        setStageDimensions();
 
         setMap(map);
         drawMap();
 
         simulationEngine.runAsync();
+
+        threadSleep.valueProperty().addListener(
+                (observable, oldValue, newValue) -> {
+                    threadSleepDisplay.setText(String.format("%d", newValue.intValue()));
+                    simulationEngine.changeSleepingTime(newValue.intValue());
+                });
     }
 
     public void onSimulationPlayPauseClicked() {
@@ -91,10 +121,19 @@ public class SimulationPresenter implements MapChangeListener {
         }
     }
 
-    public void onSimulationAnimalClicked(WorldElementButton button) {
-        if (!running) {
-            selectedAnimal = button.getAnimal();
+    public void onSimulationAnimalClicked(AnimalButton button) {
+        if (selectedAnimal.isPresent() && (button.getAnimal() == selectedAnimal.get())) {
+            selectedAnimal = Optional.empty();
+        } else {
+            selectedAnimal = Optional.of(button.getAnimal());
         }
+        selectedAnimal
+                .ifPresentOrElse(
+                        (_ -> animalInfo.setText("Statistics of the selected animal.")),
+                        (() -> animalInfo.setText("To select an animal, stop the simulation and click on the chosen one."))
+                );
+        drawMap();
+        drawStats();
     }
 
     private void clearGrid() {
@@ -110,20 +149,26 @@ public class SimulationPresenter implements MapChangeListener {
         updateMapInfo(currentBounds);
         drawHeader(currentBounds);
         drawFirstColumn(currentBounds);
-        drawAllObjects(currentBounds);
+        if (running) {
+            drawAllObjects(currentBounds);
+        } else {
+            drawAllObjectsPaused(currentBounds);
+        }
+
     }
 
     private void updateMapInfo(Boundary currentBounds) {
         int mapWidth = currentBounds.upperRight().getX() - currentBounds.lowerLeft().getX() + 1;
         int mapHeight = currentBounds.upperRight().getY() - currentBounds.lowerLeft().getY() + 1;
-        cellWidth = (int) this.mapWidth / mapWidth;
-        cellHeight = (int) this.mapHeight / mapHeight;
-        cellHeight = Math.min(cellHeight, Math.min(cellWidth, 40));
+        cellWidth = (int) stageWidth / mapWidth;
+        cellHeight = (int) stageHeight / mapHeight;
+        cellHeight = Math.min(40, Math.min(cellWidth, cellHeight));
         cellWidth = cellHeight;
     }
 
     private void drawHeader(Boundary currentBounds) {
         Label label = new Label("y/x");
+        label.setFont(new Font("Arial", cellHeight*0.65));
         mapGridPane.add(label, 0, 0);
         GridPane.setHalignment(label, HPos.CENTER);
         mapGridPane.getColumnConstraints().add(new ColumnConstraints(cellWidth));
@@ -133,6 +178,7 @@ public class SimulationPresenter implements MapChangeListener {
         for (int j = currentBounds.lowerLeft().getX(); j < currentBounds.upperRight().getX() + 1; j++) {
             mapGridPane.getColumnConstraints().add(new ColumnConstraints(cellWidth));
             label = new Label(String.format("%d", j));
+            label.setFont(new Font("Arial", cellHeight*0.65));
             GridPane.setHalignment(label, HPos.CENTER);
             mapGridPane.add(label, cnt, 0);
             cnt++;
@@ -144,6 +190,7 @@ public class SimulationPresenter implements MapChangeListener {
         for (int j = currentBounds.upperRight().getY(); j > currentBounds.lowerLeft().getY() - 1; j--) {
             mapGridPane.getRowConstraints().add(new RowConstraints(cellHeight));
             Label label = new Label(String.format("%d", j));
+            label.setFont(new Font("Arial", cellHeight*0.60));
             GridPane.setHalignment(label, HPos.CENTER);
             mapGridPane.add(label, 0, cnt);
             cnt++;
@@ -153,37 +200,93 @@ public class SimulationPresenter implements MapChangeListener {
     private void drawAllObjects(Boundary currentBounds) {
         for(int y = 1; y < currentBounds.upperRight().getY() - currentBounds.lowerLeft().getY() + 2; y++) {
             for(int x = 1; x < currentBounds.upperRight().getX() - currentBounds.lowerLeft().getX() + 2; x++) {
-                Optional<WorldElementButton> worldElementBox = drawObject(new Vector2d(currentBounds.lowerLeft().getX()+x-1, currentBounds.upperRight().getY()-y+1));
+                Optional<WorldElementBox> worldElementBox = drawObject(new Vector2d(currentBounds.lowerLeft().getX()+x-1, currentBounds.upperRight().getY()-y+1));
+
+                StackPane stackPane = new StackPane();
+
+                Rectangle rectangle = new Rectangle(x, y, cellWidth, cellHeight);
+                rectangle.setFill(Color.GREEN);
+                rectangle.setOpacity(0.2);
+                stackPane.getChildren().add(rectangle);
+
                 if (worldElementBox.isPresent()) {
-                    worldElementBox.get().setOnAction(e -> {onSimulationAnimalClicked(worldElementBox.get());});
                     GridPane.setHalignment(worldElementBox.get(), HPos.CENTER);
-                    mapGridPane.add(worldElementBox.get(), x, y);
+                    stackPane.getChildren().add(worldElementBox.get());
+                    mapGridPane.add(stackPane, x, y);
                 } else {
-                    mapGridPane.add(new Label(EMPTY_CELL), x, y);
+                    mapGridPane.add(stackPane, x, y);
                 }
             }
         }
     }
 
-    private Optional<WorldElementButton> drawObject(Vector2d currentPosition) {
-        return map.objectAt(currentPosition).map(object -> new WorldElementButton(object, cellWidth));
+    private void drawAllObjectsPaused(Boundary currentBounds) {
+        for(int y = 1; y < currentBounds.upperRight().getY() - currentBounds.lowerLeft().getY() + 2; y++) {
+            for(int x = 1; x < currentBounds.upperRight().getX() - currentBounds.lowerLeft().getX() + 2; x++) {
+                Vector2d position = new Vector2d(currentBounds.lowerLeft().getX()+x-1, currentBounds.upperRight().getY()-y+1);
+
+                StackPane stackPane = new StackPane();
+
+                Rectangle rectangle = new Rectangle(x, y, cellWidth, cellHeight);
+                rectangle.setFill(Color.GREEN);
+                rectangle.setOpacity(0.2);
+                if (map.isFieldBetter(position)) {
+                    rectangle.setOpacity(0.4);
+                }
+                stackPane.getChildren().add(rectangle);
+
+                Optional<WorldElement> worldElement = map.objectAt(position);
+                if (worldElement.isPresent()) {
+                    if (worldElement.get() instanceof Animal) {
+                        AnimalButton button = new AnimalButton((Animal) worldElement.get(), selectedAnimal, cellWidth);
+                        button.setOnAction(_ -> onSimulationAnimalClicked(button));
+                        GridPane.setHalignment(button, HPos.CENTER);
+                        stackPane.getChildren().add(button);
+                        mapGridPane.add(stackPane, x, y);
+                    } else {
+                        WorldElementBox box = new WorldElementBox(worldElement.get(), selectedAnimal, cellWidth);
+                        GridPane.setHalignment(box, HPos.CENTER);
+                        stackPane.getChildren().add(box);
+                        mapGridPane.add(stackPane, x, y);
+                    }
+                } else {
+                    mapGridPane.add(stackPane, x, y);
+                }
+            }
+        }
+    }
+
+    private Optional<WorldElementBox> drawObject(Vector2d currentPosition) {
+        return map.objectAt(currentPosition).map(object -> new WorldElementBox(object, selectedAnimal, cellWidth));
     }
 
     @Override
     public void mapChanged(GlobeMap map, String message) {
         Platform.runLater(() -> {
-            Stats stats = simulationEngine.getStats();
             messageLabel.setText(message);
             drawMap();
-            currentAnimalCount.setText(String.valueOf(stats.getCurrentAnimalCount()));
-            maximumAnimalCount.setText(String.valueOf(stats.getMaximumAnimalCount()));
-            minimumAnimalCount.setText(String.valueOf(stats.getMinimumAnimalCount()));
-            allAnimalCount.setText(String.valueOf(stats.getAllAnimalCount()));
-            grassCount.setText(String.valueOf(stats.getGrassCount()));
-            freeSpace.setText(String.valueOf(stats.getFreeSpace()));
-
-            // TODO chyba nie freeSpace XD
-            selectedAnimal.ifPresent(animal -> freeSpace.setText(animal.getAnimalStats().toString()));
+            drawStats();
         });
+    }
+
+    private void drawStats() {
+        Stats stats = simulationEngine.getStats();
+        currentAnimalCount.setText(String.valueOf(stats.getCurrentAnimalCount()));
+        maximumAnimalCount.setText(String.valueOf(stats.getMaximumAnimalCount()));
+        minimumAnimalCount.setText(String.valueOf(stats.getMinimumAnimalCount()));
+        allAnimalCount.setText(String.valueOf(stats.getAllAnimalCount()));
+        grassCount.setText(String.valueOf(stats.getGrassCount()));
+        freeSpace.setText(String.valueOf(stats.getFreeSpace()));
+        averageEnergy.setText(String.format("%.1f", stats.getAverageEnergy()));
+        averageBirthrate.setText(String.format("%.1f", stats.getAverageBirthrate()));
+        mostCommonGenes.setText(String.valueOf(stats.getMostCommonGenes()));
+        deadAnimalCount.setText(String.valueOf(stats.getDeadAnimalCount()));
+        averageLifespan.setText(String.format("%.1f", stats.getAverageLifespan()));
+
+        selectedAnimal
+                .ifPresentOrElse(
+                        (animal -> animalStats.setText(animal.getAnimalStats().toString())),
+                        (() -> animalStats.setText(""))
+                );
     }
 }

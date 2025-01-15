@@ -1,6 +1,7 @@
 package agh.ics.oop.model;
 
 import agh.ics.oop.model.genes.Genes;
+import agh.ics.oop.model.stats.AnimalStats;
 
 import java.util.Random;
 
@@ -73,7 +74,7 @@ public class Animal implements WorldElement, Comparable<Animal> {
     }
 
     public void eat() {
-        animalStats.increseEnergy(energyProvidedByEatingGrass);
+        animalStats.increaseEnergy(energyProvidedByEatingGrass);
         animalStats.increaseEatenGrass();
     }
 

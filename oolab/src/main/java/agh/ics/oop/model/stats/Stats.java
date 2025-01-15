@@ -1,6 +1,9 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.stats;
 
 import agh.ics.oop.HashArray;
+import agh.ics.oop.model.Animal;
+import agh.ics.oop.model.observers.AnimalDiedObserver;
+import agh.ics.oop.model.GlobeMap;
 import agh.ics.oop.model.grass.AbstractGrassMaker;
 
 import java.util.*;
@@ -8,7 +11,7 @@ import java.util.*;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
-public class Stats {
+public class Stats implements AnimalDiedObserver {
     private final HashMap<HashArray, Integer> genesRecords = new HashMap<>();
     private final AbstractGrassMaker grassMaker;
     private final GlobeMap map;
@@ -148,7 +151,7 @@ public class Stats {
 
     @Override
     public String toString(){
-        return "ANIMALS: %d\nGRASS: %d\nSPACE: %d\nGENE: "
-                .formatted(currentAnimalCount, grassCount, freeSpace) + mostCommonGenes + "\nENERGY: %f\nLIFESPAN: %f\nCHILDREN %f".formatted(averageEnergy, averageLifespan, averageBirthrate);
+        return "Animal count: %d\nGrass count: %d\nFree space: %d\nMost common genes: "
+                .formatted(currentAnimalCount, grassCount, freeSpace) + mostCommonGenes + "\nAverage energy: %f\nAverage lifespan: %f\nAverage children count: %f".formatted(averageEnergy, averageLifespan, averageBirthrate);
     }
 }
