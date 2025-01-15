@@ -18,15 +18,15 @@ public class World {
         int startGrassNumber = 5;
         int energyProvidedByEatingGrass = 10;
         int dayGrassNumber = 1;
-        int grassMakerVariant = 0;
+        int grassMakerVariant = 1;
         int startNumberOfAnimals = 2;
-        int startingEnergy = 20;
-        int energyNeededForBreeding = 3;
-        int energyUsedWhileBreeding = 2;
+        int startingEnergy = 50;
+        int energyNeededForBreeding = 30;
+        int energyUsedWhileBreeding = 15;
         int minimumNumberOfMutations = 0;
         int maximumNumberOfMutations = 3;
         int genesMutatorVariant = 0;
-        int genesNumber = 5;
+        int genesNumber = 20;
 
 
         try {
@@ -40,7 +40,7 @@ public class World {
                     energyNeededForBreeding, energyUsedWhileBreeding, minimumNumberOfMutations,
                     maximumNumberOfMutations, genesMutatorVariant, genesNumber);
 
-            simulationSaverCSV.saveToCSV(createdConfig, "file4");
+            simulationSaverCSV.saveToCSV(createdConfig, "file6");
 
 
             GlobeMap map = new GlobeMap(simConfig.getWidth(), simConfig.getHeight(), 0);
@@ -65,7 +65,7 @@ public class World {
             AnimalCreator animalCreator = new AnimalCreator(simConfig.getStartingEnergy(), simConfig.getEnergyUsedWhileBreeding(), simConfig.getEnergyProvidedByEatingGrass(), genesFactory, stats);
             Breeding breeding = new Breeding(simConfig.getEnergyNeededForBreeding(), simConfig.getEnergyUsedWhileBreeding(), map, animalCreator);
 
-            StatsSaverCSV statsSaverCSV = new StatsSaverCSV(stats,"stats0");
+            StatsSaverCSV statsSaverCSV = new StatsSaverCSV(stats,"stats3");
             map.registerObserver(statsSaverCSV);
 
             Simulation simulation = new Simulation(map, grassMaker, breeding, animalCreator, simConfig.getStartNumberOfAnimals(), stats);
