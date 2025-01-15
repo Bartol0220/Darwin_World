@@ -1,6 +1,5 @@
 package agh.ics.oop.model;
 
-import agh.ics.oop.MapField;
 import agh.ics.oop.Simulation;
 import agh.ics.oop.model.errors.IncorrectPositionException;
 import agh.ics.oop.model.grass.Grass;
@@ -56,13 +55,17 @@ public class GlobeMap implements MoveValidator{
                 .count();
     }
 
-    public boolean isFieldBetter(Vector2d position) { return new Random().nextBoolean(); }
+    public boolean isFieldBetter(Vector2d position) { return allFields.get(position).isBetterPosition(); }
+
+    public void changeFieldToBetter(Vector2d position) { allFields.get(position).makePositionBetter();}
+
+    public void changeFieldToWorse(Vector2d position) { allFields.get(position).makePositionWorse();}
 
     public void registerObserver(MapChangeObserver observer) { observers.add(observer);}
 
     public void unregisterObserver(MapChangeObserver observer) { observers.remove(observer);}
 
-    public void notifyObservers(String message) throws IOException {
+    public void notifyObservers(String message) {
         for(MapChangeObserver observer : observers){
             observer.mapChanged(this, message);
         }

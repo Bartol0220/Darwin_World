@@ -16,7 +16,9 @@ public class GrassMakerEquator extends AbstractGrassMaker {
         for (int y=0; y < map.getHeight(); y++) {
             for (int x=0; x < map.getWidth(); x++) {
                 if (y >= startHeight && y < startHeight + equatorHeight) {
-                    freeBetterGrassPositions.add(new Vector2d(x, y));
+                    Vector2d position = new Vector2d(x, y);
+                    freeBetterGrassPositions.add(position);
+                    map.changeFieldToBetter(position);
                 } else {
                     freeWorseGrassPositions.add(new Vector2d(x, y));
                 }

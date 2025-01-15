@@ -4,6 +4,7 @@ import agh.ics.oop.SimulationEngine;
 import agh.ics.oop.WorldElementBox;
 import agh.ics.oop.AnimalButton;
 import agh.ics.oop.model.*;
+import agh.ics.oop.model.observers.FailedToSaveObserver;
 import agh.ics.oop.model.observers.MapChangeObserver;
 import agh.ics.oop.model.stats.Stats;
 import agh.ics.oop.model.util.Boundary;
@@ -12,20 +13,17 @@ import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Slider;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.RowConstraints;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.Optional;
 
-public class SimulationPresenter implements MapChangeObserver {
+public class SimulationPresenter implements MapChangeObserver, FailedToSaveObserver {
     private double stageWidth;
     private double stageHeight;
     private SimulationEngine simulationEngine;
@@ -74,6 +72,12 @@ public class SimulationPresenter implements MapChangeObserver {
     private Label animalInfo;
     @FXML
     private Label animalStats;
+    @FXML
+    private ProgressBar animalEnergyProgressBar;
+    @FXML
+    private Label animalEnergyInfo;
+    @FXML
+    private Label errorLabel;
 
     private void setStageDimensions() {
         stageWidth = stage.getWidth() - 520;
@@ -154,7 +158,6 @@ public class SimulationPresenter implements MapChangeObserver {
         } else {
             drawAllObjectsPaused(currentBounds);
         }
-
     }
 
     private void updateMapInfo(Boundary currentBounds) {
@@ -162,7 +165,7 @@ public class SimulationPresenter implements MapChangeObserver {
         int mapHeight = currentBounds.upperRight().getY() - currentBounds.lowerLeft().getY() + 1;
         cellWidth = (int) stageWidth / mapWidth;
         cellHeight = (int) stageHeight / mapHeight;
-        cellHeight = Math.min(40, Math.min(cellWidth, cellHeight));
+        cellHeight = Math.min(60, Math.min(cellWidth, cellHeight));
         cellWidth = cellHeight;
     }
 
@@ -221,6 +224,7 @@ public class SimulationPresenter implements MapChangeObserver {
     }
 
     private void drawAllObjectsPaused(Boundary currentBounds) {
+        Stats stats = simulationEngine.getStats();
         for(int y = 1; y < currentBounds.upperRight().getY() - currentBounds.lowerLeft().getY() + 2; y++) {
             for(int x = 1; x < currentBounds.upperRight().getX() - currentBounds.lowerLeft().getX() + 2; x++) {
                 Vector2d position = new Vector2d(currentBounds.lowerLeft().getX()+x-1, currentBounds.upperRight().getY()-y+1);
@@ -238,10 +242,22 @@ public class SimulationPresenter implements MapChangeObserver {
                 Optional<WorldElement> worldElement = map.objectAt(position);
                 if (worldElement.isPresent()) {
                     if (worldElement.get() instanceof Animal) {
-                        AnimalButton button = new AnimalButton((Animal) worldElement.get(), selectedAnimal, cellWidth);
+                        Animal animal = (Animal) worldElement.get();
+                        AnimalButton button = new AnimalButton(animal, selectedAnimal, cellWidth);
                         button.setOnAction(_ -> onSimulationAnimalClicked(button));
                         GridPane.setHalignment(button, HPos.CENTER);
-                        stackPane.getChildren().add(button);
+//                        stackPane.getChildren().add(button);
+
+                        ProgressBar progressBar = new ProgressBar();
+                        progressBar.setProgress(animal.getAnimalStats().getEnergy()/ stats.getDayMaximumEnergy());
+//                        stackPane.getChildren().add(progressBar);
+
+                        VBox vBox = new VBox();
+                        vBox.setStyle("-fx-background-color: transparent");
+                        vBox.getChildren().add(progressBar);
+                        vBox.getChildren().add(button);
+                        stackPane.getChildren().add(vBox);
+
                         mapGridPane.add(stackPane, x, y);
                     } else {
                         WorldElementBox box = new WorldElementBox(worldElement.get(), selectedAnimal, cellWidth);
@@ -285,8 +301,22 @@ public class SimulationPresenter implements MapChangeObserver {
 
         selectedAnimal
                 .ifPresentOrElse(
-                        (animal -> animalStats.setText(animal.getAnimalStats().toString())),
-                        (() -> animalStats.setText(""))
+                        (animal -> {
+                            animalStats.setText(animal.getAnimalStats().toString());
+                            animalEnergyInfo.setText("Energy:");
+                            animalEnergyProgressBar.setVisible(true);
+                            animalEnergyProgressBar.setProgress(animal.getAnimalStats().getEnergy()/stats.getDayMaximumEnergy());
+                        }),
+                        (() -> {
+                            animalStats.setText("");
+                            animalEnergyInfo.setText("");
+                            animalEnergyProgressBar.setVisible(false);
+                        })
                 );
+    }
+
+    @Override
+    public void failedToSave() {
+        errorLabel.setText("Failed to save the file with statistics.");
     }
 }

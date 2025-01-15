@@ -84,7 +84,7 @@ public class AnimalStats {
     @Override
     public String toString(){
         return "Genotype: " + Arrays.toString(getGenotypeArray()) +
-                "\nCurrent gene: %d\nEnergy: %d\nNumber of children: %d\nNumber of succesors: %d\nAge [days]: %d\nAmount of grass eaten: %d\nDate of death: %s"
+                "\n\nCurrent gene: %d\n\nEnergy: %d\n\nNumber of children: %d\n\nNumber of succesors: %d\n\nAge [days]: %d\n\nAmount of grass eaten: %d\n\nDate of death: %s"
                         .formatted(
                                 getGeneIndex(),
                                 energy,

@@ -1,10 +1,8 @@
 package agh.ics.oop.presenter;
 
-import agh.ics.oop.Simulation;
-import agh.ics.oop.SimulationApp;
-import agh.ics.oop.SimulationEngine;
-import agh.ics.oop.StatsSaverCSV;
+import agh.ics.oop.*;
 import agh.ics.oop.model.*;
+import agh.ics.oop.model.errors.*;
 import agh.ics.oop.model.genes.ClassicMutation;
 import agh.ics.oop.model.genes.GeneMutator;
 import agh.ics.oop.model.genes.GenesFactory;
@@ -14,14 +12,13 @@ import agh.ics.oop.model.grass.GrassMakerDeadAnimal;
 import agh.ics.oop.model.grass.GrassMakerEquator;
 import agh.ics.oop.model.stats.Stats;
 import javafx.fxml.FXML;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Spinner;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
 public class SetupPresenter {
+    private static int simulationCounter = 0;
     @FXML
     private Spinner<Integer> widthSpinner;
     @FXML
@@ -52,6 +49,10 @@ public class SetupPresenter {
     private ComboBox<String> genesMutatorBox;
     @FXML
     private CheckBox saveStatsBox;
+    @FXML
+    private Label errorLabel;
+    @FXML
+    private TextField fileNameField;
 
     public void initialize() {
         String [] grassMakerVariants = {"Forested equator", "Life-giving corpses"};
@@ -65,9 +66,35 @@ public class SetupPresenter {
         genesMutatorBox.getSelectionModel().select(0);
     }
 
+    public void onSetupSaveClicked() {
+        try {
+            SimulationSaverCSV saver = new SimulationSaverCSV();
+            SimulationConfig simulationConfig = configurateSimulation();
+            saver.saveToCSV(simulationConfig, "simulationConfig");
+        } catch (HasToBePositiveException | HasToBeBit | BreedingCanNotKillAnimals | CanNotBeNegativeException |
+                 MutationChangesCanNotExceedSize | MinMaxGeneException exception) {
+            errorLabel.setText(exception.getMessage());
+        } catch (IOException exception) {
+            errorLabel.setText("The system cannot find the specified path.");
+        }
+    }
+
+    public void onSetupReadClicked() {
+        try {
+            String fileName = fileNameField.getText();
+            SimulationReaderCSV simulationReader = new SimulationReaderCSV();
+            SimulationConfig simulationConfig = simulationReader.readFromCSV(fileName);
+            prepareSimulation(simulationConfig);
+        } catch (FailedToReadConfig exception) {
+            errorLabel.setText(exception.getMessage());
+        }
+
+    }
+
     public void onSetupResetClicked() {
         initialize();
 
+        errorLabel.setText("");
         widthSpinner.getValueFactory().setValue(25);
         heightSpinner.getValueFactory().setValue(25);
         startGrassNumberSpinner.getValueFactory().setValue(15);
@@ -80,9 +107,12 @@ public class SetupPresenter {
         genesNumberSpinner.getValueFactory().setValue(10);
         minimumNumberOfMutationsSpinner.getValueFactory().setValue(0);
         maximumNumberOfMutationsSpinner.getValueFactory().setValue(5);
+        saveStatsBox.setSelected(false);
     }
 
-    public void onSetupStartClicked() throws IOException {
+    public SimulationConfig configurateSimulation() throws HasToBePositiveException, HasToBeBit,
+            BreedingCanNotKillAnimals, CanNotBeNegativeException, MutationChangesCanNotExceedSize, MinMaxGeneException {
+        errorLabel.setText("");
         int width = widthSpinner.getValue();
         int height = heightSpinner.getValue();
         int startGrassNumber = startGrassNumberSpinner.getValue();
@@ -97,74 +127,98 @@ public class SetupPresenter {
         int minimumNumberOfMutations = minimumNumberOfMutationsSpinner.getValue();
         int maximumNumberOfMutations = maximumNumberOfMutationsSpinner.getValue();
         int genesMutatorVariant = genesMutatorBox.getSelectionModel().getSelectedIndex();
-        boolean saveStats = saveStatsBox.isSelected();
 
-        // TODO config
+        SimulationConfig simulationConfig = new SimulationConfig(
+                height, width, startGrassNumber, energyProvidedByEatingGrass, dayGrassNumber, grassMakerVariant,
+                startNumberOfAnimals, startingEnergy, energyNeededForBreeding, energyUsedWhileBreeding,
+                minimumNumberOfMutations, maximumNumberOfMutations, genesMutatorVariant, genesNumber
+        );
+        return simulationConfig;
+    }
 
-        GlobeMap map = new GlobeMap(width, height, 0);
-
-        AbstractGrassMaker grassMaker;
-        if (grassMakerVariant == 0) {
-            grassMaker = new GrassMakerEquator(startGrassNumber, dayGrassNumber, map);
-        } else {
-            grassMaker = new GrassMakerDeadAnimal(startGrassNumber, dayGrassNumber, map);
-        }
-
-        Stats stats = new Stats(map, grassMaker, startGrassNumber, startingEnergy, startNumberOfAnimals);
-
-        if (saveStats) {
-            // TODO ADI zrób coś:((
-            StatsSaverCSV statsSaverCSV = new StatsSaverCSV(stats, "stats1");
-            map.registerObserver(statsSaverCSV);
-        }
-
-        GeneMutator geneMutator;
-        if (genesMutatorVariant == 0) {
-            geneMutator = new ClassicMutation(minimumNumberOfMutations, maximumNumberOfMutations);
-        } else {
-            geneMutator = new SlightCorrection(minimumNumberOfMutations, maximumNumberOfMutations);
-        }
-
-        GenesFactory genesFactory = new GenesFactory(geneMutator, genesNumber);
-
-        AnimalCreator animalCreator = new AnimalCreator(startingEnergy, energyUsedWhileBreeding, energyProvidedByEatingGrass, genesFactory, stats);
-        Breeding breeding = new Breeding(energyNeededForBreeding, energyUsedWhileBreeding, map, animalCreator);
-
-        Simulation simulation = new Simulation(map, grassMaker, breeding, animalCreator, startNumberOfAnimals, stats);
-
-        simulation.registerAnimalDiedObserver(stats);
-        if (grassMaker instanceof GrassMakerDeadAnimal) {
-            simulation.registerAnimalDiedObserver((GrassMakerDeadAnimal) grassMaker);
-            simulation.registerNewDayObserver((GrassMakerDeadAnimal) grassMaker);
-        }
-
-        SimulationEngine simulationEngine = new SimulationEngine(simulation);
-        SimulationApp newSimulationApp = new SimulationApp();
-
+    public void onSetupStartClicked() {
         try {
+            SimulationConfig simulationConfig = configurateSimulation();
+            prepareSimulation(simulationConfig);
+
+        } catch (HasToBePositiveException | HasToBeBit | BreedingCanNotKillAnimals | CanNotBeNegativeException |
+                MutationChangesCanNotExceedSize | MinMaxGeneException exception) {
+            errorLabel.setText(exception.getMessage());
+        }
+    }
+
+    private void prepareSimulation(SimulationConfig simulationConfig) {
+        try {
+            boolean saveStats = saveStatsBox.isSelected();
+
+            GlobeMap map = new GlobeMap(simulationConfig.getWidth(), simulationConfig.getHeight(), simulationCounter);
+            simulationCounter++;
+
+            AbstractGrassMaker grassMaker;
+            if (simulationConfig.getGrassMakerVariant() == 0) {
+                grassMaker = new GrassMakerEquator(
+                        simulationConfig.getStartGrassNumber(), simulationConfig.getDayGrassNumber(), map
+                );
+            } else {
+                grassMaker = new GrassMakerDeadAnimal(
+                        simulationConfig.getStartGrassNumber(), simulationConfig.getDayGrassNumber(), map
+                );
+            }
+
+            Stats stats = new Stats(
+                    map, grassMaker, simulationConfig.getStartGrassNumber(), simulationConfig.getStartingEnergy(),
+                    simulationConfig.getStartNumberOfAnimals()
+            );
+
+            GeneMutator geneMutator;
+            if (simulationConfig.getGenesMutatorVariant() == 0) {
+                geneMutator = new ClassicMutation(
+                        simulationConfig.getMinimumNumberOfMutations(), simulationConfig.getMaximumNumberOfMutations()
+                );
+            } else {
+                geneMutator = new SlightCorrection(
+                        simulationConfig.getMinimumNumberOfMutations(), simulationConfig.getMaximumNumberOfMutations()
+                );
+            }
+
+            GenesFactory genesFactory = new GenesFactory(geneMutator, simulationConfig.getGenesNumber());
+
+            AnimalCreator animalCreator = new AnimalCreator(
+                    simulationConfig.getStartingEnergy(), simulationConfig.getEnergyUsedWhileBreeding(),
+                    simulationConfig.getEnergyProvidedByEatingGrass(), genesFactory, stats
+            );
+            Breeding breeding = new Breeding(
+                    simulationConfig.getEnergyNeededForBreeding(), simulationConfig.getEnergyUsedWhileBreeding(), map, animalCreator
+            );
+
+            Simulation simulation = new Simulation(
+                    map, grassMaker, breeding, animalCreator, simulationConfig.getStartNumberOfAnimals(), stats
+            );
+
+            if (saveStats) {
+                StatsSaverCSV statsSaverCSV = new StatsSaverCSV(stats, "stats" + simulationCounter);
+                simulation.registerNewDayObserver(statsSaverCSV);
+            }
+
+            simulation.registerAnimalDiedObserver(stats);
+            if (grassMaker instanceof GrassMakerDeadAnimal) {
+                simulation.registerAnimalDiedObserver((GrassMakerDeadAnimal) grassMaker);
+                simulation.registerNewDayObserver((GrassMakerDeadAnimal) grassMaker);
+            }
+
+            SimulationEngine simulationEngine = new SimulationEngine(simulation);
+            SimulationApp newSimulationApp = new SimulationApp();
+
             Stage stage = new Stage();
             SimulationPresenter presenter = newSimulationApp.showSimulation(stage);
+
+            simulation.registerFailedToSaveObserver(presenter);
+
             presenter.newSimulation(map, simulationEngine, stage);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException exception) {
+            errorLabel.setText(
+                    "The system cannot find the specified path. Please try again or run the program without saving statistics."
+            );
         }
-
-
-//        List<MoveDirection> directions = OptionsParser.parse(moves.getText().split(" "));
-//        GrassField map = new GrassField(4, 0);
-//        List<Vector2d> positions = List.of(new Vector2d(1,1), new Vector2d(3,3));
-//        Simulation simulation = new Simulation(positions, map, directions, 10, 3, new GrassMakerEquator(1, 1, 1, 1));
-//        SimulationEngine simulationEngine = new SimulationEngine(List.of(simulation));
-//
-//        SimulationApp newSimulationApp = new SimulationApp();
-//
-//        try {
-//            SimulationPresenter presenter = newSimulationApp.showSimulation(new Stage());
-//            presenter.newSimulation(map, simulationEngine);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
-
     }
 }

@@ -5,6 +5,7 @@ import agh.ics.oop.model.errors.IncorrectPositionException;
 import agh.ics.oop.model.grass.AbstractGrassMaker;
 import agh.ics.oop.model.grass.Grass;
 import agh.ics.oop.model.observers.AnimalDiedObserver;
+import agh.ics.oop.model.observers.FailedToSaveObserver;
 import agh.ics.oop.model.observers.NewDayObserver;
 import agh.ics.oop.model.stats.Stats;
 import agh.ics.oop.model.util.RandomVector2d;
@@ -13,16 +14,15 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.*;
 
 
 public class Simulation implements Runnable {
     private final GlobeMap map;
     private final List<AnimalDiedObserver> animalDiedObservers = new ArrayList<>();
     private final List<NewDayObserver> newDayObservers = new ArrayList<>();
+    private final List<FailedToSaveObserver> failedToSaveObserver = new ArrayList<>();
     private final List<Animal> animals = new LinkedList<>();
     private final AbstractGrassMaker grassMaker;
     private final AnimalCreator animalCreator;
@@ -80,7 +80,7 @@ public class Simulation implements Runnable {
                 map.notifyObservers("Day " + dayNumber);
                 notifyNewDayObservers(dayNumber);
             }
-        } catch (InterruptedException | IOException e) {
+        } catch (InterruptedException exception) {
             // TODO
         }
     }
@@ -108,9 +108,23 @@ public class Simulation implements Runnable {
 
     public void unregisterNewDayObserver(NewDayObserver observer) { newDayObservers.remove(observer);}
 
-    public void notifyNewDayObservers(int dayNumber){
-        for(NewDayObserver observer : newDayObservers){
-            observer.newDay(dayNumber);
+    public void notifyNewDayObservers(int dayNumber) {
+        try {
+            for(NewDayObserver observer : newDayObservers){
+                observer.newDay(dayNumber);
+            }
+        } catch (IOException e) {
+            notifyFailedToSaveObservers();
+        }
+    }
+
+    public void registerFailedToSaveObserver(FailedToSaveObserver observer) { failedToSaveObserver.add(observer);}
+
+    public void unregisterFailedToSaveObserver(FailedToSaveObserver observer) { failedToSaveObserver.remove(observer);}
+
+    public void notifyFailedToSaveObservers() {
+        for(FailedToSaveObserver observer : failedToSaveObserver){
+            observer.failedToSave();
         }
     }
 

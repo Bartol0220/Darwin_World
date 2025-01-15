@@ -9,9 +9,7 @@
 <?import javafx.scene.control.Label?>
 
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.shape.Line?>
 <?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.RadioButton?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             minHeight="550.0" minWidth="850.0"
@@ -20,7 +18,7 @@
 
 <center>
     <HBox spacing="15" alignment="CENTER" minWidth="850">
-        <VBox spacing="5" alignment="CENTER" minWidth="700">
+        <VBox spacing="5" alignment="CENTER" minWidth="500">
             <HBox spacing="15">
                 <Label text="Map width"/>
                 <Spinner fx:id="widthSpinner" min="2" max="60" initialValue="25"/>
@@ -83,14 +81,15 @@
                 <Label text="You twoja mama"/>
             </HBox>
         </VBox>
-        <VBox spacing="25" alignment="CENTER">
+        <VBox spacing="25" alignment="CENTER" minWidth="350">
+            <Label fx:id="errorLabel" maxWidth="350" wrapText="true" />
             <Button text="START" prefWidth="60" onAction="#onSetupStartClicked"/>
             <Button text="Reset" prefWidth="60" onAction="#onSetupResetClicked"/>
-            <Button text="Save" prefWidth="60"/>
+            <Button text="Save" prefWidth="60" onAction="#onSetupSaveClicked"/>
             <Label text="instrukcja"/>
             <HBox spacing="10">
-                <TextField text="File name"/>
-                <Button text="Read from file"/>
+                <TextField fx:id="fileNameField" text="File name"/>
+                <Button text="Read from file and start" onAction="#onSetupReadClicked"/>
             </HBox>
         </VBox>
     </HBox>

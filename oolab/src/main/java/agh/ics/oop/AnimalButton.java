@@ -1,6 +1,7 @@
 package agh.ics.oop;
 
 import agh.ics.oop.model.Animal;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -33,9 +34,12 @@ public class AnimalButton extends Button {
         BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, backgroundSize);
         Background background = new Background(backgroundImage);
 
+        this.setPadding(new Insets(0,0.5,0,0.5));
         this.setBackground(background);
         this.setAlignment(Pos.CENTER);
         this.setPrefSize(cellWidth * 0.9, cellWidth * 0.9);
+        this.setMaxWidth(cellWidth * 0.9);
+        this.setMaxHeight(cellWidth * 0.9);
         this.animal = animal;
     }
 }

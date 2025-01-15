@@ -24,6 +24,7 @@ public class Stats implements AnimalDiedObserver {
     private int freeSpace = 0;
     private HashArray mostCommonGenes;
     private double averageEnergy = 0;
+    private double dayMaximumEnergy = 1;
     private double averageLifespan = 0;
     private double averageBirthrate = 0;
 
@@ -53,6 +54,8 @@ public class Stats implements AnimalDiedObserver {
     public HashArray getMostCommonGenes() { return  mostCommonGenes;}
   
     public double getAverageEnergy() { return  averageEnergy;}
+
+    public double getDayMaximumEnergy() { return  dayMaximumEnergy;}
   
     public double getAverageLifespan() { return  averageLifespan;}
   
@@ -76,6 +79,10 @@ public class Stats implements AnimalDiedObserver {
 
     private void calculateNewAverageEnergy(List<Animal> animals){
         averageEnergy = animals.stream().mapToInt(Animal::getEnergy).average().orElse(0.0);
+    }
+
+    private void calculateNewDayMaximumEnergy(List<Animal> animals){
+        dayMaximumEnergy = animals.stream().mapToInt(Animal::getEnergy).max().orElse(1);
     }
 
     private void addGenesToHashMap(Animal animal){
@@ -147,6 +154,7 @@ public class Stats implements AnimalDiedObserver {
         updateGrassCount();
         calculateFreeSpace();
         calculateNewAverageEnergy(animals);
+        calculateNewDayMaximumEnergy(animals);
     }
 
     @Override

@@ -5,5 +5,5 @@ import agh.ics.oop.model.GlobeMap;
 import java.io.IOException;
 
 public interface MapChangeObserver {
-    void mapChanged(GlobeMap map, String message) throws IOException;
+    void mapChanged(GlobeMap map, String message);
 }

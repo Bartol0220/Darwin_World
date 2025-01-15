@@ -16,3 +16,8 @@ Label {
     -fx-font-size: 15px;
     -fx-background-color: #3b3838;
 }
+
+#errorLabel {
+    -fx-text-fill: #ff0000;
+    -fx-font-size: 20px;
+}

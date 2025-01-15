@@ -1,6 +1,6 @@
 package agh.ics.oop.model.grass;
 
-import agh.ics.oop.MapField;
+import agh.ics.oop.model.MapField;
 import agh.ics.oop.model.*;
 import agh.ics.oop.model.observers.AnimalDiedObserver;
 import agh.ics.oop.model.observers.NewDayObserver;
