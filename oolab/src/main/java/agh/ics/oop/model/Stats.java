@@ -148,7 +148,7 @@ public class Stats {
 
     @Override
     public String toString(){
-        return "ANIMALS: %d\nGRASS: %d\nSPACE: %d\nGENE: "
-                .formatted(currentAnimalCount, grassCount, freeSpace) + mostCommonGenes + "\nENERGY: %f\nLIFESPAN: %f\nCHILDREN %f".formatted(averageEnergy, averageLifespan, averageBirthrate);
+        return "Animal count: %d\nGrass count: %d\nFree space: %d\nMost common genes: "
+                .formatted(currentAnimalCount, grassCount, freeSpace) + mostCommonGenes + "\nAverage energy: %f\nAverage lifespan: %f\nAverage children count: %f".formatted(averageEnergy, averageLifespan, averageBirthrate);
     }
 }
