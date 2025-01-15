@@ -31,6 +31,7 @@ public class WorldElementBox extends VBox {
         imageView.setFitWidth(cellWidth * 0.9);
         imageView.setPreserveRatio(true);
 
+        this.setPrefSize(cellWidth * 0.9, cellWidth * 0.9);
         this.getChildren().addAll(imageView);
         this.setAlignment(Pos.CENTER);
     }
