@@ -1,6 +1,5 @@
 package agh.ics.oop.model.grass;
 
-import agh.ics.oop.model.Animal;
 import agh.ics.oop.model.GlobeMap;
 import agh.ics.oop.model.Vector2d;
 
@@ -25,10 +24,5 @@ public class GrassMakerEquator extends AbstractGrassMaker {
         }
         allBetterGrassPositions.addAll(freeBetterGrassPositions);
         growNumberOfGrasss(startGrassNumber);
-    }
-
-    @Override
-    public void deadAnimal(Animal animal) {
-        // ignore
     }
 }

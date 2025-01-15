@@ -3,6 +3,7 @@ package agh.ics.oop.model;
 import agh.ics.oop.Simulation;
 import agh.ics.oop.model.errors.IncorrectPositionException;
 import agh.ics.oop.model.grass.Grass;
+import agh.ics.oop.model.observers.MapChangeObserver;
 import agh.ics.oop.model.util.Boundary;
 import agh.ics.oop.model.util.MapVisualizer;
 
@@ -19,7 +20,7 @@ public class GlobeMap implements MoveValidator{
     private final HashSet<Vector2d> animalsOnGrass = new HashSet<>();
     private final Map<Vector2d, Grass> grassMap = new HashMap<>();
     private final MapVisualizer mapVisualizer = new MapVisualizer(this);
-    private final List<MapChangeListener> observers = new ArrayList<>();
+    private final List<MapChangeObserver> observers = new ArrayList<>();
 
     public GlobeMap(int width, int height, int id) {
         this.id = id;
@@ -46,12 +47,14 @@ public class GlobeMap implements MoveValidator{
                 .count();
     }
 
-    public void registerObserver(final MapChangeListener observer) { observers.add(observer);}
+    public boolean isFieldBetter(Vector2d position) { return new Random().nextBoolean(); }
 
-    public void unregisterObserver(final MapChangeListener observer) { observers.remove(observer);}
+    public void registerObserver(MapChangeObserver observer) { observers.add(observer);}
+
+    public void unregisterObserver(MapChangeObserver observer) { observers.remove(observer);}
 
     public void notifyObservers(String message){
-        for(MapChangeListener observer : observers){
+        for(MapChangeObserver observer : observers){
             observer.mapChanged(this, message);
         }
     }
@@ -65,7 +68,7 @@ public class GlobeMap implements MoveValidator{
     public void place(Animal animal) throws IncorrectPositionException {
         if(canMoveTo(animal.getPosition())) {
             addAnimalToMap(animal);
-//            notifyObservers("Animal placed at %s.".formatted(animal.getPosition()));
+//            notifyAnimalDiedObservers("Animal placed at %s.".formatted(animal.getPosition()));
         }
         else {
             throw new IncorrectPositionException(animal.getPosition());
@@ -112,7 +115,7 @@ public class GlobeMap implements MoveValidator{
         addAnimalOnGrass(animal);
         updateWhereAnimalsMeet(animal.getPosition());
 
-//        notifyObservers("Animal gn: %d, or: %s -> %s, pos: %s -> %s."
+//        notifyAnimalDiedObservers("Animal gn: %d, or: %s -> %s, pos: %s -> %s."
 //                .formatted(gene, previousOrientation, animal.getOrientation(), previousPosition, animal.getPosition())
 //        );
     }

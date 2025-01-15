@@ -3,6 +3,7 @@ package agh.ics.oop.presenter;
 import agh.ics.oop.Simulation;
 import agh.ics.oop.SimulationApp;
 import agh.ics.oop.SimulationEngine;
+import agh.ics.oop.StatsSaverCSV;
 import agh.ics.oop.model.*;
 import agh.ics.oop.model.genes.ClassicMutation;
 import agh.ics.oop.model.genes.GeneMutator;
@@ -13,6 +14,7 @@ import agh.ics.oop.model.grass.GrassMakerDeadAnimal;
 import agh.ics.oop.model.grass.GrassMakerEquator;
 import agh.ics.oop.model.stats.Stats;
 import javafx.fxml.FXML;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Spinner;
 import javafx.stage.Stage;
@@ -48,6 +50,8 @@ public class SetupPresenter {
     private Spinner<Integer> maximumNumberOfMutationsSpinner;
     @FXML
     private ComboBox<String> genesMutatorBox;
+    @FXML
+    private CheckBox saveStatsBox;
 
     public void initialize() {
         String [] grassMakerVariants = {"Forested equator", "Life-giving corpses"};
@@ -93,6 +97,9 @@ public class SetupPresenter {
         int minimumNumberOfMutations = minimumNumberOfMutationsSpinner.getValue();
         int maximumNumberOfMutations = maximumNumberOfMutationsSpinner.getValue();
         int genesMutatorVariant = genesMutatorBox.getSelectionModel().getSelectedIndex();
+        boolean saveStats = saveStatsBox.isSelected();
+
+        // TODO config
 
         GlobeMap map = new GlobeMap(width, height, 0);
 
@@ -104,6 +111,12 @@ public class SetupPresenter {
         }
 
         Stats stats = new Stats(map, grassMaker, startGrassNumber, startingEnergy, startNumberOfAnimals);
+
+        if (saveStats) {
+            // TODO ADI zrób coś:((
+            StatsSaverCSV statsSaverCSV = new StatsSaverCSV(stats);
+            map.registerObserver(statsSaverCSV);
+        }
 
         GeneMutator geneMutator;
         if (genesMutatorVariant == 0) {
@@ -118,6 +131,12 @@ public class SetupPresenter {
         Breeding breeding = new Breeding(energyNeededForBreeding, energyUsedWhileBreeding, map, animalCreator);
 
         Simulation simulation = new Simulation(map, grassMaker, breeding, animalCreator, startNumberOfAnimals, stats);
+
+        simulation.registerAnimalDiedObserver(stats);
+        if (grassMaker instanceof GrassMakerDeadAnimal) {
+            simulation.registerAnimalDiedObserver((GrassMakerDeadAnimal) grassMaker);
+            simulation.registerNewDayObserver((GrassMakerDeadAnimal) grassMaker);
+        }
 
         SimulationEngine simulationEngine = new SimulationEngine(simulation);
         SimulationApp newSimulationApp = new SimulationApp();

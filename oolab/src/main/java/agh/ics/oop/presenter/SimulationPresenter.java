@@ -2,8 +2,9 @@ package agh.ics.oop.presenter;
 
 import agh.ics.oop.SimulationEngine;
 import agh.ics.oop.WorldElementBox;
-import agh.ics.oop.WorldElementButton;
+import agh.ics.oop.AnimalButton;
 import agh.ics.oop.model.*;
+import agh.ics.oop.model.observers.MapChangeObserver;
 import agh.ics.oop.model.stats.Stats;
 import agh.ics.oop.model.util.Boundary;
 import javafx.application.Platform;
@@ -15,19 +16,20 @@ import javafx.scene.control.Slider;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import java.util.Optional;
 
-public class SimulationPresenter implements MapChangeListener {
+public class SimulationPresenter implements MapChangeObserver {
     private double stageWidth;
     private double stageHeight;
     private SimulationEngine simulationEngine;
     private boolean running = true;
-    private static final String EMPTY_CELL = "";
     private int cellWidth;
     private int cellHeight;
     private GlobeMap map;
@@ -119,17 +121,18 @@ public class SimulationPresenter implements MapChangeListener {
         }
     }
 
-    public void onSimulationAnimalClicked(WorldElementButton button) {
-        if (button.getAnimal() == selectedAnimal) {
+    public void onSimulationAnimalClicked(AnimalButton button) {
+        if (selectedAnimal.isPresent() && (button.getAnimal() == selectedAnimal.get())) {
             selectedAnimal = Optional.empty();
         } else {
-            selectedAnimal = button.getAnimal();
+            selectedAnimal = Optional.of(button.getAnimal());
         }
         selectedAnimal
                 .ifPresentOrElse(
                         (_ -> animalInfo.setText("Statistics of the selected animal.")),
                         (() -> animalInfo.setText("To select an animal, stop the simulation and click on the chosen one."))
                 );
+        drawMap();
         drawStats();
     }
 
@@ -187,7 +190,7 @@ public class SimulationPresenter implements MapChangeListener {
         for (int j = currentBounds.upperRight().getY(); j > currentBounds.lowerLeft().getY() - 1; j--) {
             mapGridPane.getRowConstraints().add(new RowConstraints(cellHeight));
             Label label = new Label(String.format("%d", j));
-            label.setFont(new Font("Arial", cellHeight*0.65));
+            label.setFont(new Font("Arial", cellHeight*0.60));
             GridPane.setHalignment(label, HPos.CENTER);
             mapGridPane.add(label, 0, cnt);
             cnt++;
@@ -198,11 +201,20 @@ public class SimulationPresenter implements MapChangeListener {
         for(int y = 1; y < currentBounds.upperRight().getY() - currentBounds.lowerLeft().getY() + 2; y++) {
             for(int x = 1; x < currentBounds.upperRight().getX() - currentBounds.lowerLeft().getX() + 2; x++) {
                 Optional<WorldElementBox> worldElementBox = drawObject(new Vector2d(currentBounds.lowerLeft().getX()+x-1, currentBounds.upperRight().getY()-y+1));
+
+                StackPane stackPane = new StackPane();
+
+                Rectangle rectangle = new Rectangle(x, y, cellWidth, cellHeight);
+                rectangle.setFill(Color.GREEN);
+                rectangle.setOpacity(0.2);
+                stackPane.getChildren().add(rectangle);
+
                 if (worldElementBox.isPresent()) {
                     GridPane.setHalignment(worldElementBox.get(), HPos.CENTER);
-                    mapGridPane.add(worldElementBox.get(), x, y);
+                    stackPane.getChildren().add(worldElementBox.get());
+                    mapGridPane.add(stackPane, x, y);
                 } else {
-                    mapGridPane.add(new Label(EMPTY_CELL), x, y);
+                    mapGridPane.add(stackPane, x, y);
                 }
             }
         }
@@ -211,24 +223,41 @@ public class SimulationPresenter implements MapChangeListener {
     private void drawAllObjectsPaused(Boundary currentBounds) {
         for(int y = 1; y < currentBounds.upperRight().getY() - currentBounds.lowerLeft().getY() + 2; y++) {
             for(int x = 1; x < currentBounds.upperRight().getX() - currentBounds.lowerLeft().getX() + 2; x++) {
-                Optional<WorldElementButton> worldElementButton = drawObjectPaused(new Vector2d(currentBounds.lowerLeft().getX()+x-1, currentBounds.upperRight().getY()-y+1));
-                if (worldElementButton.isPresent()) {
-                    worldElementButton.get().setOnAction(_ -> onSimulationAnimalClicked(worldElementButton.get()));
-                    GridPane.setHalignment(worldElementButton.get(), HPos.CENTER);
-                    mapGridPane.add(worldElementButton.get(), x, y);
+                Vector2d position = new Vector2d(currentBounds.lowerLeft().getX()+x-1, currentBounds.upperRight().getY()-y+1);
+
+                StackPane stackPane = new StackPane();
+
+                Rectangle rectangle = new Rectangle(x, y, cellWidth, cellHeight);
+                rectangle.setFill(Color.GREEN);
+                rectangle.setOpacity(0.2);
+                if (map.isFieldBetter(position)) {
+                    rectangle.setOpacity(0.4);
+                }
+                stackPane.getChildren().add(rectangle);
+
+                Optional<WorldElement> worldElement = map.objectAt(position);
+                if (worldElement.isPresent()) {
+                    if (worldElement.get() instanceof Animal) {
+                        AnimalButton button = new AnimalButton((Animal) worldElement.get(), selectedAnimal, cellWidth);
+                        button.setOnAction(_ -> onSimulationAnimalClicked(button));
+                        GridPane.setHalignment(button, HPos.CENTER);
+                        stackPane.getChildren().add(button);
+                        mapGridPane.add(stackPane, x, y);
+                    } else {
+                        WorldElementBox box = new WorldElementBox(worldElement.get(), selectedAnimal, cellWidth);
+                        GridPane.setHalignment(box, HPos.CENTER);
+                        stackPane.getChildren().add(box);
+                        mapGridPane.add(stackPane, x, y);
+                    }
                 } else {
-                    mapGridPane.add(new Label(EMPTY_CELL), x, y);
+                    mapGridPane.add(stackPane, x, y);
                 }
             }
         }
     }
 
     private Optional<WorldElementBox> drawObject(Vector2d currentPosition) {
-        return map.objectAt(currentPosition).map(object -> new WorldElementBox(object, cellWidth));
-    }
-
-    private Optional<WorldElementButton> drawObjectPaused(Vector2d currentPosition) {
-        return map.objectAt(currentPosition).map(object -> new WorldElementButton(object, cellWidth));
+        return map.objectAt(currentPosition).map(object -> new WorldElementBox(object, selectedAnimal, cellWidth));
     }
 
     @Override
@@ -259,6 +288,5 @@ public class SimulationPresenter implements MapChangeListener {
                         (animal -> animalStats.setText(animal.getAnimalStats().toString())),
                         (() -> animalStats.setText(""))
                 );
-//        selectedAnimal.ifPresent(animal -> animalStats.setText(animal.getAnimalStats().toString()));
     }
 }

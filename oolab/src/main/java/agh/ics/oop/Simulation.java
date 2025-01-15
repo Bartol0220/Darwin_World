@@ -4,17 +4,18 @@ import agh.ics.oop.model.*;
 import agh.ics.oop.model.errors.IncorrectPositionException;
 import agh.ics.oop.model.grass.AbstractGrassMaker;
 import agh.ics.oop.model.grass.Grass;
+import agh.ics.oop.model.observers.AnimalDiedObserver;
+import agh.ics.oop.model.observers.NewDayObserver;
 import agh.ics.oop.model.stats.Stats;
 import agh.ics.oop.model.util.RandomVector2d;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 
 public class Simulation implements Runnable {
     private final GlobeMap map;
+    private final List<AnimalDiedObserver> animalDiedObservers = new ArrayList<>();
+    private final List<NewDayObserver> newDayObservers = new ArrayList<>();
     private final List<Animal> animals = new LinkedList<>();
     private final AbstractGrassMaker grassMaker;
     private final AnimalCreator animalCreator;
@@ -68,8 +69,9 @@ public class Simulation implements Runnable {
                 Thread.sleep(threadSleepTime);
                 dayNumber++;
                 runDay();
-                map.notifyObservers("Day " + dayNumber);
                 stats.updateGeneralStats(animals);
+                map.notifyObservers("Day " + dayNumber);
+                notifyNewDayObservers(dayNumber);
             }
         } catch (InterruptedException e) {
             // TODO
@@ -85,13 +87,32 @@ public class Simulation implements Runnable {
         stats.calculateAverageBirthRate(animals);
     }
 
+    public void registerAnimalDiedObserver(AnimalDiedObserver observer) { animalDiedObservers.add(observer);}
+
+    public void unregisterAnimalDiedObserver(AnimalDiedObserver observer) { animalDiedObservers.remove(observer);}
+
+    public void notifyAnimalDiedObservers(Animal animal){
+        for(AnimalDiedObserver observer : animalDiedObservers){
+            observer.animalDied(animal);
+        }
+    }
+
+    public void registerNewDayObserver(NewDayObserver observer) { newDayObservers.add(observer);}
+
+    public void unregisterNewDayObserver(NewDayObserver observer) { newDayObservers.remove(observer);}
+
+    public void notifyNewDayObservers(int dayNumber){
+        for(NewDayObserver observer : newDayObservers){
+            observer.newDay(dayNumber);
+        }
+    }
+
     private void removeDeadAnimals() {
         animals.removeIf(animal -> {
             if (animal.getEnergy() < 1){
                 map.removeAnimalFromMap(animal);
-                grassMaker.deadAnimal(animal);
+                notifyAnimalDiedObservers(animal);
                 animal.getAnimalStats().setDeathDate(dayNumber);
-                stats.animalDied(animal);
                 stats.calculateNewAverageLifeSpan(animal.getAnimalStats().getAge());
                 stats.calculateAverageBirthRate(animals);
                 return true;

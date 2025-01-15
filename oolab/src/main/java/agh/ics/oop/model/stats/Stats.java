@@ -2,6 +2,7 @@ package agh.ics.oop.model.stats;
 
 import agh.ics.oop.HashArray;
 import agh.ics.oop.model.Animal;
+import agh.ics.oop.model.observers.AnimalDiedObserver;
 import agh.ics.oop.model.GlobeMap;
 import agh.ics.oop.model.grass.AbstractGrassMaker;
 
@@ -10,7 +11,7 @@ import java.util.*;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
-public class Stats {
+public class Stats implements AnimalDiedObserver {
     private final HashMap<HashArray, Integer> genesRecords = new HashMap<>();
     private final AbstractGrassMaker grassMaker;
     private final GlobeMap map;

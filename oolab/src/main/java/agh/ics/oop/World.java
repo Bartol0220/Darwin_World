@@ -6,6 +6,7 @@ import agh.ics.oop.model.genes.*;
 import agh.ics.oop.model.grass.AbstractGrassMaker;
 import agh.ics.oop.model.grass.GrassMakerDeadAnimal;
 import agh.ics.oop.model.grass.GrassMakerEquator;
+import agh.ics.oop.model.observers.MapChangeObserver;
 import agh.ics.oop.model.stats.Stats;
 
 public class World {
@@ -50,7 +51,7 @@ public class World {
             //jak wywali blad, to uzyj defaultowych ustawien
         } finally {
             GlobeMap map = new GlobeMap(simConfig.width(), simConfig.height(), 0);
-            MapChangeListener listener = new ConsoleMapDisplay();
+            MapChangeObserver listener = new ConsoleMapDisplay();
             map.registerObserver(listener);
             AbstractGrassMaker grassMaker;
             if (simConfig.grassMakerVariant()==1) {
@@ -72,6 +73,13 @@ public class World {
             Breeding breeding = new Breeding(simConfig.energyNeededForBreeding(), simConfig.energyUsedWhileBreeding(), map, animalCreator);
 
             Simulation simulation = new Simulation(map, grassMaker, breeding, animalCreator, simConfig.startNumberOfAnimals(), stats);
+
+            simulation.registerAnimalDiedObserver(stats);
+            if (grassMaker instanceof GrassMakerDeadAnimal) {
+                simulation.registerAnimalDiedObserver((GrassMakerDeadAnimal) grassMaker);
+                simulation.registerNewDayObserver((GrassMakerDeadAnimal) grassMaker);
+            }
+
             simulation.run();
         }
     }

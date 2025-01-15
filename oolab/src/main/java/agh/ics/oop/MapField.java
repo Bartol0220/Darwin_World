@@ -10,7 +10,6 @@ import java.util.List;
 public class MapField {
     private final Vector2d position;
     private final List<Animal> animals = new ArrayList<Animal>();
-    private boolean hasGrass = false;
     private boolean isBetterPosition = false;
     private int lastDeathDate = 0;
 
@@ -22,7 +21,7 @@ public class MapField {
         lastDeathDate = date;
     }
 
-    public void setHasGrass(boolean hasGrass) { this.hasGrass = hasGrass; }
+    public int getLastDeathDate() { return lastDeathDate; }
 
     public void setIsBetterPosition(boolean betterPosition) { this.isBetterPosition = betterPosition; }
 

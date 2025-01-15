@@ -1,5 +1,6 @@
 package agh.ics.oop;
 
+import agh.ics.oop.model.Animal;
 import agh.ics.oop.model.WorldElement;
 import javafx.geometry.Pos;
 import javafx.scene.image.Image;
@@ -8,6 +9,7 @@ import javafx.scene.layout.VBox;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class WorldElementBox extends VBox {
     private static final Map<String, Image> imageMap = new HashMap<>();
@@ -16,8 +18,13 @@ public class WorldElementBox extends VBox {
         return imageMap.computeIfAbsent(name, _ -> new Image("images/" + name));
     }
 
-    public WorldElementBox(WorldElement element, int cellWidth) {
-        Image image = loadImage(element.getName());
+    public WorldElementBox(WorldElement element, Optional<Animal> selectedAnimal, int cellWidth) {
+        String name = element.getName();
+        if (selectedAnimal.isPresent() && (selectedAnimal.get() == element)) {
+            name = "selected-" + name;
+        }
+
+        Image image = loadImage(name);
         ImageView imageView = new ImageView(image);
 
         imageView.setFitHeight(cellWidth * 0.9);
