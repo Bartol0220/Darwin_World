@@ -1,6 +1,8 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.stats;
 
 import agh.ics.oop.HashArray;
+import agh.ics.oop.model.Animal;
+import agh.ics.oop.model.GlobeMap;
 import agh.ics.oop.model.grass.AbstractGrassMaker;
 
 import java.util.*;

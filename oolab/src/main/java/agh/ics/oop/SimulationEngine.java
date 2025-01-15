@@ -1,6 +1,6 @@
 package agh.ics.oop;
 
-import agh.ics.oop.model.Stats;
+import agh.ics.oop.model.stats.Stats;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,4 +39,6 @@ public class SimulationEngine {
     public Stats getStats() {
         return simulation.getStats();
     }
+
+    public void changeSleepingTime(int time) { simulation.setThreadSleep(time); }
 }

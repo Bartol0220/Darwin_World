@@ -4,6 +4,7 @@ import agh.ics.oop.model.*;
 import agh.ics.oop.model.errors.IncorrectPositionException;
 import agh.ics.oop.model.grass.AbstractGrassMaker;
 import agh.ics.oop.model.grass.Grass;
+import agh.ics.oop.model.stats.Stats;
 import agh.ics.oop.model.util.RandomVector2d;
 
 import java.util.LinkedList;
@@ -21,7 +22,7 @@ public class Simulation implements Runnable {
     private final Stats stats;
     private int dayNumber = 0;
     private boolean running = true;
-    private final Random random = new Random();
+    private int threadSleepTime = 700;
 
     public Simulation(GlobeMap map, AbstractGrassMaker grassMaker, Breeding breeding, AnimalCreator animalCreator, int startNumberOfAnimals, Stats stats) {
         this.map = map;
@@ -55,12 +56,16 @@ public class Simulation implements Runnable {
         running = true;
     }
 
+    public void setThreadSleep(int time) {
+        threadSleepTime = time;
+    }
+
     public void run() {
         stats.updateGeneralStats(animals);
 
         try {
             while (!animals.isEmpty() && running) {
-                Thread.sleep(700);
+                Thread.sleep(threadSleepTime);
                 dayNumber++;
                 runDay();
                 map.notifyObservers("Day " + dayNumber);

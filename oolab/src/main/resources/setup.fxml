@@ -15,8 +15,8 @@
             fx:controller="agh.ics.oop.presenter.SetupPresenter">
 
 <center>
-    <HBox spacing="15">
-        <VBox spacing="5">
+    <HBox spacing="15" alignment="CENTER" minWidth="850">
+        <VBox spacing="5" alignment="CENTER" minWidth="700">
             <HBox spacing="15">
                 <Label text="Map width"/>
                 <Spinner fx:id="widthSpinner" min="2" max="60" initialValue="25"/>
@@ -59,7 +59,7 @@
             </HBox>
             <HBox spacing="15">
                 <Label text="Animal genome length"/>
-                <Spinner fx:id="genesNumberSpinner" min="1" max="100" initialValue="10"/>
+                <Spinner fx:id="genesNumberSpinner" min="1" max="25" initialValue="10"/>
             </HBox>
             <HBox spacing="15">
                 <Label text="Minimum number of mutations"/>

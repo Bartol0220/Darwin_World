@@ -6,6 +6,7 @@ import agh.ics.oop.model.genes.*;
 import agh.ics.oop.model.grass.AbstractGrassMaker;
 import agh.ics.oop.model.grass.GrassMakerDeadAnimal;
 import agh.ics.oop.model.grass.GrassMakerEquator;
+import agh.ics.oop.model.stats.Stats;
 
 public class World {
     public static void main(String[] args) {
