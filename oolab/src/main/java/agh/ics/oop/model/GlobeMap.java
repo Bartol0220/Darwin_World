@@ -7,11 +7,10 @@ import agh.ics.oop.model.observers.MapChangeObserver;
 import agh.ics.oop.model.util.Boundary;
 import agh.ics.oop.model.util.MapVisualizer;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Stream;
 
-public class GlobeMap implements MoveValidator{
+public class GlobeMap implements MoveValidator {
     private final int id;
     private final int width;
     private final int height;
@@ -54,6 +53,8 @@ public class GlobeMap implements MoveValidator{
                 .distinct()
                 .count();
     }
+
+    public boolean areMultipleAnimalsOnField(Vector2d position) { return allFields.get(position).getNumberOfAnimals() > 1;}
 
     public boolean isFieldBetter(Vector2d position) { return allFields.get(position).isBetterPosition(); }
 

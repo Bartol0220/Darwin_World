@@ -1,6 +1,7 @@
 package agh.ics.oop;
 
 import agh.ics.oop.model.Animal;
+import agh.ics.oop.model.GlobeMap;
 import agh.ics.oop.model.WorldElement;
 import agh.ics.oop.model.stats.Stats;
 import javafx.geometry.Pos;
@@ -20,9 +21,11 @@ public class WorldElementBox extends VBox {
         return imageMap.computeIfAbsent(name, _ -> new Image("images/" + name));
     }
 
-    public WorldElementBox(WorldElement element, Optional<Animal> selectedAnimal, Stats stats, int cellWidth) {
+    public WorldElementBox(WorldElement element, Optional<Animal> selectedAnimal, GlobeMap map, int cellWidth) {
         String name = element.getName();
-        if (selectedAnimal.isPresent() && (selectedAnimal.get() == element)) {
+        if (map.areMultipleAnimalsOnField(element.getPosition())) {
+            name = "wolfs.png";
+        } else if (selectedAnimal.isPresent() && (selectedAnimal.get() == element)) {
             name = "selected-" + name;
         }
 

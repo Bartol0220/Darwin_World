@@ -37,3 +37,15 @@ ScrollPane {
     -fx-text-fill: #ff0000;
     -fx-font-size: 20px;
 }
+
+#selectedAnimalPane {
+    -fx-background-color: #040685;
+}
+
+#genotypeAnimalPane {
+    -fx-background-color: #008da6;
+}
+
+#grassAnimalPane {
+    -fx-background-color: #2a7328;
+}

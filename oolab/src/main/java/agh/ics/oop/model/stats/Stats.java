@@ -2,11 +2,13 @@ package agh.ics.oop.model.stats;
 
 import agh.ics.oop.HashArray;
 import agh.ics.oop.model.Animal;
+import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.observers.AnimalDiedObserver;
 import agh.ics.oop.model.GlobeMap;
 import agh.ics.oop.model.grass.AbstractGrassMaker;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -27,6 +29,7 @@ public class Stats implements AnimalDiedObserver {
     private double dayMaximumEnergy = 1;
     private double averageLifespan = 0;
     private double averageBirthrate = 0;
+    private List<Animal> animals;
 
     public Stats(GlobeMap map, AbstractGrassMaker grassMaker, int startingGrassCount, int startingEnergy, int startingAnimalCount){
         this.map = map;
@@ -149,12 +152,20 @@ public class Stats implements AnimalDiedObserver {
 
 
     public void updateGeneralStats(List<Animal> animals){
+        this.animals = animals;
         this.currentAnimalCount = animals.size();
         allAnimalCount = max(allAnimalCount, currentAnimalCount);
         updateGrassCount();
         calculateFreeSpace();
         calculateNewAverageEnergy(animals);
         calculateNewDayMaximumEnergy(animals);
+    }
+
+    public Set<Vector2d> getPositionsWithPopularAnimal() {
+        return animals.stream()
+                .filter(animal -> getMostCommonGenes().equals(new HashArray(animal.getAnimalStats().getGenotypeArray())))
+                .map(Animal::getPosition)
+                .collect(Collectors.toSet());
     }
 
     @Override

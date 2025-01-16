@@ -76,7 +76,7 @@ public class Simulation implements Runnable {
                 Thread.sleep(threadSleepTime);
                 dayNumber++;
                 runDay();
-                stats.updateGeneralStats(animals);
+                stats.updateGeneralStats(getAnimals());
                 map.notifyObservers("Day " + dayNumber);
                 notifyNewDayObservers(dayNumber);
             }
@@ -162,10 +162,5 @@ public class Simulation implements Runnable {
 
     public Stats getStats() { return stats; }
 
-    public Set<Vector2d> getPositionsWithPopularAnimal() {
-        return animals.stream()
-                .filter(animal -> stats.getMostCommonGenes().equals(new HashArray(animal.getAnimalStats().getGenotypeArray())))
-                .map(Animal::getPosition)
-                .collect(Collectors.toSet());
-    }
+    private List<Animal> getAnimals() { return List.copyOf(animals); }
 }

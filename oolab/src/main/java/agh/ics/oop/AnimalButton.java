@@ -1,6 +1,8 @@
 package agh.ics.oop;
 
 import agh.ics.oop.model.Animal;
+import agh.ics.oop.model.GlobeMap;
+import agh.ics.oop.model.Vector2d;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -10,6 +12,7 @@ import javafx.scene.layout.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 public class AnimalButton extends Button {
     private final Animal animal;
@@ -23,10 +26,14 @@ public class AnimalButton extends Button {
         return animal;
     }
 
-    public AnimalButton(Animal animal, Optional<Animal> selectedAnimal, int cellWidth) {
+    public AnimalButton(Animal animal, Optional<Animal> selectedAnimal, int cellWidth, Set<Vector2d> positions, GlobeMap map) {
         String name = animal.getName();
-        if (selectedAnimal.isPresent() && (selectedAnimal.get() == animal)) {
+        if (map.areMultipleAnimalsOnField(animal.getPosition())) {
+            name = "wolfs.png";
+        } else if (selectedAnimal.isPresent() && (selectedAnimal.get() == animal)) {
             name = "selected-" + name;
+        } else if (positions.contains(animal.getPosition())) {
+            name = "gene-" + name;
         }
 
         Image image = loadImage(name);
