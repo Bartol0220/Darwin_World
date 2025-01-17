@@ -24,7 +24,11 @@ public class WorldElementBox extends VBox {
     public WorldElementBox(WorldElement element, Optional<Animal> selectedAnimal, GlobeMap map, int cellWidth) {
         String name = element.getName();
         if (map.areMultipleAnimalsOnField(element.getPosition())) {
-            name = "wolfs.png";
+            if (selectedAnimal.isPresent() && (selectedAnimal.get() == element)) {
+                name = "wolfs-selected.png";
+            } else {
+                name = "wolfs.png";
+            }
         } else if (selectedAnimal.isPresent() && (selectedAnimal.get() == element)) {
             name = "selected-" + name;
         }

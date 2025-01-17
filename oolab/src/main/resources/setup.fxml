@@ -45,11 +45,11 @@
             </HBox>
             <HBox spacing="15">
                 <Label text="Initial number of animals"/>
-                <Spinner fx:id="startNumberOfAnimalsSpinner" min="0" max="2000" initialValue="5"/>
+                <Spinner fx:id="startNumberOfAnimalsSpinner" min="1" max="2000" initialValue="5"/>
             </HBox>
             <HBox spacing="15">
                 <Label text="Initial energy of animals"/>
-                <Spinner fx:id="startingEnergySpinner" min="0" max="1000" initialValue="30"/>
+                <Spinner fx:id="startingEnergySpinner" min="1" max="1000" initialValue="30"/>
             </HBox>
             <HBox spacing="15">
                 <Label text="Energy needed to consider the animal as ready to breed"/>

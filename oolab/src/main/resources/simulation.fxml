@@ -102,7 +102,8 @@
                 <VBox spacing="20">
                     <Label fx:id="animalInfo"
                            text="To select an animal, stop the simulation and click on the chosen one."
-                           textAlignment="CENTER"
+                           textAlignment="LEFT"
+                           wrapText="true"
                            stylesheets="bigLabel.css"/>
                     <Label fx:id="animalEnergyInfo" stylesheets="bigLabel.css"/>
                     <ProgressBar fx:id="animalEnergyProgressBar" minWidth="300" visible="false"/>

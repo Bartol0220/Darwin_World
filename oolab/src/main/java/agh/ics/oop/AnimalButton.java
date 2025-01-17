@@ -29,7 +29,13 @@ public class AnimalButton extends Button {
     public AnimalButton(Animal animal, Optional<Animal> selectedAnimal, int cellWidth, Set<Vector2d> positions, GlobeMap map) {
         String name = animal.getName();
         if (map.areMultipleAnimalsOnField(animal.getPosition())) {
-            name = "wolfs.png";
+            if (selectedAnimal.isPresent() && (selectedAnimal.get() == animal)) {
+                name = "wolfs-selected.png";
+            } else if (positions.contains(animal.getPosition())) {
+                name = "wolfs-gene.png";
+            } else {
+                name = "wolfs.png";
+            }
         } else if (selectedAnimal.isPresent() && (selectedAnimal.get() == animal)) {
             name = "selected-" + name;
         } else if (positions.contains(animal.getPosition())) {

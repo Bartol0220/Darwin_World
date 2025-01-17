@@ -145,11 +145,12 @@ public class SimulationPresenter implements MapChangeObserver, FailedToSaveObser
     public void onSimulationFieldWithAnimalsClicked() {
         selectedAnimal = Optional.empty();
         animalInfo.setText("There are many animals in the field. To select an animal, stop the simulation and click on the chosen one.");
+        drawMap();
         drawStats();
     }
 
     private void clearGrid() {
-        mapGridPane.getChildren().retainAll(mapGridPane.getChildren().getFirst()); // hack to retain visible grid lines
+        mapGridPane.getChildren().retainAll(mapGridPane.getChildren().getFirst());
         mapGridPane.getColumnConstraints().clear();
         mapGridPane.getRowConstraints().clear();
     }
