@@ -16,8 +16,12 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 public class SetupPresenter {
+    static final Map<SimulationEngine, Stage> simulationsMap = new HashMap<>();
     private static int simulationCounter = 0;
     @FXML
     private Spinner<Integer> widthSpinner;
@@ -64,6 +68,22 @@ public class SetupPresenter {
         genesMutatorBox.getItems().clear();
         genesMutatorBox.getItems().addAll(genesMutatorVariants);
         genesMutatorBox.getSelectionModel().select(0);
+    }
+
+    public boolean stopAllSimulations() throws InterruptedException {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Exit dialogs");
+        alert.setHeaderText("Are you sure you want to exit?");
+        alert.setContentText("All simulations will be terminated.");
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.filter(presentRes -> presentRes == ButtonType.OK).isPresent()) {
+            for (SimulationEngine simulationEngine : simulationsMap.keySet()) {
+                simulationEngine.pauseSimulations();
+                simulationsMap.get(simulationEngine).close();
+            }
+            return true;
+        }
+        return false;
     }
 
     public void onSetupSaveClicked() {
@@ -212,9 +232,20 @@ public class SetupPresenter {
             Stage stage = new Stage();
             SimulationPresenter presenter = newSimulationApp.showSimulation(stage);
 
+            simulationsMap.put(simulationEngine, stage);
+
             simulation.registerFailedToSaveObserver(presenter);
 
             presenter.newSimulation(map, simulationEngine, stage);
+
+            stage.setOnCloseRequest(_ -> {
+                try {
+                    simulationEngine.pauseSimulations();
+                    simulationsMap.remove(simulationEngine);
+                } catch (InterruptedException e) {
+                    // TODO zamknięcie jednej symulacji
+                }
+            });
         } catch (IOException exception) {
             errorLabel.setText(
                     "The system cannot find the specified path. Please try again or run the program without saving statistics."

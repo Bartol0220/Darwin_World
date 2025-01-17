@@ -23,7 +23,6 @@ public class SimulationEngine {
         Thread thread = new Thread(simulation);
         thread.start();
         threads.add(thread);
-
     }
 
     public void pauseSimulations() throws InterruptedException {
