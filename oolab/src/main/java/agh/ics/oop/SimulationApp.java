@@ -5,7 +5,7 @@ import agh.ics.oop.presenter.SimulationPresenter;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.control.ScrollPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -16,14 +16,14 @@ public class SimulationApp extends Application {
     public void start(Stage primaryStage) throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getClassLoader().getResource("setup.fxml"));
-        BorderPane viewRoot = loader.load();
+        ScrollPane viewRoot = loader.load();
         SetupPresenter presenter = loader.getController();
 
         configureStage(primaryStage, viewRoot);
         primaryStage.show();
     }
 
-    private void configureStage(Stage primaryStage, BorderPane viewRoot) {
+    private void configureStage(Stage primaryStage, ScrollPane viewRoot) {
         var scene = new Scene(viewRoot);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Simulation app");
@@ -35,7 +35,7 @@ public class SimulationApp extends Application {
     public SimulationPresenter showSimulation(Stage newStage) throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getClassLoader().getResource("simulation.fxml"));
-        BorderPane viewRoot = loader.load();
+        ScrollPane viewRoot = loader.load();
         SimulationPresenter presenter = loader.getController();
 
         configureStage(newStage, viewRoot);
