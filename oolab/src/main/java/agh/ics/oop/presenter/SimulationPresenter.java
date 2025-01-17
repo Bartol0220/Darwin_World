@@ -128,7 +128,7 @@ public class SimulationPresenter implements MapChangeObserver, FailedToSaveObser
     }
 
     public void onSimulationAnimalClicked(AnimalButton button) {
-        if (selectedAnimal.isPresent() && (button.getAnimal() == selectedAnimal.get())) {
+        if (selectedAnimal.filter(presentAnimal -> presentAnimal == button.getAnimal()).isPresent()) {
             selectedAnimal = Optional.empty();
         } else {
             selectedAnimal = Optional.of(button.getAnimal());
@@ -162,11 +162,12 @@ public class SimulationPresenter implements MapChangeObserver, FailedToSaveObser
         updateMapInfo(currentBounds);
         drawHeader(currentBounds);
         drawFirstColumn(currentBounds);
-        if (running) {
-            drawAllObjects(currentBounds);
-        } else {
-            drawAllObjectsPaused(currentBounds);
-        }
+        drawAllObjects(currentBounds);
+//        if (running) {
+//            drawAllObjects(currentBounds);
+//        } else {
+//            drawAllObjectsPaused(currentBounds);
+//        }
     }
 
     private void updateMapInfo(Boundary currentBounds) {
@@ -211,8 +212,8 @@ public class SimulationPresenter implements MapChangeObserver, FailedToSaveObser
 
     private void drawAllObjects(Boundary currentBounds) {
         for(int y = 1; y < currentBounds.upperRight().getY() - currentBounds.lowerLeft().getY() + 2; y++) {
-            for(int x = 1; x < currentBounds.upperRight().getX() - currentBounds.lowerLeft().getX() + 2; x++) {
-                Optional<WorldElementBox> worldElementBox = drawObject(new Vector2d(currentBounds.lowerLeft().getX()+x-1, currentBounds.upperRight().getY()-y+1));
+            for (int x = 1; x < currentBounds.upperRight().getX() - currentBounds.lowerLeft().getX() + 2; x++) {
+                Vector2d position = new Vector2d(currentBounds.lowerLeft().getX() + x - 1, currentBounds.upperRight().getY() - y + 1);
 
                 StackPane stackPane = new StackPane();
 
@@ -221,70 +222,57 @@ public class SimulationPresenter implements MapChangeObserver, FailedToSaveObser
                 rectangle.setOpacity(0.2);
                 stackPane.getChildren().add(rectangle);
 
-                if (worldElementBox.isPresent()) {
-                    GridPane.setHalignment(worldElementBox.get(), HPos.CENTER);
-                    stackPane.getChildren().add(worldElementBox.get());
-                    mapGridPane.add(stackPane, x, y);
-                } else {
-                    mapGridPane.add(stackPane, x, y);
+                if (running) drawObject(x, y, stackPane, position);
+                else {
+                    if (map.isFieldBetter(position)) rectangle.setOpacity(0.4);
+                    drawObjectPaused(x, y, stackPane, position);
                 }
             }
         }
     }
 
-    private void drawAllObjectsPaused(Boundary currentBounds) {
-        Stats stats = simulationEngine.getStats();
-        for(int y = 1; y < currentBounds.upperRight().getY() - currentBounds.lowerLeft().getY() + 2; y++) {
-            for(int x = 1; x < currentBounds.upperRight().getX() - currentBounds.lowerLeft().getX() + 2; x++) {
-                Vector2d position = new Vector2d(currentBounds.lowerLeft().getX()+x-1, currentBounds.upperRight().getY()-y+1);
+    private void drawObject(int x, int y, StackPane stackPane, Vector2d position) {
+        Optional<WorldElementBox> worldElementBox = map.objectAt(position).map(
+                object -> new WorldElementBox(object, selectedAnimal, map, cellWidth)
+        );
 
-                StackPane stackPane = new StackPane();
-
-                Rectangle rectangle = new Rectangle(x, y, cellWidth, cellHeight);
-                rectangle.setFill(Color.GREEN);
-                rectangle.setOpacity(0.2);
-                if (map.isFieldBetter(position)) {
-                    rectangle.setOpacity(0.4);
-                }
-                stackPane.getChildren().add(rectangle);
-
-                Optional<WorldElement> worldElement = map.objectAt(position);
-                if (worldElement.isPresent()) {
-                    if (worldElement.get() instanceof Animal) {
-                        Animal animal = (Animal) worldElement.get();
-                        AnimalButton button = new AnimalButton(animal, selectedAnimal, cellWidth, positionsWithAnimalsWithPopularGene, map);
-
-                        VBox vBox = new VBox();
-                        if (map.areMultipleAnimalsOnField(animal.getPosition())) {
-                            button.setOnAction(_ -> onSimulationFieldWithAnimalsClicked());
-                        } else {
-                            button.setOnAction(_ -> onSimulationAnimalClicked(button));
-                            ProgressBar progressBar = new ProgressBar();
-                            progressBar.setProgress(animal.getAnimalStats().getEnergy()/ stats.getDayMaximumEnergy());
-                            vBox.getChildren().add(progressBar);
+        worldElementBox
+                .ifPresent(presentBox -> {
+                            GridPane.setHalignment(presentBox, HPos.CENTER);
+                            stackPane.getChildren().add(presentBox);
                         }
-                        GridPane.setHalignment(button, HPos.CENTER);
+                );
 
-                        vBox.setStyle("-fx-background-color: transparent");
-                        vBox.getChildren().add(button);
-                        stackPane.getChildren().add(vBox);
-
-                        mapGridPane.add(stackPane, x, y);
-                    } else {
-                        WorldElementBox box = new WorldElementBox(worldElement.get(), selectedAnimal, map, cellWidth);
-                        GridPane.setHalignment(box, HPos.CENTER);
-                        stackPane.getChildren().add(box);
-                        mapGridPane.add(stackPane, x, y);
-                    }
-                } else {
-                    mapGridPane.add(stackPane, x, y);
-                }
-            }
-        }
+        mapGridPane.add(stackPane, x, y);
     }
 
-    private Optional<WorldElementBox> drawObject(Vector2d currentPosition) {
-        return map.objectAt(currentPosition).map(object -> new WorldElementBox(object, selectedAnimal, map, cellWidth));
+    private void drawObjectPaused(int x, int y, StackPane stackPane, Vector2d position) {
+        Optional<WorldElement> worldElement = map.objectAt(position);
+
+        if (worldElement.filter(element -> element instanceof Animal).isPresent()) {
+            Animal animal = (Animal) worldElement.get();
+            AnimalButton button = new AnimalButton(animal, selectedAnimal, cellWidth, positionsWithAnimalsWithPopularGene, map);
+
+            VBox vBox = new VBox();
+            if (map.areMultipleAnimalsOnField(animal.getPosition())) {
+                button.setOnAction(_ -> onSimulationFieldWithAnimalsClicked());
+            } else {
+                button.setOnAction(_ -> onSimulationAnimalClicked(button));
+                ProgressBar progressBar = new ProgressBar();
+                progressBar.setProgress(animal.getAnimalStats().getEnergy()/ simulationEngine.getStats().getDayMaximumEnergy());
+                vBox.getChildren().add(progressBar);
+            }
+            GridPane.setHalignment(button, HPos.CENTER);
+
+            vBox.setStyle("-fx-background-color: transparent");
+            vBox.getChildren().add(button);
+            stackPane.getChildren().add(vBox);
+        } else if (worldElement.isPresent()) {
+            WorldElementBox box = new WorldElementBox(worldElement.get(), selectedAnimal, map, cellWidth);
+            GridPane.setHalignment(box, HPos.CENTER);
+            stackPane.getChildren().add(box);
+        }
+        mapGridPane.add(stackPane, x, y);
     }
 
     @Override

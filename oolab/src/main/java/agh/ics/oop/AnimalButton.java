@@ -28,18 +28,18 @@ public class AnimalButton extends Button {
 
     public AnimalButton(Animal animal, Optional<Animal> selectedAnimal, int cellWidth, Set<Vector2d> positions, GlobeMap map) {
         String name = animal.getName();
-        if (map.areMultipleAnimalsOnField(animal.getPosition())) {
-            if (selectedAnimal.isPresent() && (selectedAnimal.get() == animal)) {
-                name = "wolfs-selected.png";
-            } else if (positions.contains(animal.getPosition())) {
-                name = "wolfs-gene.png";
-            } else {
-                name = "wolfs.png";
-            }
-        } else if (selectedAnimal.isPresent() && (selectedAnimal.get() == animal)) {
-            name = "selected-" + name;
+        Optional<String> prefix = Optional.empty();
+
+        if (selectedAnimal.filter(presentSelectedAnimal -> presentSelectedAnimal.getPosition() == animal.getPosition()).isPresent()) {
+            prefix = Optional.of("selected-");
         } else if (positions.contains(animal.getPosition())) {
-            name = "gene-" + name;
+            prefix = Optional.of("gene-");
+        }
+
+        if (map.areMultipleAnimalsOnField(animal.getPosition())) {
+            name = prefix.map(presentPrefix -> presentPrefix + "wolfs.png").orElse("wolfs.png");
+        } else {
+            name = prefix.map(presentPrefix -> presentPrefix + animal.getName()).orElse(name);
         }
 
         Image image = loadImage(name);

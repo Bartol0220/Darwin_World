@@ -3,9 +3,7 @@ package agh.ics.oop;
 import agh.ics.oop.model.Animal;
 import agh.ics.oop.model.GlobeMap;
 import agh.ics.oop.model.WorldElement;
-import agh.ics.oop.model.stats.Stats;
 import javafx.geometry.Pos;
-import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
@@ -23,27 +21,17 @@ public class WorldElementBox extends VBox {
 
     public WorldElementBox(WorldElement element, Optional<Animal> selectedAnimal, GlobeMap map, int cellWidth) {
         String name = element.getName();
-        if (map.areMultipleAnimalsOnField(element.getPosition())) {
-            if (selectedAnimal.isPresent() && (selectedAnimal.get() == element)) {
-                name = "wolfs-selected.png";
-            } else {
-                name = "wolfs.png";
-            }
-        } else if (selectedAnimal.isPresent() && (selectedAnimal.get() == element)) {
-            name = "selected-" + name;
+        Optional<String> prefix = Optional.empty();
+
+        if (selectedAnimal.filter(presentSelectedAnimal -> presentSelectedAnimal.getPosition() == element.getPosition()).isPresent()) {
+            prefix = Optional.of("selected-");
         }
 
-//        if (element instanceof Animal) {
-//            Animal animal = (Animal) element;
-//            ProgressBar progressBar = new ProgressBar();
-//
-//            progressBar.setStyle("-fx-background-color: #73ff00; -fx-background-insets: 1 1 1 1; -fx-padding: 0.3em;");
-////            progressBar.getStylesheets().add("simulation.css");
-//
-//            progressBar.setProgress(animal.getAnimalStats().getEnergy()/ stats.getDayMaximumEnergy());
-//
-//            this.getChildren().add(progressBar);
-//        }
+        if (map.areMultipleAnimalsOnField(element.getPosition())) {
+            name = prefix.map(presentPrefix -> presentPrefix + "wolfs.png").orElse("wolfs.png");
+        } else {
+            name = prefix.map(presentPrefix -> presentPrefix + element.getName()).orElse(name);
+        }
 
         Image image = loadImage(name);
         ImageView imageView = new ImageView(image);
