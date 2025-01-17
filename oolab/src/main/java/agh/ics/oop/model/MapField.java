@@ -1,8 +1,5 @@
-package agh.ics.oop;
+package agh.ics.oop.model;
 
-import agh.ics.oop.model.Animal;
-import agh.ics.oop.model.Vector2d;
-import agh.ics.oop.model.WorldElement;
 import agh.ics.oop.model.grass.Grass;
 
 import java.util.ArrayList;

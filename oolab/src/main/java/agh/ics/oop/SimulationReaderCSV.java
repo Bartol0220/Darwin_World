@@ -6,7 +6,7 @@ import java.io.*;
 import java.util.Arrays;
 
 public class SimulationReaderCSV {
-    public SimulationConfig readFromCSV(String fileName) {
+    public SimulationConfig readFromCSV(String fileName) throws FailedToReadConfig {
         File file = new File(makeFullFileName(fileName));
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))){

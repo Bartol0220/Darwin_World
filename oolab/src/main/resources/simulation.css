@@ -27,3 +27,25 @@ ScrollPane {
     -fx-border-color: #cccccc;
 }
 
+.progress-bar > .bar {
+    -fx-background-color: #73ff00;
+    -fx-background-insets: 1 1 1 1;
+    -fx-padding: 0.3em;
+}
+
+#errorLabel {
+    -fx-text-fill: #ff0000;
+    -fx-font-size: 20px;
+}
+
+#selectedAnimalPane {
+    -fx-background-color: #040685;
+}
+
+#genotypeAnimalPane {
+    -fx-background-color: #008da6;
+}
+
+#grassAnimalPane {
+    -fx-background-color: #2a7328;
+}

@@ -1,6 +1,7 @@
 package agh.ics.oop;
 
 import agh.ics.oop.model.GlobeMap;
+import agh.ics.oop.model.observers.NewDayObserver;
 import agh.ics.oop.model.stats.Stats;
 import agh.ics.oop.model.observers.MapChangeObserver;
 
@@ -8,7 +9,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class StatsSaverCSV implements MapChangeObserver {
+public class StatsSaverCSV implements NewDayObserver {
     private final Stats stats;
     private final String fileName;
     private final File simulationCSV;
@@ -50,7 +51,7 @@ public class StatsSaverCSV implements MapChangeObserver {
     }
 
     @Override
-    public void mapChanged(GlobeMap map, String message) throws IOException {
-        appendToCSV(message);
+    public void newDay(int day) throws IOException {
+        appendToCSV("Day " + day);
     }
 }

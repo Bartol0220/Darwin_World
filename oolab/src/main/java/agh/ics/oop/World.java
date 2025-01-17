@@ -68,8 +68,9 @@ public class World {
             Breeding breeding = new Breeding(createdConfig.getEnergyNeededForBreeding(), createdConfig.getEnergyUsedWhileBreeding(), map, animalCreator);
 
             Simulation simulation = new Simulation(map, grassMaker, breeding, animalCreator, createdConfig.getStartNumberOfAnimals(), stats);
+
 //            StatsSaverCSV statsSaverCSV = new StatsSaverCSV(stats,"stats3");
-//            map.registerObserver(statsSaverCSV);
+//            simulation.registerNewDayObserver(statsSaverCSV);
 
             simulation.registerAnimalDiedObserver(stats);
             if (grassMaker instanceof GrassMakerDeadAnimal) {

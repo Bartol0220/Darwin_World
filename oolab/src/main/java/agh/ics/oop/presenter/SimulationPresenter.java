@@ -4,6 +4,7 @@ import agh.ics.oop.SimulationEngine;
 import agh.ics.oop.WorldElementBox;
 import agh.ics.oop.AnimalButton;
 import agh.ics.oop.model.*;
+import agh.ics.oop.model.observers.FailedToSaveObserver;
 import agh.ics.oop.model.observers.MapChangeObserver;
 import agh.ics.oop.model.stats.Stats;
 import agh.ics.oop.model.util.Boundary;
@@ -12,20 +13,18 @@ import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Slider;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.RowConstraints;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.Optional;
+import java.util.Set;
 
-public class SimulationPresenter implements MapChangeObserver {
+public class SimulationPresenter implements MapChangeObserver, FailedToSaveObserver {
     private double stageWidth;
     private double stageHeight;
     private SimulationEngine simulationEngine;
@@ -35,6 +34,7 @@ public class SimulationPresenter implements MapChangeObserver {
     private GlobeMap map;
     private Stage stage;
     private Optional<Animal> selectedAnimal = Optional.empty();
+    private Set<Vector2d> positionsWithAnimalsWithPopularGene;
 
     @FXML
     private GridPane mapGridPane;
@@ -74,6 +74,12 @@ public class SimulationPresenter implements MapChangeObserver {
     private Label animalInfo;
     @FXML
     private Label animalStats;
+    @FXML
+    private ProgressBar animalEnergyProgressBar;
+    @FXML
+    private Label animalEnergyInfo;
+    @FXML
+    private Label errorLabel;
 
     private void setStageDimensions() {
         stageWidth = stage.getWidth() - 520;
@@ -136,6 +142,12 @@ public class SimulationPresenter implements MapChangeObserver {
         drawStats();
     }
 
+    public void onSimulationFieldWithAnimalsClicked() {
+        selectedAnimal = Optional.empty();
+        animalInfo.setText("There are many animals in the field. To select an animal, stop the simulation and click on the chosen one.");
+        drawStats();
+    }
+
     private void clearGrid() {
         mapGridPane.getChildren().retainAll(mapGridPane.getChildren().getFirst()); // hack to retain visible grid lines
         mapGridPane.getColumnConstraints().clear();
@@ -154,7 +166,6 @@ public class SimulationPresenter implements MapChangeObserver {
         } else {
             drawAllObjectsPaused(currentBounds);
         }
-
     }
 
     private void updateMapInfo(Boundary currentBounds) {
@@ -162,7 +173,7 @@ public class SimulationPresenter implements MapChangeObserver {
         int mapHeight = currentBounds.upperRight().getY() - currentBounds.lowerLeft().getY() + 1;
         cellWidth = (int) stageWidth / mapWidth;
         cellHeight = (int) stageHeight / mapHeight;
-        cellHeight = Math.min(40, Math.min(cellWidth, cellHeight));
+        cellHeight = Math.min(60, Math.min(cellWidth, cellHeight));
         cellWidth = cellHeight;
     }
 
@@ -221,6 +232,7 @@ public class SimulationPresenter implements MapChangeObserver {
     }
 
     private void drawAllObjectsPaused(Boundary currentBounds) {
+        Stats stats = simulationEngine.getStats();
         for(int y = 1; y < currentBounds.upperRight().getY() - currentBounds.lowerLeft().getY() + 2; y++) {
             for(int x = 1; x < currentBounds.upperRight().getX() - currentBounds.lowerLeft().getX() + 2; x++) {
                 Vector2d position = new Vector2d(currentBounds.lowerLeft().getX()+x-1, currentBounds.upperRight().getY()-y+1);
@@ -238,13 +250,27 @@ public class SimulationPresenter implements MapChangeObserver {
                 Optional<WorldElement> worldElement = map.objectAt(position);
                 if (worldElement.isPresent()) {
                     if (worldElement.get() instanceof Animal) {
-                        AnimalButton button = new AnimalButton((Animal) worldElement.get(), selectedAnimal, cellWidth);
-                        button.setOnAction(_ -> onSimulationAnimalClicked(button));
+                        Animal animal = (Animal) worldElement.get();
+                        AnimalButton button = new AnimalButton(animal, selectedAnimal, cellWidth, positionsWithAnimalsWithPopularGene, map);
+
+                        VBox vBox = new VBox();
+                        if (map.areMultipleAnimalsOnField(animal.getPosition())) {
+                            button.setOnAction(_ -> onSimulationFieldWithAnimalsClicked());
+                        } else {
+                            button.setOnAction(_ -> onSimulationAnimalClicked(button));
+                            ProgressBar progressBar = new ProgressBar();
+                            progressBar.setProgress(animal.getAnimalStats().getEnergy()/ stats.getDayMaximumEnergy());
+                            vBox.getChildren().add(progressBar);
+                        }
                         GridPane.setHalignment(button, HPos.CENTER);
-                        stackPane.getChildren().add(button);
+
+                        vBox.setStyle("-fx-background-color: transparent");
+                        vBox.getChildren().add(button);
+                        stackPane.getChildren().add(vBox);
+
                         mapGridPane.add(stackPane, x, y);
                     } else {
-                        WorldElementBox box = new WorldElementBox(worldElement.get(), selectedAnimal, cellWidth);
+                        WorldElementBox box = new WorldElementBox(worldElement.get(), selectedAnimal, map, cellWidth);
                         GridPane.setHalignment(box, HPos.CENTER);
                         stackPane.getChildren().add(box);
                         mapGridPane.add(stackPane, x, y);
@@ -257,20 +283,21 @@ public class SimulationPresenter implements MapChangeObserver {
     }
 
     private Optional<WorldElementBox> drawObject(Vector2d currentPosition) {
-        return map.objectAt(currentPosition).map(object -> new WorldElementBox(object, selectedAnimal, cellWidth));
+        return map.objectAt(currentPosition).map(object -> new WorldElementBox(object, selectedAnimal, map, cellWidth));
     }
 
     @Override
     public void mapChanged(GlobeMap map, String message) {
         Platform.runLater(() -> {
             messageLabel.setText(message);
-            drawMap();
             drawStats();
+            drawMap();
         });
     }
 
     private void drawStats() {
         Stats stats = simulationEngine.getStats();
+        positionsWithAnimalsWithPopularGene = stats.getPositionsWithPopularAnimal();
         currentAnimalCount.setText(String.valueOf(stats.getCurrentAnimalCount()));
         maximumAnimalCount.setText(String.valueOf(stats.getMaximumAnimalCount()));
         minimumAnimalCount.setText(String.valueOf(stats.getMinimumAnimalCount()));
@@ -279,14 +306,28 @@ public class SimulationPresenter implements MapChangeObserver {
         freeSpace.setText(String.valueOf(stats.getFreeSpace()));
         averageEnergy.setText(String.format("%.1f", stats.getAverageEnergy()));
         averageBirthrate.setText(String.format("%.1f", stats.getAverageBirthrate()));
-        mostCommonGenes.setText(String.valueOf(stats.getMostCommonGenes()));
+        mostCommonGenes.setText(" "+stats.getMostCommonGenes());
         deadAnimalCount.setText(String.valueOf(stats.getDeadAnimalCount()));
         averageLifespan.setText(String.format("%.1f", stats.getAverageLifespan()));
 
         selectedAnimal
                 .ifPresentOrElse(
-                        (animal -> animalStats.setText(animal.getAnimalStats().toString())),
-                        (() -> animalStats.setText(""))
+                        (animal -> {
+                            animalStats.setText(animal.getAnimalStats().toString());
+                            animalEnergyInfo.setText("Energy:");
+                            animalEnergyProgressBar.setVisible(true);
+                            animalEnergyProgressBar.setProgress(animal.getAnimalStats().getEnergy()/stats.getDayMaximumEnergy());
+                        }),
+                        (() -> {
+                            animalStats.setText("");
+                            animalEnergyInfo.setText("");
+                            animalEnergyProgressBar.setVisible(false);
+                        })
                 );
+    }
+
+    @Override
+    public void failedToSave() {
+        errorLabel.setText("Failed to save the file with statistics.");
     }
 }
