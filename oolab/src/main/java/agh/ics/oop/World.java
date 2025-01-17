@@ -39,10 +39,10 @@ public class World {
                     maximumNumberOfMutations, genesMutatorVariant, genesNumber);
 
             if (false){
-                SimulationSaverCSV simulationSaverCSV = new SimulationSaverCSV();
                 SimulationReaderCSV simulationReaderCSV = new SimulationReaderCSV();
-                SimulationConfig simConfig = simulationReaderCSV.readFromCSV("file3");
-                simulationSaverCSV.saveToCSV(createdConfig, "file6");
+                SimulationConfig simConfig = simulationReaderCSV.readFromCSV("file0");
+                SimulationSaverCSV simulationSaverCSV = new SimulationSaverCSV();
+                simulationSaverCSV.saveToCSV(createdConfig, "file1");
             }
 
             GlobeMap map = new GlobeMap(createdConfig.getWidth(), createdConfig.getHeight(), 0);
@@ -68,8 +68,8 @@ public class World {
             Breeding breeding = new Breeding(createdConfig.getEnergyNeededForBreeding(), createdConfig.getEnergyUsedWhileBreeding(), map, animalCreator);
 
             Simulation simulation = new Simulation(map, grassMaker, breeding, animalCreator, createdConfig.getStartNumberOfAnimals(), stats);
-//            StatsSaverCSV statsSaverCSV = new StatsSaverCSV(stats,"stats3");
-//            map.registerObserver(statsSaverCSV);
+            StatsSaverCSV statsSaverCSV = new StatsSaverCSV(stats,"stats0");
+            map.registerObserver(statsSaverCSV);
 
             simulation.registerAnimalDiedObserver(stats);
             if (grassMaker instanceof GrassMakerDeadAnimal) {

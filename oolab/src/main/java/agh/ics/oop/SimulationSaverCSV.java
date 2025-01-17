@@ -8,6 +8,7 @@ import java.nio.file.FileAlreadyExistsException;
 public class SimulationSaverCSV {
     public void saveToCSV(SimulationConfig simulationConfig, String fileName) throws IOException {
         File simulationCSV = new File(makeFullFileName(fileName));
+        new File(System.getProperty("user.dir") + File.separator + "simconfig").mkdirs();
         if (simulationCSV.createNewFile()) {
             try (FileWriter writer = new FileWriter(simulationCSV)) {
                 writer.write(makeSimulationMessage(simulationConfig));
@@ -24,7 +25,7 @@ public class SimulationSaverCSV {
     }
 
     private String makeSimulationMessage(SimulationConfig simulationConfig){
-        return "%d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d".formatted(
+        return "%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d".formatted(
                 simulationConfig.getHeight(),
                 simulationConfig.getWidth(),
                 simulationConfig.getStartGrassNumber(),

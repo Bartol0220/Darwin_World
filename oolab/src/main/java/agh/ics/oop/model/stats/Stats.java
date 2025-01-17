@@ -62,8 +62,12 @@ public class Stats implements AnimalDiedObserver {
         deadAnimalCount++;
     }
 
-    private void decreaseCurrentAnimalCount(){
+    private void findNewMinimumAnimalCount(){
         minimumAnimalCount = min(minimumAnimalCount, currentAnimalCount);
+    }
+
+    private void findNewMaximumAnimalCount(){
+        maximumAnimalCount = max(maximumAnimalCount, currentAnimalCount);
     }
 
     private void updateGrassCount(){
@@ -115,7 +119,7 @@ public class Stats implements AnimalDiedObserver {
 
     public void newAnimalPlaced(Animal animal){
         allAnimalCount++;
-        maximumAnimalCount = max(maximumAnimalCount, currentAnimalCount);
+        findNewMaximumAnimalCount();
         addGenesToHashMap(animal);
     }
 
@@ -124,13 +128,13 @@ public class Stats implements AnimalDiedObserver {
     }
 
     public void animalNotPlaced(Animal animal){
-        decreaseCurrentAnimalCount();
+        findNewMinimumAnimalCount();
         deleteGenesFromHashMap(animal);
         maximumAnimalCount--;
     }
 
     public void animalDied(Animal animal){
-        decreaseCurrentAnimalCount();
+        findNewMinimumAnimalCount();
         increaseDeadAnimalCount();
         deleteGenesFromHashMap(animal);
     }
@@ -144,6 +148,8 @@ public class Stats implements AnimalDiedObserver {
     public void updateGeneralStats(List<Animal> animals){
         this.currentAnimalCount = animals.size();
         allAnimalCount = max(allAnimalCount, currentAnimalCount);
+        findNewMinimumAnimalCount();
+        findNewMaximumAnimalCount();
         updateGrassCount();
         calculateFreeSpace();
         calculateNewAverageEnergy(animals);
