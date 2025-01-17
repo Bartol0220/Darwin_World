@@ -5,21 +5,19 @@ import java.util.Arrays;
 public class HashArray {
     private final int[] array;
 
-    public HashArray(int[] array) {
-        this.array = array.clone(); // Defensive copy to ensure immutability
-    }
+    public HashArray(int[] array) { this.array = array.clone(); }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true; // Same object reference
-        if (o == null || getClass() != o.getClass()) return false; // Type check
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         HashArray that = (HashArray) o;
-        return Arrays.equals(this.array, that.array); // Content comparison
+        return Arrays.equals(this.array, that.array);
     }
 
     @Override
     public int hashCode() {
-        return Arrays.hashCode(this.array); // Content-based hash code
+        return Arrays.hashCode(this.array);
     }
 
     @Override

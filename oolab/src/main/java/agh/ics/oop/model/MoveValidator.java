@@ -19,4 +19,5 @@ public interface MoveValidator {
      * @return special position or given position
      */
     Vector2d handleBoundsPositions(Vector2d position);
+
 }

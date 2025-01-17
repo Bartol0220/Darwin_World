@@ -44,6 +44,10 @@ public class GlobeMap implements MoveValidator {
 
     public Boundary getCurrentBounds() { return bounds;}
 
+    public MapField getMapField(Vector2d position){
+        return allFields.get(position);
+    }
+
     public int getFreeSpace() {
         return height*width - (int) Stream
                 .concat(

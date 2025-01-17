@@ -2,10 +2,7 @@ package agh.ics.oop.model;
 
 import agh.ics.oop.model.grass.Grass;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class MapField {
     private final Vector2d position;
@@ -80,6 +77,19 @@ public class MapField {
             return Optional.of(animals.getFirst());
         }
         return Optional.ofNullable(grass.orElse(null));
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(position);
+    }
+
+    @Override
+    public boolean equals(Object o){
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MapField that = (MapField) o;
+        return this.position == that.position;
     }
 
 }
