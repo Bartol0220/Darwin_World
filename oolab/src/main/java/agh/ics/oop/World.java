@@ -1,13 +1,17 @@
 package agh.ics.oop;
 
+import agh.ics.oop.fileManager.SimulationReaderCSV;
+import agh.ics.oop.fileManager.SimulationSaverCSV;
 import agh.ics.oop.model.*;
-import agh.ics.oop.model.errors.*;
+import agh.ics.oop.errors.*;
 import agh.ics.oop.model.genes.*;
 import agh.ics.oop.model.grass.AbstractGrassMaker;
 import agh.ics.oop.model.grass.GrassMakerDeadAnimal;
 import agh.ics.oop.model.grass.GrassMakerEquator;
 import agh.ics.oop.model.observers.MapChangeObserver;
-import agh.ics.oop.model.stats.Stats;
+import agh.ics.oop.simulation.Simulation;
+import agh.ics.oop.simulation.SimulationConfig;
+import agh.ics.oop.stats.Stats;
 
 import java.io.IOException;
 

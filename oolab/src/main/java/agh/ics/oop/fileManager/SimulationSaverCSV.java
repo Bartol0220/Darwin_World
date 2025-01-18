@@ -1,4 +1,6 @@
-package agh.ics.oop;
+package agh.ics.oop.fileManager;
+
+import agh.ics.oop.simulation.SimulationConfig;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -7,15 +9,15 @@ import java.nio.file.FileAlreadyExistsException;
 
 public class SimulationSaverCSV {
     public void saveToCSV(SimulationConfig simulationConfig, String fileName) throws IOException {
-        File simulationCSV = new File(makeFullFileName(fileName));
+        File simulationConfigCSV = new File(makeFullFileName(fileName));
         new File(System.getProperty("user.dir") + File.separator + "simconfig").mkdirs();
-        if (simulationCSV.createNewFile()) {
-            try (FileWriter writer = new FileWriter(simulationCSV)) {
+        if (simulationConfigCSV.createNewFile()) {
+            try (FileWriter writer = new FileWriter(simulationConfigCSV)) {
                 writer.write(makeSimulationMessage(simulationConfig));
             }
+        } else {
+            throw new FileAlreadyExistsException("File \"" + fileName + "\" already exists.");
         }
-        //nie wiem czy go rzucac czy nie
-        //throw new FileAlreadyExistsException(fileName + " already exists.");
     }
 
     private String makeFullFileName(String fileName){

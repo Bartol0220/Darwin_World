@@ -1,7 +1,7 @@
 package agh.ics.oop.model;
 
-import agh.ics.oop.Simulation;
-import agh.ics.oop.model.errors.IncorrectPositionException;
+import agh.ics.oop.simulation.Simulation;
+import agh.ics.oop.errors.IncorrectPositionException;
 import agh.ics.oop.model.grass.Grass;
 import agh.ics.oop.model.observers.MapChangeObserver;
 import agh.ics.oop.model.util.Boundary;
@@ -29,7 +29,7 @@ public class GlobeMap implements MoveValidator {
         this.height = height;
         bounds = new Boundary(new Vector2d(0, 0), new Vector2d(width - 1, height - 1));
         for (int x = 0; x < width; x++){
-            for (int y = 0; y < width; y++){
+            for (int y = 0; y < height; y++){
                 Vector2d position = new Vector2d(x, y);
                 allFields.put(position, new MapField(position));
             }

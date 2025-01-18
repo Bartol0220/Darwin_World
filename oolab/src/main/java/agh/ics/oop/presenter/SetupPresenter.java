@@ -1,8 +1,11 @@
 package agh.ics.oop.presenter;
 
 import agh.ics.oop.*;
+import agh.ics.oop.fileManager.SimulationReaderCSV;
+import agh.ics.oop.fileManager.SimulationSaverCSV;
+import agh.ics.oop.fileManager.StatsSaverCSV;
 import agh.ics.oop.model.*;
-import agh.ics.oop.model.errors.*;
+import agh.ics.oop.errors.*;
 import agh.ics.oop.model.genes.ClassicMutation;
 import agh.ics.oop.model.genes.GeneMutator;
 import agh.ics.oop.model.genes.GenesFactory;
@@ -10,12 +13,16 @@ import agh.ics.oop.model.genes.SlightCorrection;
 import agh.ics.oop.model.grass.AbstractGrassMaker;
 import agh.ics.oop.model.grass.GrassMakerDeadAnimal;
 import agh.ics.oop.model.grass.GrassMakerEquator;
-import agh.ics.oop.model.stats.Stats;
+import agh.ics.oop.simulation.Simulation;
+import agh.ics.oop.simulation.SimulationConfig;
+import agh.ics.oop.simulation.SimulationEngine;
+import agh.ics.oop.stats.Stats;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -57,6 +64,10 @@ public class SetupPresenter {
     private Label errorLabel;
     @FXML
     private TextField fileNameField;
+    @FXML
+    private TextField saverNameField;
+    @FXML
+    private TextField saveStatsFileName;
 
     public void initialize() {
         String [] grassMakerVariants = {"Forested equator", "Life-giving corpses"};
@@ -90,9 +101,9 @@ public class SetupPresenter {
         try {
             SimulationSaverCSV saver = new SimulationSaverCSV();
             SimulationConfig simulationConfig = configurateSimulation();
-            saver.saveToCSV(simulationConfig, "simulationConfig");
-        } catch (HasToBePositiveException | HasToBeBit | BreedingCanNotKillAnimals | CanNotBeNegativeException |
-                 MutationChangesCanNotExceedSize | MinMaxGeneException exception) {
+            saver.saveToCSV(simulationConfig, saverNameField.getText());
+        } catch (FileAlreadyExistsException | HasToBePositiveException | HasToBeBit | BreedingCanNotKillAnimals |
+                 CanNotBeNegativeException | MutationChangesCanNotExceedSize | MinMaxGeneException exception) {
             errorLabel.setText(exception.getMessage());
         } catch (IOException exception) {
             errorLabel.setText("The system cannot find the specified path.");
@@ -108,7 +119,6 @@ public class SetupPresenter {
         } catch (FailedToReadConfig exception) {
             errorLabel.setText(exception.getMessage());
         }
-
     }
 
     public void onSetupResetClicked() {
@@ -215,9 +225,9 @@ public class SetupPresenter {
                     map, grassMaker, breeding, animalCreator, simulationConfig.getStartNumberOfAnimals(), stats
             );
 
+            Optional<StatsSaverCSV> statsSaverCSV = Optional.empty();
             if (saveStats) {
-                StatsSaverCSV statsSaverCSV = new StatsSaverCSV(stats, "stats" + simulationCounter);
-                simulation.registerNewDayObserver(statsSaverCSV);
+                statsSaverCSV = Optional.of(new StatsSaverCSV(stats, saveStatsFileName.getText()));
             }
 
             simulation.registerAnimalDiedObserver(stats);
@@ -234,7 +244,8 @@ public class SetupPresenter {
 
             simulationsMap.put(simulationEngine, stage);
 
-            simulation.registerFailedToSaveObserver(presenter);
+            statsSaverCSV.ifPresent(simulation::registerNewDayObserver);
+            statsSaverCSV.ifPresent(presentSaver -> presentSaver.registerFailedToSaveObserver(presenter));
 
             presenter.newSimulation(map, simulationEngine, stage);
 
@@ -246,6 +257,8 @@ public class SetupPresenter {
                     // TODO zamknięcie jednej symulacji
                 }
             });
+        } catch (FileAlreadyExistsException exception) {
+            errorLabel.setText(exception.getMessage());
         } catch (IOException exception) {
             errorLabel.setText(
                     "The system cannot find the specified path. Please try again or run the program without saving statistics."

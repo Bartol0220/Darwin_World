@@ -1,6 +1,6 @@
-package agh.ics.oop;
+package agh.ics.oop.simulation;
 
-import agh.ics.oop.model.errors.*;
+import agh.ics.oop.errors.*;
 
 public class SimulationConfig {
     private final int height;

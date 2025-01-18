@@ -23,7 +23,7 @@ public class WorldElementBox extends VBox {
         String name = element.getName();
         Optional<String> prefix = Optional.empty();
 
-        if (selectedAnimal.filter(presentSelectedAnimal -> presentSelectedAnimal.getPosition() == element.getPosition()).isPresent()) {
+        if (selectedAnimal.filter(presentSelectedAnimal -> presentSelectedAnimal.getPosition().equals(element.getPosition())).isPresent()) {
             prefix = Optional.of("selected-");
         }
 

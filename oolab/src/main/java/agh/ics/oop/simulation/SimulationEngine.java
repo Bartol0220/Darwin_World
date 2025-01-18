@@ -1,6 +1,6 @@
-package agh.ics.oop;
+package agh.ics.oop.simulation;
 
-import agh.ics.oop.model.stats.Stats;
+import agh.ics.oop.stats.Stats;
 
 import java.util.ArrayList;
 import java.util.List;
