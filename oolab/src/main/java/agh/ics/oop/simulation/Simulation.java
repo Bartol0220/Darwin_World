@@ -7,7 +7,7 @@ import agh.ics.oop.model.grass.Grass;
 import agh.ics.oop.model.observers.AnimalDiedObserver;
 import agh.ics.oop.model.observers.NewDayObserver;
 import agh.ics.oop.model.observers.SimulationErrorObserver;
-import agh.ics.oop.stats.Stats;
+import agh.ics.oop.statistics.Stats;
 import agh.ics.oop.model.util.RandomVector2d;
 
 import java.util.LinkedList;

@@ -7,7 +7,7 @@ import agh.ics.oop.AnimalButton;
 import agh.ics.oop.model.*;
 import agh.ics.oop.model.observers.FailedToSaveObserver;
 import agh.ics.oop.model.observers.MapChangeObserver;
-import agh.ics.oop.stats.Stats;
+import agh.ics.oop.statistics.Stats;
 import agh.ics.oop.model.util.Boundary;
 import javafx.application.Platform;
 import javafx.fxml.FXML;

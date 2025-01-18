@@ -16,7 +16,7 @@ import agh.ics.oop.model.grass.GrassMakerEquator;
 import agh.ics.oop.simulation.Simulation;
 import agh.ics.oop.simulation.SimulationConfig;
 import agh.ics.oop.simulation.SimulationEngine;
-import agh.ics.oop.stats.Stats;
+import agh.ics.oop.statistics.Stats;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;

@@ -1,7 +1,7 @@
 package agh.ics.oop.model;
 
 import agh.ics.oop.model.genes.Genes;
-import agh.ics.oop.stats.AnimalStats;
+import agh.ics.oop.statistics.AnimalStats;
 
 import java.util.Random;
 

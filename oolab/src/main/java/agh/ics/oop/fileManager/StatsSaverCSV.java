@@ -2,7 +2,7 @@ package agh.ics.oop.fileManager;
 
 import agh.ics.oop.model.observers.FailedToSaveObserver;
 import agh.ics.oop.model.observers.NewDayObserver;
-import agh.ics.oop.stats.Stats;
+import agh.ics.oop.statistics.Stats;
 
 import java.io.File;
 import java.io.FileWriter;

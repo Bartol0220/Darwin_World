@@ -2,7 +2,7 @@ package agh.ics.oop.model;
 
 import agh.ics.oop.model.genes.Genes;
 import agh.ics.oop.model.genes.GenesFactory;
-import agh.ics.oop.stats.Stats;
+import agh.ics.oop.statistics.Stats;
 
 public class AnimalCreator {
     private final Stats stats;
