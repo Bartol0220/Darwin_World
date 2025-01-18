@@ -1,16 +1,14 @@
-package agh.ics.oop;
+package agh.ics.oop.simulation;
 
 import agh.ics.oop.model.*;
-import agh.ics.oop.model.errors.IncorrectPositionException;
+import agh.ics.oop.errors.IncorrectPositionException;
 import agh.ics.oop.model.grass.AbstractGrassMaker;
 import agh.ics.oop.model.grass.Grass;
 import agh.ics.oop.model.observers.AnimalDiedObserver;
-import agh.ics.oop.model.observers.FailedToSaveObserver;
 import agh.ics.oop.model.observers.NewDayObserver;
-import agh.ics.oop.model.stats.Stats;
+import agh.ics.oop.stats.Stats;
 import agh.ics.oop.model.util.RandomVector2d;
 
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -18,18 +16,17 @@ import java.util.*;
 
 
 public class Simulation implements Runnable {
-    private final GlobeMap map;
     private final List<AnimalDiedObserver> animalDiedObservers = new ArrayList<>();
     private final List<NewDayObserver> newDayObservers = new ArrayList<>();
-    private final List<FailedToSaveObserver> failedToSaveObserver = new ArrayList<>();
     private final List<Animal> animals = new LinkedList<>();
+    private final GlobeMap map;
     private final AbstractGrassMaker grassMaker;
     private final AnimalCreator animalCreator;
     private final Breeding breeding;
     private final Stats stats;
     private int dayNumber = 0;
-    private boolean running = true;
     private int threadSleepTime = 700;
+    private boolean running = true;
 
     public Simulation(GlobeMap map, AbstractGrassMaker grassMaker, Breeding breeding, AnimalCreator animalCreator, int startNumberOfAnimals, Stats stats) {
         this.map = map;
@@ -44,7 +41,7 @@ public class Simulation implements Runnable {
     private void createAnimals(GlobeMap map, int startNumberOfAnimals) {
         RandomVector2d positions = new RandomVector2d(map.getWidth(), map.getHeight(), startNumberOfAnimals);
         for(Vector2d position : positions) {
-            Animal animal = animalCreator.createStartingAnimal(position, dayNumber);
+            Animal animal = animalCreator.createStartingAnimal(position);
             try {
                 map.place(animal);
                 animals.add(animal);
@@ -81,7 +78,7 @@ public class Simulation implements Runnable {
                 notifyNewDayObservers(dayNumber);
             }
         } catch (InterruptedException exception) {
-            // TODO
+            // TODO zamknąć okienko, alert, spytać w necie co jeszcze
         }
     }
 
@@ -89,7 +86,7 @@ public class Simulation implements Runnable {
         removeDeadAnimals();
         moveAnimals();
         feedAnimals();
-        breeding.breedAnimals(dayNumber, this);
+        breeding.breedAnimals(this);
         grassMaker.grow();
     }
 
@@ -108,22 +105,8 @@ public class Simulation implements Runnable {
     public void unregisterNewDayObserver(NewDayObserver observer) { newDayObservers.remove(observer);}
 
     public void notifyNewDayObservers(int dayNumber) {
-        try {
-            for(NewDayObserver observer : newDayObservers){
-                observer.newDay(dayNumber);
-            }
-        } catch (IOException e) {
-            notifyFailedToSaveObservers();
-        }
-    }
-
-    public void registerFailedToSaveObserver(FailedToSaveObserver observer) { failedToSaveObserver.add(observer);}
-
-    public void unregisterFailedToSaveObserver(FailedToSaveObserver observer) { failedToSaveObserver.remove(observer);}
-
-    public void notifyFailedToSaveObservers() {
-        for(FailedToSaveObserver observer : failedToSaveObserver){
-            observer.failedToSave();
+        for(NewDayObserver observer : newDayObservers){
+            observer.newDay(dayNumber);
         }
     }
 

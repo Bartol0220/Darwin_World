@@ -1,12 +1,12 @@
 package agh.ics.oop.presenter;
 
-import agh.ics.oop.SimulationEngine;
+import agh.ics.oop.simulation.SimulationEngine;
 import agh.ics.oop.WorldElementBox;
 import agh.ics.oop.AnimalButton;
 import agh.ics.oop.model.*;
 import agh.ics.oop.model.observers.FailedToSaveObserver;
 import agh.ics.oop.model.observers.MapChangeObserver;
-import agh.ics.oop.model.stats.Stats;
+import agh.ics.oop.stats.Stats;
 import agh.ics.oop.model.util.Boundary;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -25,16 +25,16 @@ import java.util.Optional;
 import java.util.Set;
 
 public class SimulationPresenter implements MapChangeObserver, FailedToSaveObserver {
-    private double stageWidth;
-    private double stageHeight;
+    private Set<Vector2d> positionsWithAnimalsWithPopularGene;
+    private Optional<Animal> selectedAnimal = Optional.empty();
     private SimulationEngine simulationEngine;
-    private boolean running = true;
-    private int cellWidth;
-    private int cellHeight;
     private GlobeMap map;
     private Stage stage;
-    private Optional<Animal> selectedAnimal = Optional.empty();
-    private Set<Vector2d> positionsWithAnimalsWithPopularGene;
+    private double stageWidth;
+    private double stageHeight;
+    private int cellWidth;
+    private int cellHeight;
+    private boolean running = true;
 
     @FXML
     private GridPane mapGridPane;
@@ -86,23 +86,19 @@ public class SimulationPresenter implements MapChangeObserver, FailedToSaveObser
         stageHeight = stage.getHeight() - 120;
     }
 
-    private void setMap(GlobeMap map) {
-        this.map = map;
-    }
-
     public void newSimulation(GlobeMap map, SimulationEngine simulationEngine, Stage stage) {
         map.registerObserver(this);
         this.stage = stage;
         this.simulationEngine = simulationEngine;
         setStageDimensions();
 
-        setMap(map);
+        this.map = map;
         drawMap();
 
         simulationEngine.runAsync();
 
         threadSleep.valueProperty().addListener(
-                (observable, oldValue, newValue) -> {
+                (_, _, newValue) -> {
                     threadSleepDisplay.setText(String.format("%d", newValue.intValue()));
                     simulationEngine.changeSleepingTime(newValue.intValue());
                 });
@@ -116,8 +112,7 @@ public class SimulationPresenter implements MapChangeObserver, FailedToSaveObser
             try {
                 simulationEngine.pauseSimulations();
             } catch (InterruptedException e) {
-                // TODO dokończyć catcha
-                System.err.println("Interrupted while simulating play");
+                // TODO dokończyć catcha, allert i zamknąć
             }
         } else {
             running = true;
@@ -163,11 +158,6 @@ public class SimulationPresenter implements MapChangeObserver, FailedToSaveObser
         drawHeader(currentBounds);
         drawFirstColumn(currentBounds);
         drawAllObjects(currentBounds);
-//        if (running) {
-//            drawAllObjects(currentBounds);
-//        } else {
-//            drawAllObjectsPaused(currentBounds);
-//        }
     }
 
     private void updateMapInfo(Boundary currentBounds) {

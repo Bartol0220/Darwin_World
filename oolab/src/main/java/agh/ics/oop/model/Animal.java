@@ -1,7 +1,7 @@
 package agh.ics.oop.model;
 
 import agh.ics.oop.model.genes.Genes;
-import agh.ics.oop.model.stats.AnimalStats;
+import agh.ics.oop.stats.AnimalStats;
 
 import java.util.Random;
 
@@ -48,10 +48,6 @@ public class Animal implements WorldElement, Comparable<Animal> {
   
     public String getName() { return "wolf_" + orientation + ".png"; }
 
-    public boolean isAt(Vector2d position) {
-        return this.position.equals(position);
-    }
-
     public void move(MoveValidator validator) {
         orientation = orientation.nextOrientation(animalStats.getGenes().useCurrentGene());
         getAnimalStats().increaseAge();
@@ -64,13 +60,13 @@ public class Animal implements WorldElement, Comparable<Animal> {
         animalStats.decreaseEnergy(1);
     }
 
-    public Animal breed(Animal otherParent, int energyUsedWhileBreeding, int dayNumber, AnimalCreator animalCreator){
+    public Animal breed(Animal otherParent, int energyUsedWhileBreeding, AnimalCreator animalCreator){
         this.animalStats.decreaseEnergy(energyUsedWhileBreeding);
         this.animalStats.increaseChildrenCount();
         otherParent.animalStats.decreaseEnergy(energyUsedWhileBreeding);
         otherParent.animalStats.increaseChildrenCount();
 
-        return animalCreator.createAnimal(dayNumber, this, otherParent);
+        return animalCreator.createAnimal(this, otherParent);
     }
 
     public void eat() {

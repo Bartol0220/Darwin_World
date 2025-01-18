@@ -21,3 +21,8 @@ Label {
     -fx-text-fill: #ff0000;
     -fx-font-size: 20px;
 }
+
+#savedLabel {
+    -fx-text-fill: #306f25;
+    -fx-font-size: 20px;
+}

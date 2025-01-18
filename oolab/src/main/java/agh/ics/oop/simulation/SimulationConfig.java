@@ -1,6 +1,6 @@
-package agh.ics.oop;
+package agh.ics.oop.simulation;
 
-import agh.ics.oop.model.errors.*;
+import agh.ics.oop.errors.*;
 
 public class SimulationConfig {
     private final int height;
@@ -31,7 +31,9 @@ public class SimulationConfig {
                             int minimumNumberOfMutations,
                             int maximumNumberOfMutations,
                             int genesMutatorVariant,
-                            int genesNumber) throws HasToBePositiveException, HasToBeBit, BreedingCanNotKillAnimals, CanNotBeNegativeException, MutationChangesCanNotExceedSize, MinMaxGeneException {
+                            int genesNumber)
+            throws HasToBePositiveException, HasToBeBit, BreedingCanNotKillAnimals, CanNotBeNegativeException,
+            MutationChangesCanNotExceedSize, MinMaxGeneException {
 
         this.height = height;
         if (height <= 0) throw new HasToBePositiveException("Height");
@@ -128,7 +130,6 @@ public class SimulationConfig {
 
         if (minimumNumberOfMutations > maximumNumberOfMutations) throw new MinMaxGeneException();
         if (maximumNumberOfMutations > genesNumber) throw new MutationChangesCanNotExceedSize();
-
     }
 
     public int getHeight() {
@@ -185,10 +186,5 @@ public class SimulationConfig {
 
     public int getGenesNumber() {
         return genesNumber;
-    }
-
-    public String toString(){
-        return "width: %d height: %d".formatted(width, height);
-
     }
 }

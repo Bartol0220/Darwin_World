@@ -30,7 +30,7 @@ public class AnimalButton extends Button {
         String name = animal.getName();
         Optional<String> prefix = Optional.empty();
 
-        if (selectedAnimal.filter(presentSelectedAnimal -> presentSelectedAnimal.getPosition() == animal.getPosition()).isPresent()) {
+        if (selectedAnimal.filter(presentSelectedAnimal -> presentSelectedAnimal.getPosition().equals(animal.getPosition())).isPresent()) {
             prefix = Optional.of("selected-");
         } else if (positions.contains(animal.getPosition())) {
             prefix = Optional.of("gene-");

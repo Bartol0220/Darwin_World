@@ -13,7 +13,6 @@ public abstract class AbstractGeneMutator implements GeneMutator {
         this.maximumNumberOfMutations = maximumNumberOfMutations;
     }
 
-
     @Override
     public void mutate(int[] genes) {
         int howManyChanged = random.nextInt(minimumNumberOfMutations, maximumNumberOfMutations+1);

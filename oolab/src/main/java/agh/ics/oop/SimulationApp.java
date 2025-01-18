@@ -3,12 +3,10 @@ package agh.ics.oop;
 import agh.ics.oop.presenter.SetupPresenter;
 import agh.ics.oop.presenter.SimulationPresenter;
 import javafx.application.Application;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 
@@ -32,7 +30,6 @@ public class SimulationApp extends Application {
                     windowEvent.consume();
                 }
             } catch (InterruptedException e) {
-                // TODO zamknięcie wszystkich symulacji
                 System.exit(1);
             }
         });

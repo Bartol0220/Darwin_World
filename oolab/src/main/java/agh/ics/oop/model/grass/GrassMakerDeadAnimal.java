@@ -4,11 +4,8 @@ import agh.ics.oop.model.MapField;
 import agh.ics.oop.model.*;
 import agh.ics.oop.model.observers.AnimalDiedObserver;
 import agh.ics.oop.model.observers.NewDayObserver;
-
 import java.util.HashSet;
 import java.util.List;
-
-
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -26,7 +23,6 @@ public class GrassMakerDeadAnimal extends AbstractGrassMaker implements AnimalDi
                 freeWorseGrassPositions.add(new Vector2d(x, y));
             }
         }
-
         growNumberOfGrasss(startGrassNumber);
     }
 

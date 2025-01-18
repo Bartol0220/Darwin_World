@@ -1,4 +1,4 @@
-package agh.ics.oop.model.errors;
+package agh.ics.oop.errors;
 
 public class HasToBePositiveException extends Exception {
     public HasToBePositiveException(String valueName) {

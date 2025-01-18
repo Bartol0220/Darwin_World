@@ -2,9 +2,6 @@ package agh.ics.oop.model;
 
 import java.util.Objects;
 
-import static java.lang.Math.max;
-import static java.lang.Math.min;
-
 public class Vector2d {
     private final int x;
     private final int y;
@@ -17,51 +14,29 @@ public class Vector2d {
     public int getX() {return x;}
     public int getY() {return y;}
 
-    public String toString(){
+    public String toString() {
         return String.format("(%d,%d)", x, y);
     }
 
     public boolean precedes(Vector2d other) { return x <= other.getX() && y <= other.getY();}
 
-    public boolean follows(Vector2d other){
+    public boolean follows(Vector2d other) {
         return x >= other.getX() && y >= other.getY();
     }
 
-//    public boolean higher(Vector2d other) {return y >= other.getY();}
-//
-//    public boolean lower(Vector2d other) {return y <= other.getY();}
-
-    public Vector2d add(Vector2d other){
+    public Vector2d add(Vector2d other) {
         return new Vector2d(x + other.getX(), y + other.getY());
     }
-
-    public Vector2d subtract(Vector2d other){
-        return new Vector2d(x - other.getX(), y - other.getY());
-    }
-
-    public Vector2d upperRight(Vector2d other){
-        return new Vector2d(max(x, other.getX()), max(y, other.getY()));
-    }
-
-    public Vector2d lowerLeft(Vector2d other){
-        return new Vector2d(min(x, other.getX()), min(y, other.getY()));
-    }
-
-    public Vector2d opposite(){
-        return new Vector2d(-x, -y);
-    }
-
 
     public int hashCode() {
         return Objects.hash(x, y);
     }
 
-    public boolean equals(Object other){
+    public boolean equals(Object other) {
         if (this == other)
             return true;
-        if (!(other instanceof Vector2d))
+        if (!(other instanceof Vector2d that))
             return false;
-        Vector2d that = (Vector2d) other;
         return Objects.equals(this.x, that.x) && Objects.equals(this.y, that.y);
     }
 }

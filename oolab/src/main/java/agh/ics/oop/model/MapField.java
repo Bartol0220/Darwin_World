@@ -1,12 +1,11 @@
 package agh.ics.oop.model;
 
 import agh.ics.oop.model.grass.Grass;
-
 import java.util.*;
 
 public class MapField {
     private final Vector2d position;
-    private final List<Animal> animals = new ArrayList<Animal>();
+    private final List<Animal> animals = new ArrayList<>();
     private Optional<Grass> grass = Optional.empty();
     private boolean isBetterPosition = false;
     private int lastDeathDate = 0;
@@ -17,11 +16,15 @@ public class MapField {
 
     public Vector2d getPosition() { return position;}
 
-    public boolean hasGrass() { return grass.isPresent();}
-
     public Optional<Grass> getGrass() {
         return grass;
     }
+
+    public int getNumberOfAnimals(){ return animals.size();}
+
+    public int getLastDeathDate() { return lastDeathDate; }
+
+    public boolean hasGrass() { return grass.isPresent();}
 
     public boolean isBetterPosition() { return isBetterPosition;}
 
@@ -37,18 +40,9 @@ public class MapField {
         this.grass = Optional.of(grass);
     }
 
-    public Optional<Grass> removeGrass(){
-        Optional<Grass> grass = this.grass;
+    public void removeGrass(){
         this.grass = Optional.empty();
-        return grass;
     }
-
-    public void setIsBetterPosition(boolean betterPosition) { this.isBetterPosition = betterPosition; }
-
-    public int getNumberOfAnimals(){ return animals.size();}
-
-    public int getLastDeathDate() { return lastDeathDate; }
-
 
     public void addAnimal(Animal animal) {
         animals.add(animal);
@@ -57,9 +51,6 @@ public class MapField {
     public void removeAnimal(Animal animal) {
         animals.remove(animal);
     }
-
-
-    public List<Animal> getAnimals() { return  List.copyOf(animals);}
 
     public List<Animal> listOfBestAnimals(int minimalEnergy) {
         if (!animals.isEmpty()) {
@@ -91,5 +82,4 @@ public class MapField {
         MapField that = (MapField) o;
         return this.position == that.position;
     }
-
 }
