@@ -1,5 +1,5 @@
 package agh.ics.oop.model.observers;
 
 public interface SimulationErrorObserver {
-    void simulationErrorOccured();
+    void simulationErrorOccured(String message);
 }

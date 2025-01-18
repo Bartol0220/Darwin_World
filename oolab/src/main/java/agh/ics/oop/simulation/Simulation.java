@@ -82,7 +82,7 @@ public class Simulation implements Runnable {
         } catch (InterruptedException exception) {
             Thread.currentThread().interrupt();
             pause();
-            notifySimulationErrorObserver();
+            notifySimulationErrorObserver("");
         }
     }
 
@@ -98,7 +98,7 @@ public class Simulation implements Runnable {
 
     public void unregisterAnimalDiedObserver(AnimalDiedObserver observer) { animalDiedObservers.remove(observer);}
 
-    public void notifyAnimalDiedObservers(Animal animal){
+    private void notifyAnimalDiedObservers(Animal animal){
         for(AnimalDiedObserver observer : animalDiedObservers){
             observer.animalDied(animal);
         }
@@ -108,7 +108,7 @@ public class Simulation implements Runnable {
 
     public void unregisterNewDayObserver(NewDayObserver observer) { newDayObservers.remove(observer);}
 
-    public void notifyNewDayObservers(int dayNumber) {
+    private void notifyNewDayObservers(int dayNumber) {
         for(NewDayObserver observer : newDayObservers){
             observer.newDay(dayNumber);
         }
@@ -118,9 +118,9 @@ public class Simulation implements Runnable {
 
     public void unregisterSimulationErrorObserver(SimulationErrorObserver observer) { simulationErrorObservers.remove(observer);}
 
-    public void notifySimulationErrorObserver() {
+    public void notifySimulationErrorObserver(String message) {
         for(SimulationErrorObserver observer : simulationErrorObservers){
-            observer.simulationErrorOccured();
+            observer.simulationErrorOccured(message);
         }
     }
 

@@ -110,7 +110,7 @@ public class SimulationPresenter implements MapChangeObserver, FailedToSaveObser
             try {
                 simulationEngine.pauseSimulations();
             } catch (InterruptedException e) {
-                // TODO dokończyć catcha, allert i zamknąć
+                simulationErrorOccured("An error occurred while stopping the simulation. The simulation could not be stopped properly.");
             }
         } else {
             running = true;
@@ -309,12 +309,13 @@ public class SimulationPresenter implements MapChangeObserver, FailedToSaveObser
     }
 
     @Override
-    public void simulationErrorOccured() {
+    public void simulationErrorOccured(String message) {
         Platform.runLater(() -> {
             errorLabel.setText("The simulation has been interrupted.");
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Simulation Error");
             alert.setHeaderText("The simulation was interrupted due to an error.");
+            alert.setContentText(message);
             alert.showAndWait();
             stage.close();
         });

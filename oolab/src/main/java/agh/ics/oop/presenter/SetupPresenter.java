@@ -233,7 +233,7 @@ public class SetupPresenter {
                     simulationEngine.pauseSimulations();
                     simulationsMap.remove(simulationEngine);
                 } catch (InterruptedException e) {
-                    // TODO zamknięcie jednej symulacji, doczytać, jak nie to ignore
+                    simulation.notifySimulationErrorObserver("The simulation could not be closed properly.");
                 }
             });
         } catch (FileAlreadyExistsException exception) {
