@@ -15,7 +15,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 public class Simulation implements Runnable {
@@ -76,6 +75,7 @@ public class Simulation implements Runnable {
                 Thread.sleep(threadSleepTime);
                 dayNumber++;
                 runDay();
+                stats.calculateAverageBirthRate(animals);
                 stats.updateGeneralStats(getAnimals());
                 map.notifyObservers("Day " + dayNumber);
                 notifyNewDayObservers(dayNumber);
@@ -91,7 +91,6 @@ public class Simulation implements Runnable {
         feedAnimals();
         breeding.breedAnimals(dayNumber, this);
         grassMaker.grow();
-        stats.calculateAverageBirthRate(animals);
     }
 
     public void registerAnimalDiedObserver(AnimalDiedObserver observer) { animalDiedObservers.add(observer);}

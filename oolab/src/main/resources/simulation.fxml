@@ -12,104 +12,111 @@
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.layout.Pane?>
-<BorderPane xmlns="http://javafx.com/javafx"
+
+<ScrollPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             minHeight="550.0" minWidth="850.0"
+            fitToHeight="true" fitToWidth="true"
             stylesheets="simulation.css"
             fx:controller="agh.ics.oop.presenter.SimulationPresenter">
 
-    <top>
-        <HBox spacing="15" alignment="CENTER">
-            <Label fx:id="info" text="Simulation is running" textAlignment="CENTER"/>
-            <Label fx:id="messageLabel" textAlignment="CENTER"/>
-            <Button fx:id="playPauseButton" text="Pause" onAction="#onSimulationPlayPauseClicked"/>
-            <Label fx:id="errorLabel"/>
-        </HBox>
-    </top>
-    <center>
-        <GridPane fx:id="mapGridPane" gridLinesVisible="true" alignment="CENTER"/>
-    </center>
-    <right>
-        <VBox>
-            <VBox minWidth="500" maxWidth="500">
-                <Label text="Day lenght [ms]:" textAlignment="CENTER" stylesheets="bigLabel.css"/>
-                <HBox spacing="10">
-                    <Slider fx:id="threadSleep" minWidth="400" min="5" max="3000" value="700" showTickLabels="true" majorTickUnit="500"/>
-                    <Label fx:id="threadSleepDisplay" text="Value: 700" textAlignment="CENTER" stylesheets="bigLabel.css"/>
-                </HBox>
+    <BorderPane>
+        <top>
+            <HBox spacing="15" alignment="CENTER">
+                <Label fx:id="info" text="Simulation is running" textAlignment="CENTER"/>
+                <Label fx:id="messageLabel" textAlignment="CENTER"/>
+                <Button fx:id="playPauseButton" text="Pause" onAction="#onSimulationPlayPauseClicked"/>
+                <Label fx:id="errorLabel"/>
+            </HBox>
+        </top>
+        <center>
+            <GridPane fx:id="mapGridPane" gridLinesVisible="true" alignment="CENTER"/>
+        </center>
+        <right>
+            <VBox>
+                <VBox minWidth="500" maxWidth="500">
+                    <Label text="Day lenght [ms]:" textAlignment="CENTER" stylesheets="bigLabel.css"/>
+                    <HBox spacing="10">
+                        <Slider fx:id="threadSleep" minWidth="400" min="50" max="3000" value="700" showTickLabels="true" majorTickUnit="500"/>
+                        <Label fx:id="threadSleepDisplay" text="Value: 700" textAlignment="CENTER" stylesheets="bigLabel.css"/>
+                    </HBox>
+                </VBox>
+                <ScrollPane fitToWidth="true" minWidth="500" maxWidth="500">
+                    <VBox spacing="5">
+                        <HBox spacing="10">
+                            <Label text="Number of living animals:" textAlignment="CENTER" stylesheets="bigLabel.css"/>
+                            <Label fx:id="currentAnimalCount" textAlignment="CENTER" stylesheets="bigLabel.css"/>
+                        </HBox>
+                        <HBox spacing="10">
+                            <Label text="Number of dead animals:" textAlignment="CENTER" stylesheets="bigLabel.css"/>
+                            <Label fx:id="deadAnimalCount" textAlignment="CENTER" stylesheets="bigLabel.css"/>
+                        </HBox>
+                        <HBox spacing="10">
+                            <Label text="Number of all animals:" textAlignment="CENTER" stylesheets="bigLabel.css"/>
+                            <Label fx:id="allAnimalCount" textAlignment="CENTER" stylesheets="bigLabel.css"/>
+                        </HBox>
+                        <HBox spacing="10">
+                            <Label text="Maximum number of living animals:" textAlignment="CENTER" stylesheets="bigLabel.css"/>
+                            <Label fx:id="maximumAnimalCount" textAlignment="CENTER" stylesheets="bigLabel.css"/>
+                        </HBox>
+                        <HBox spacing="10">
+                            <Label text="Minimum number of living animals:" textAlignment="CENTER" stylesheets="bigLabel.css"/>
+                            <Label fx:id="minimumAnimalCount" textAlignment="CENTER" stylesheets="bigLabel.css"/>
+                        </HBox>
+                        <HBox spacing="10">
+                            <Label text="Average energy for living animals:" textAlignment="CENTER" stylesheets="bigLabel.css"/>
+                            <Label fx:id="averageEnergy" textAlignment="CENTER" stylesheets="bigLabel.css"/>
+                        </HBox>
+                        <HBox spacing="10">
+                            <Label text="Average birthrate for living animals:" textAlignment="CENTER" stylesheets="bigLabel.css"/>
+                            <Label fx:id="averageBirthrate" textAlignment="CENTER" stylesheets="bigLabel.css"/>
+                        </HBox>
+                        <HBox spacing="10">
+                            <Label text="Average lifespan for dead animals:" textAlignment="CENTER" stylesheets="bigLabel.css"/>
+                            <Label fx:id="averageLifespan" textAlignment="CENTER" stylesheets="bigLabel.css"/>
+                        </HBox>
+                        <Label text=" The most popular genotype:" textAlignment="CENTER" stylesheets="bigLabel.css"/>
+                        <Label fx:id="mostCommonGenes" textAlignment="CENTER" stylesheets="bigLabel.css"/>
+                        <HBox spacing="10">
+                            <Label text="Amount of grass on map:" textAlignment="CENTER" stylesheets="bigLabel.css"/>
+                            <Label fx:id="grassCount" textAlignment="CENTER" stylesheets="bigLabel.css"/>
+                        </HBox>
+                        <HBox spacing="10">
+                            <Label text="Number of free space:" textAlignment="CENTER" stylesheets="bigLabel.css"/>
+                            <Label fx:id="freeSpace" textAlignment="CENTER" stylesheets="bigLabel.css"/>
+                        </HBox>
+                        <Label text=" LEGEND" textAlignment="CENTER" stylesheets="bigLabel.css"/>
+                        <HBox spacing="10">
+                            <Label text="Selected animal:" textAlignment="CENTER" stylesheets="bigLabel.css"/>
+                            <Pane fx:id="selectedAnimalPane" prefWidth="20" prefHeight="20" />
+                        </HBox>
+                        <HBox spacing="10">
+                            <Label text="Animals with the most common genotype (when paused):" textAlignment="CENTER" stylesheets="bigLabel.css"/>
+                            <Pane fx:id="genotypeAnimalPane" prefWidth="20" prefHeight="20" />
+                        </HBox>
+                        <HBox spacing="10">
+                            <Label text="A more fertile field for growing grass (when paused):" textAlignment="CENTER" stylesheets="bigLabel.css"/>
+                            <Pane fx:id="grassAnimalPane" prefWidth="20" prefHeight="20" />
+                        </HBox>
+                    </VBox>
+                </ScrollPane>
+                <ScrollPane fitToWidth="true" minWidth="500" maxWidth="500" maxHeight="360">
+                    <VBox spacing="20">
+                        <Label fx:id="animalInfo"
+                               text="To select an animal, stop the simulation and click on the chosen one."
+                               textAlignment="LEFT"
+                               wrapText="true"
+                               stylesheets="bigLabel.css"/>
+                        <Label fx:id="animalEnergyInfo" stylesheets="bigLabel.css"/>
+                        <ProgressBar fx:id="animalEnergyProgressBar" minWidth="300" visible="false"/>
+                        <Label fx:id="animalStats" stylesheets="bigLabel.css"/>
+                    </VBox>
+                </ScrollPane>
             </VBox>
-            <ScrollPane fitToWidth="true" vbarPolicy="ALWAYS" minWidth="500" maxWidth="500">
-                <VBox spacing="5">
-                    <HBox spacing="10">
-                        <Label text="Number of living animals:" textAlignment="CENTER" stylesheets="bigLabel.css"/>
-                        <Label fx:id="currentAnimalCount" textAlignment="CENTER" stylesheets="bigLabel.css"/>
-                    </HBox>
-                    <HBox spacing="10">
-                        <Label text="Number of dead animals:" textAlignment="CENTER" stylesheets="bigLabel.css"/>
-                        <Label fx:id="deadAnimalCount" textAlignment="CENTER" stylesheets="bigLabel.css"/>
-                    </HBox>
-                    <HBox spacing="10">
-                        <Label text="Number of all animals:" textAlignment="CENTER" stylesheets="bigLabel.css"/>
-                        <Label fx:id="allAnimalCount" textAlignment="CENTER" stylesheets="bigLabel.css"/>
-                    </HBox>
-                    <HBox spacing="10">
-                        <Label text="Maximum number of living animals:" textAlignment="CENTER" stylesheets="bigLabel.css"/>
-                        <Label fx:id="maximumAnimalCount" textAlignment="CENTER" stylesheets="bigLabel.css"/>
-                    </HBox>
-                    <HBox spacing="10">
-                        <Label text="Minimum number of living animals:" textAlignment="CENTER" stylesheets="bigLabel.css"/>
-                        <Label fx:id="minimumAnimalCount" textAlignment="CENTER" stylesheets="bigLabel.css"/>
-                    </HBox>
-                    <HBox spacing="10">
-                        <Label text="Average energy for living animals:" textAlignment="CENTER" stylesheets="bigLabel.css"/>
-                        <Label fx:id="averageEnergy" textAlignment="CENTER" stylesheets="bigLabel.css"/>
-                    </HBox>
-                    <HBox spacing="10">
-                        <Label text="Average birthrate for living animals:" textAlignment="CENTER" stylesheets="bigLabel.css"/>
-                        <Label fx:id="averageBirthrate" textAlignment="CENTER" stylesheets="bigLabel.css"/>
-                    </HBox>
-                    <HBox spacing="10">
-                        <Label text="Average lifespan for dead animals:" textAlignment="CENTER" stylesheets="bigLabel.css"/>
-                        <Label fx:id="averageLifespan" textAlignment="CENTER" stylesheets="bigLabel.css"/>
-                    </HBox>
-                    <Label text=" The most popular genotype:" textAlignment="CENTER" stylesheets="bigLabel.css"/>
-                    <Label fx:id="mostCommonGenes" textAlignment="CENTER" stylesheets="bigLabel.css"/>
-                    <HBox spacing="10">
-                        <Label text="Amount of grass on map:" textAlignment="CENTER" stylesheets="bigLabel.css"/>
-                        <Label fx:id="grassCount" textAlignment="CENTER" stylesheets="bigLabel.css"/>
-                    </HBox>
-                    <HBox spacing="10">
-                        <Label text="Number of free space:" textAlignment="CENTER" stylesheets="bigLabel.css"/>
-                        <Label fx:id="freeSpace" textAlignment="CENTER" stylesheets="bigLabel.css"/>
-                    </HBox>
-                    <Label text=" LEGEND" textAlignment="CENTER" stylesheets="bigLabel.css"/>
-                    <HBox spacing="10">
-                        <Label text="Selected animal:" textAlignment="CENTER" stylesheets="bigLabel.css"/>
-                        <Pane fx:id="selectedAnimalPane" prefWidth="20" prefHeight="20" />
-                    </HBox>
-                    <HBox spacing="10">
-                        <Label text="Animals with the most common genotype (when paused):" textAlignment="CENTER" stylesheets="bigLabel.css"/>
-                        <Pane fx:id="genotypeAnimalPane" prefWidth="20" prefHeight="20" />
-                    </HBox>
-                    <HBox spacing="10">
-                        <Label text="A more fertile field for growing grass (when paused):" textAlignment="CENTER" stylesheets="bigLabel.css"/>
-                        <Pane fx:id="grassAnimalPane" prefWidth="20" prefHeight="20" />
-                    </HBox>
-                </VBox>
-            </ScrollPane>
-            <BorderPane minHeight="50"/>
-            <ScrollPane fitToWidth="true" vbarPolicy="ALWAYS" minWidth="500" maxWidth="500">
-                <VBox spacing="20">
-                    <Label fx:id="animalInfo"
-                           text="To select an animal, stop the simulation and click on the chosen one."
-                           textAlignment="CENTER"
-                           stylesheets="bigLabel.css"/>
-                    <Label fx:id="animalEnergyInfo" stylesheets="bigLabel.css"/>
-                    <ProgressBar fx:id="animalEnergyProgressBar" minWidth="300" visible="false"/>
-                    <Label fx:id="animalStats" stylesheets="bigLabel.css"/>
-                </VBox>
-            </ScrollPane>
-        </VBox>
 
-    </right>
-</BorderPane>
+        </right>
+    </BorderPane>
+</ScrollPane>
+
+
+
