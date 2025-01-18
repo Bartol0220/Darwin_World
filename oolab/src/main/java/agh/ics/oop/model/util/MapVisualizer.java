@@ -2,10 +2,8 @@ package agh.ics.oop.model.util;
 
 import agh.ics.oop.model.GlobeMap;
 import agh.ics.oop.model.Vector2d;
-import agh.ics.oop.model.WorldElement;
 
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * The map visualizer converts the {@link GlobeMap} map into a string

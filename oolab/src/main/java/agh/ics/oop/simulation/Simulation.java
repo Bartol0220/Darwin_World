@@ -16,17 +16,17 @@ import java.util.*;
 
 
 public class Simulation implements Runnable {
-    private final GlobeMap map;
     private final List<AnimalDiedObserver> animalDiedObservers = new ArrayList<>();
     private final List<NewDayObserver> newDayObservers = new ArrayList<>();
     private final List<Animal> animals = new LinkedList<>();
+    private final GlobeMap map;
     private final AbstractGrassMaker grassMaker;
     private final AnimalCreator animalCreator;
     private final Breeding breeding;
     private final Stats stats;
     private int dayNumber = 0;
-    private boolean running = true;
     private int threadSleepTime = 700;
+    private boolean running = true;
 
     public Simulation(GlobeMap map, AbstractGrassMaker grassMaker, Breeding breeding, AnimalCreator animalCreator, int startNumberOfAnimals, Stats stats) {
         this.map = map;
@@ -41,7 +41,7 @@ public class Simulation implements Runnable {
     private void createAnimals(GlobeMap map, int startNumberOfAnimals) {
         RandomVector2d positions = new RandomVector2d(map.getWidth(), map.getHeight(), startNumberOfAnimals);
         for(Vector2d position : positions) {
-            Animal animal = animalCreator.createStartingAnimal(position, dayNumber);
+            Animal animal = animalCreator.createStartingAnimal(position);
             try {
                 map.place(animal);
                 animals.add(animal);
@@ -78,7 +78,7 @@ public class Simulation implements Runnable {
                 notifyNewDayObservers(dayNumber);
             }
         } catch (InterruptedException exception) {
-            // TODO
+            // TODO zamknąć okienko, alert, spytać w necie co jeszcze
         }
     }
 
@@ -86,7 +86,7 @@ public class Simulation implements Runnable {
         removeDeadAnimals();
         moveAnimals();
         feedAnimals();
-        breeding.breedAnimals(dayNumber, this);
+        breeding.breedAnimals(this);
         grassMaker.grow();
     }
 

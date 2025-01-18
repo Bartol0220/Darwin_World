@@ -73,9 +73,6 @@ public class World {
 
             Simulation simulation = new Simulation(map, grassMaker, breeding, animalCreator, createdConfig.getStartNumberOfAnimals(), stats);
 
-//            StatsSaverCSV statsSaverCSV = new StatsSaverCSV(stats,"stats3");
-//            simulation.registerNewDayObserver(statsSaverCSV);
-
             simulation.registerAnimalDiedObserver(stats);
             if (grassMaker instanceof GrassMakerDeadAnimal) {
                 simulation.registerAnimalDiedObserver((GrassMakerDeadAnimal) grassMaker);

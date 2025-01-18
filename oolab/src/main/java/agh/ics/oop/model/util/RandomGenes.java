@@ -8,7 +8,6 @@ public class RandomGenes implements Iterable<Integer> {
     private int generated = 0;
 
     public RandomGenes(int maxValue, int without, int count) {
-        //jesli without jest -1, to losuje wszystkie wartosci
         this.count = count;
         for (int i = 0; i<maxValue; i++){
             if (i != without){

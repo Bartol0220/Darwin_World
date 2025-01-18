@@ -5,11 +5,11 @@ import agh.ics.oop.model.genes.GenesFactory;
 import agh.ics.oop.stats.Stats;
 
 public class AnimalCreator {
-    private final int startingEnergy;
+    private final Stats stats;
     private final GenesFactory genesFactory;
+    private final int startingEnergy;
     private final int energyUsedWhileBreeding;
     private final int energyProvidedByEatingGrass;
-    private final Stats stats;
 
     public AnimalCreator(int startingEnergy, int energyUsedWhileBreeding, int energyProvidedByEatingGrass, GenesFactory genesFactory, Stats stats) {
         this.startingEnergy = startingEnergy;
@@ -19,14 +19,14 @@ public class AnimalCreator {
         this.stats = stats;
     }
 
-    public Animal createStartingAnimal(Vector2d position, int dayNumber) {
+    public Animal createStartingAnimal(Vector2d position) {
         Genes genes = genesFactory.makeStartingGenes();
-        Animal newAnimal = new Animal(position, genes, startingEnergy, energyProvidedByEatingGrass, null, null);
+        Animal newAnimal = new Animal(position, genes, startingEnergy, energyProvidedByEatingGrass);
         stats.newAnimalPlaced(newAnimal);
         return newAnimal;
     }
 
-    public Animal createAnimal(int dayNumber, Animal stronger, Animal weaker) {
+    public Animal createAnimal(Animal stronger, Animal weaker) {
         Genes kidGenes = genesFactory.makeGenes(stronger, weaker);
         Vector2d position = stronger.getPosition();
         Animal kid = new Animal(position, kidGenes, 2*energyUsedWhileBreeding, energyProvidedByEatingGrass, stronger, weaker);

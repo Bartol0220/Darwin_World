@@ -15,13 +15,13 @@ public class GlobeMap implements MoveValidator {
     private final int width;
     private final int height;
     private final Boundary bounds;
+    private final List<MapChangeObserver> observers = new ArrayList<>();
     private final Map<Vector2d, MapField> allFields = new HashMap<>();
     private final HashSet<MapField> animalsMap = new HashSet<>();
     private final HashSet<Vector2d> whereAnimalsMeet = new HashSet<>();
     private final HashSet<Vector2d> animalsOnGrass = new HashSet<>();
     private final HashSet<MapField> grassMap = new HashSet<>();
     private final MapVisualizer mapVisualizer = new MapVisualizer(this);
-    private final List<MapChangeObserver> observers = new ArrayList<>();
 
     public GlobeMap(int width, int height, int id) {
         this.id = id;
@@ -91,7 +91,6 @@ public class GlobeMap implements MoveValidator {
     public void place(Animal animal) throws IncorrectPositionException {
         if(canMoveTo(animal.getPosition())) {
             addAnimalToMap(animal);
-//            notifyAnimalDiedObservers("Animal placed at %s.".formatted(animal.getPosition()));
         }
         else {
             throw new IncorrectPositionException(animal.getPosition());
@@ -121,22 +120,13 @@ public class GlobeMap implements MoveValidator {
     }
 
     public void move(Animal animal) {
-        MapDirection previousOrientation = animal.getOrientation();
-        Vector2d previousPosition = animal.getPosition();
-        int gene = animal.getCurrentGene();
-
         removeAnimalFromMap(animal);
         animal.move(this);
         addAnimalToMap(animal);
 
         addAnimalOnGrass(animal);
         updateWhereAnimalsMeet(animal.getPosition());
-
-//        notifyAnimalDiedObservers("Animal gn: %d, or: %s -> %s, pos: %s -> %s."
-//                .formatted(gene, previousOrientation, animal.getOrientation(), previousPosition, animal.getPosition())
-//        );
     }
-
 
     public void findAnimalsToBreed(Breeding breeding, Simulation simulation){
         for (Vector2d position : whereAnimalsMeet){

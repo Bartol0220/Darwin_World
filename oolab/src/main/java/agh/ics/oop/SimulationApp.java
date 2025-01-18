@@ -30,7 +30,6 @@ public class SimulationApp extends Application {
                     windowEvent.consume();
                 }
             } catch (InterruptedException e) {
-                // TODO zamknięcie wszystkich symulacji
                 System.exit(1);
             }
         });
