@@ -6,6 +6,7 @@ import agh.ics.oop.model.grass.AbstractGrassMaker;
 import agh.ics.oop.model.grass.Grass;
 import agh.ics.oop.model.observers.AnimalDiedObserver;
 import agh.ics.oop.model.observers.NewDayObserver;
+import agh.ics.oop.model.observers.SimulationErrorObserver;
 import agh.ics.oop.stats.Stats;
 import agh.ics.oop.model.util.RandomVector2d;
 
@@ -18,6 +19,7 @@ import java.util.*;
 public class Simulation implements Runnable {
     private final List<AnimalDiedObserver> animalDiedObservers = new ArrayList<>();
     private final List<NewDayObserver> newDayObservers = new ArrayList<>();
+    private final List<SimulationErrorObserver> simulationErrorObservers = new ArrayList<>();
     private final List<Animal> animals = new LinkedList<>();
     private final GlobeMap map;
     private final AbstractGrassMaker grassMaker;
@@ -78,7 +80,9 @@ public class Simulation implements Runnable {
                 notifyNewDayObservers(dayNumber);
             }
         } catch (InterruptedException exception) {
-            // TODO zamknąć okienko, alert, spytać w necie co jeszcze
+            Thread.currentThread().interrupt();
+            pause();
+            notifySimulationErrorObserver();
         }
     }
 
@@ -107,6 +111,16 @@ public class Simulation implements Runnable {
     public void notifyNewDayObservers(int dayNumber) {
         for(NewDayObserver observer : newDayObservers){
             observer.newDay(dayNumber);
+        }
+    }
+
+    public void registerSimulationErrorObserver(SimulationErrorObserver observer) { simulationErrorObservers.add(observer);}
+
+    public void unregisterSimulationErrorObserver(SimulationErrorObserver observer) { simulationErrorObservers.remove(observer);}
+
+    public void notifySimulationErrorObserver() {
+        for(SimulationErrorObserver observer : simulationErrorObservers){
+            observer.simulationErrorOccured();
         }
     }
 

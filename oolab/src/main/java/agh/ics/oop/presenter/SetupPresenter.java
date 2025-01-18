@@ -219,6 +219,8 @@ public class SetupPresenter {
             Stage stage = new Stage();
             SimulationPresenter presenter = newSimulationApp.showSimulation(stage);
 
+            simulation.registerSimulationErrorObserver(presenter);
+
             simulationsMap.put(simulationEngine, stage);
 
             statsSaverCSV.ifPresent(simulation::registerNewDayObserver);
