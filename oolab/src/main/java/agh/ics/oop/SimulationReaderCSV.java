@@ -11,7 +11,7 @@ public class SimulationReaderCSV {
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))){
             String line = reader.readLine();
-            int[] values = Arrays.stream(line.split(", "))
+            int[] values = Arrays.stream(line.split(";"))
                     .mapToInt(Integer::parseInt)
                     .toArray();
             if (values.length < 14) throw new IOException("Za malo ustawien.");
