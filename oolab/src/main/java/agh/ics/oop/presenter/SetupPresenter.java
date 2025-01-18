@@ -16,7 +16,7 @@ import agh.ics.oop.model.grass.GrassMakerEquator;
 import agh.ics.oop.simulation.Simulation;
 import agh.ics.oop.simulation.SimulationConfig;
 import agh.ics.oop.simulation.SimulationEngine;
-import agh.ics.oop.stats.Stats;
+import agh.ics.oop.statistics.Stats;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
@@ -219,6 +219,8 @@ public class SetupPresenter {
             Stage stage = new Stage();
             SimulationPresenter presenter = newSimulationApp.showSimulation(stage);
 
+            simulation.registerSimulationErrorObserver(presenter);
+
             simulationsMap.put(simulationEngine, stage);
 
             statsSaverCSV.ifPresent(simulation::registerNewDayObserver);
@@ -231,7 +233,7 @@ public class SetupPresenter {
                     simulationEngine.pauseSimulations();
                     simulationsMap.remove(simulationEngine);
                 } catch (InterruptedException e) {
-                    // TODO zamknięcie jednej symulacji, doczytać, jak nie to ignore
+                    simulation.notifySimulationErrorObserver("The simulation could not be closed properly.");
                 }
             });
         } catch (FileAlreadyExistsException exception) {

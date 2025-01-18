@@ -11,7 +11,7 @@ import agh.ics.oop.model.grass.GrassMakerEquator;
 import agh.ics.oop.model.observers.MapChangeObserver;
 import agh.ics.oop.simulation.Simulation;
 import agh.ics.oop.simulation.SimulationConfig;
-import agh.ics.oop.stats.Stats;
+import agh.ics.oop.statistics.Stats;
 
 import java.io.IOException;
 

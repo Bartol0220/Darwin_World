@@ -1,20 +1,18 @@
 package agh.ics.oop.presenter;
 
+import agh.ics.oop.model.observers.SimulationErrorObserver;
 import agh.ics.oop.simulation.SimulationEngine;
 import agh.ics.oop.WorldElementBox;
 import agh.ics.oop.AnimalButton;
 import agh.ics.oop.model.*;
 import agh.ics.oop.model.observers.FailedToSaveObserver;
 import agh.ics.oop.model.observers.MapChangeObserver;
-import agh.ics.oop.stats.Stats;
+import agh.ics.oop.statistics.Stats;
 import agh.ics.oop.model.util.Boundary;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.Slider;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -24,7 +22,7 @@ import javafx.stage.Stage;
 import java.util.Optional;
 import java.util.Set;
 
-public class SimulationPresenter implements MapChangeObserver, FailedToSaveObserver {
+public class SimulationPresenter implements MapChangeObserver, FailedToSaveObserver, SimulationErrorObserver {
     private Set<Vector2d> positionsWithAnimalsWithPopularGene;
     private Optional<Animal> selectedAnimal = Optional.empty();
     private SimulationEngine simulationEngine;
@@ -112,7 +110,7 @@ public class SimulationPresenter implements MapChangeObserver, FailedToSaveObser
             try {
                 simulationEngine.pauseSimulations();
             } catch (InterruptedException e) {
-                // TODO dokończyć catcha, allert i zamknąć
+                simulationErrorOccured("An error occurred while stopping the simulation. The simulation could not be stopped properly.");
             }
         } else {
             running = true;
@@ -308,5 +306,18 @@ public class SimulationPresenter implements MapChangeObserver, FailedToSaveObser
     @Override
     public void failedToSave() {
         errorLabel.setText("Failed to save the file with statistics.");
+    }
+
+    @Override
+    public void simulationErrorOccured(String message) {
+        Platform.runLater(() -> {
+            errorLabel.setText("The simulation has been interrupted.");
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Simulation Error");
+            alert.setHeaderText("The simulation was interrupted due to an error.");
+            alert.setContentText(message);
+            alert.showAndWait();
+            stage.close();
+        });
     }
 }
