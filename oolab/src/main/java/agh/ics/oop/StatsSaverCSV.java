@@ -8,6 +8,7 @@ import agh.ics.oop.model.observers.MapChangeObserver;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
 
 public class StatsSaverCSV implements NewDayObserver {
     private final Stats stats;
@@ -18,6 +19,7 @@ public class StatsSaverCSV implements NewDayObserver {
         this.stats = stats;
         this.fileName = fileName;
         this.simulationCSV = new File(makeFullFileName(fileName));
+        new File(System.getProperty("user.dir") + File.separator + "stats").mkdirs();
         try (FileWriter writer = new FileWriter(simulationCSV, true)) {
             writer.append("Day;Animal count;Grass Count;Free space;Most common genes;Average energy;Average lifespan;Average children count\n");
         }
@@ -27,6 +29,9 @@ public class StatsSaverCSV implements NewDayObserver {
 
         try (FileWriter writer = new FileWriter(simulationCSV, true)) {
             writer.append(makeLine(message));
+        }
+        catch (IOException _){
+            throw new FileAlreadyExistsException(fileName + " already exists.");
         }
         //nie wiem czy go rzucac czy nie
         //throw new FileAlreadyExistsException(fileName + " already exists.");
