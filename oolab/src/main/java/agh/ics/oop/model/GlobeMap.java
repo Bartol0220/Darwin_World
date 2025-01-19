@@ -125,7 +125,6 @@ public class GlobeMap implements MoveValidator {
         addAnimalToMap(animal);
 
         addAnimalOnGrass(animal);
-        updateWhereAnimalsMeet(animal.getPosition());
     }
 
     public void findAnimalsToBreed(Breeding breeding, Simulation simulation){
@@ -181,6 +180,7 @@ public class GlobeMap implements MoveValidator {
         MapField mapField = allFields.get(animal.getPosition());
         mapField.addAnimal(animal);
         animalsMap.add(mapField);
+        updateWhereAnimalsMeet(animal.getPosition());
     }
 
     @Override

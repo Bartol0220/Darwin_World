@@ -6,6 +6,7 @@ import agh.ics.oop.model.observers.AnimalDiedObserver;
 import agh.ics.oop.model.observers.NewDayObserver;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -32,7 +33,7 @@ public class GrassMakerDeadAnimal extends AbstractGrassMaker implements AnimalDi
             for (int x=animal.getPosition().getX()-1; x <= animal.getPosition().getX()+1; x++) {
                 Vector2d currentPosition = new Vector2d(x,y);
                 changePositionToBetter(map.handleBoundsPositions(currentPosition));
-                MapField mapField = map.getMapField(currentPosition);
+                MapField mapField = map.getMapField(map.handleBoundsPositions(currentPosition));
                 mapField.animalDiedOnField(currentDay);
                 temporrarilyBetter.add(mapField);
             }
@@ -55,6 +56,11 @@ public class GrassMakerDeadAnimal extends AbstractGrassMaker implements AnimalDi
         List<MapField> fields = getPositionsToDowngrade();
         for (MapField mapField : fields){
             changePositionToWorse(map.handleBoundsPositions(mapField.getPosition()));
+            temporrarilyBetter.remove(mapField);
         }
+    }
+
+    public Set<MapField> getTemporarilyBetterPositions(){
+        return Set.copyOf(temporrarilyBetter);
     }
 }
