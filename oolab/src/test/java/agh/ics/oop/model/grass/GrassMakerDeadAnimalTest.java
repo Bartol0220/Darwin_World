@@ -42,6 +42,7 @@ class GrassMakerDeadAnimalTest {
 
     @Test
     void removesAfterFewDays(){
+        //given
         GlobeMap map = new GlobeMap(3, 3, 0);
         GrassMakerDeadAnimal grassMaker = new GrassMakerDeadAnimal(3,3, map);
         Vector2d placedPosition = new Vector2d(0, 0);
@@ -55,11 +56,26 @@ class GrassMakerDeadAnimalTest {
         MapField betterPosition5 = map.getMapField(new Vector2d(2, 0));
         MapField betterPosition6 = map.getMapField(new Vector2d(2, 1));
 
+        //when
         grassMaker.newDay(5);
         grassMaker.animalDied(animal);
+        grassMaker.newDay(9);
+        grassMaker.changeFieldsPositionToWorseAfterFewDays();
+
+        //then
+        assertEquals(6, grassMaker.getTemporarilyBetterPositions().size());
+        assertTrue(grassMaker.getTemporarilyBetterPositions().contains(betterPosition1));
+        assertTrue(grassMaker.getTemporarilyBetterPositions().contains(betterPosition2));
+        assertTrue(grassMaker.getTemporarilyBetterPositions().contains(betterPosition3));
+        assertTrue(grassMaker.getTemporarilyBetterPositions().contains(betterPosition4));
+        assertTrue(grassMaker.getTemporarilyBetterPositions().contains(betterPosition5));
+        assertTrue(grassMaker.getTemporarilyBetterPositions().contains(betterPosition6));
+
+        //when
         grassMaker.newDay(10);
         grassMaker.changeFieldsPositionToWorseAfterFewDays();
 
+        //then
         assertEquals(0, grassMaker.getTemporarilyBetterPositions().size());
         assertFalse(grassMaker.getTemporarilyBetterPositions().contains(betterPosition1));
         assertFalse(grassMaker.getTemporarilyBetterPositions().contains(betterPosition2));
