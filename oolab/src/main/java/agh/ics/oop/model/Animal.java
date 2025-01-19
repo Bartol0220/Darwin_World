@@ -80,7 +80,7 @@ public class Animal implements WorldElement, Comparable<Animal> {
         AnimalStats otherStats = otherAnimal.animalStats;
         if (thisStats.getEnergy() != otherStats.getEnergy()) return otherStats.getEnergy() - thisStats.getEnergy();
         if (thisStats.getAge() != otherStats.getAge()) return otherStats.getAge() - thisStats.getAge();
-        if (thisStats.getChildrenCount() != otherStats.getChildrenCount()) return thisStats.getChildrenCount() - otherStats.getChildrenCount();
+        if (thisStats.getChildrenCount() != otherStats.getChildrenCount()) return otherStats.getChildrenCount() - thisStats.getChildrenCount();
 
         return random.nextInt(-1, 2);
     }

@@ -82,4 +82,9 @@ public class MapField {
         MapField that = (MapField) o;
         return this.position == that.position;
     }
+
+    @Override
+    public String toString(){
+        return position.toString();
+    }
 }
