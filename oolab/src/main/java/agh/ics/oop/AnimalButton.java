@@ -53,6 +53,6 @@ public class AnimalButton extends Button {
         this.setPrefSize(cellWidth * 0.9, cellWidth * 0.9);
         this.setMaxWidth(cellWidth * 0.9);
         this.setMaxHeight(cellWidth * 0.9);
-        this.animal = animal;
+        this.animal = map.getMapField(animal.getPosition()).listOfBestAnimals(0).getFirst();
     }
 }

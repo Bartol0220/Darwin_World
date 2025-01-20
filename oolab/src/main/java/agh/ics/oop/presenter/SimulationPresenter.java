@@ -121,7 +121,7 @@ public class SimulationPresenter implements MapChangeObserver, FailedToSaveObser
     }
 
     public void onSimulationAnimalClicked(AnimalButton button) {
-        if (selectedAnimal.filter(presentAnimal -> presentAnimal == button.getAnimal()).isPresent()) {
+        if (selectedAnimal.filter(presentAnimal -> presentAnimal.equals(button.getAnimal())).isPresent()) {
             selectedAnimal = Optional.empty();
         } else {
             selectedAnimal = Optional.of(button.getAnimal());
@@ -131,13 +131,6 @@ public class SimulationPresenter implements MapChangeObserver, FailedToSaveObser
                         (_ -> animalInfo.setText("Statistics of the selected animal.")),
                         (() -> animalInfo.setText("To select an animal, stop the simulation and click on the chosen one."))
                 );
-        drawMap();
-        drawStats();
-    }
-
-    public void onSimulationFieldWithAnimalsClicked() {
-        selectedAnimal = Optional.empty();
-        animalInfo.setText("There are many animals in the field. To select an animal, stop the simulation and click on the chosen one.");
         drawMap();
         drawStats();
     }
@@ -243,7 +236,7 @@ public class SimulationPresenter implements MapChangeObserver, FailedToSaveObser
 
             VBox vBox = new VBox();
             if (map.areMultipleAnimalsOnField(animal.getPosition())) {
-                button.setOnAction(_ -> onSimulationFieldWithAnimalsClicked());
+                button.setOnAction(_ -> onSimulationAnimalClicked(button));
             } else {
                 button.setOnAction(_ -> onSimulationAnimalClicked(button));
                 ProgressBar progressBar = new ProgressBar();
