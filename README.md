@@ -1,5 +1,10 @@
 # Darwin_World
 
+## Uwagi do projektu
+Projekt był testowany na komputerach z systemem Windows, gdzie działa prawidłowo, dodatkowo potwierdziliśmy możliwość zbudowania i uruchomienia go z wykorzystaniem Gradle'a.
+Ponadto sprawdziliśmy poprawność kodu na WSL (Ubuntu), program buduje się i działa prawidłowo, lecz jest problem ze sczytywaniem rozmiarów okna, co może powodować błędy w wyświetlaniu (mapa jest mała, przez co elementy na niej są ledwo widoczne).
+Zakładamy, na podstawie przeczytanych informacji w internecie, że jest to kwestia samego WSL, a nie systemu Linux, z powodu braku możliwości przetestowania kodu na "czystym" Linuxie postanowiliśmy pozostawić kod w aktualnej wersji.
+
 ## Temat projektu
 https://github.com/Soamid/obiektowe-lab/tree/master/proj
 
