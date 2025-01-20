@@ -1,6 +1,5 @@
 package agh.ics.oop.presenter;
 
-import agh.ics.oop.model.observers.SimulationErrorObserver;
 import agh.ics.oop.simulation.SimulationEngine;
 import agh.ics.oop.WorldElementBox;
 import agh.ics.oop.AnimalButton;
@@ -22,7 +21,7 @@ import javafx.stage.Stage;
 import java.util.Optional;
 import java.util.Set;
 
-public class SimulationPresenter implements MapChangeObserver, FailedToSaveObserver, SimulationErrorObserver {
+public class SimulationPresenter implements MapChangeObserver, FailedToSaveObserver {
     private Set<Vector2d> positionsWithAnimalsWithPopularGene;
     private Optional<Animal> selectedAnimal = Optional.empty();
     private SimulationEngine simulationEngine;
@@ -301,7 +300,6 @@ public class SimulationPresenter implements MapChangeObserver, FailedToSaveObser
         errorLabel.setText("Failed to save the file with statistics.");
     }
 
-    @Override
     public void simulationErrorOccured(String message) {
         Platform.runLater(() -> {
             errorLabel.setText("The simulation has been interrupted.");

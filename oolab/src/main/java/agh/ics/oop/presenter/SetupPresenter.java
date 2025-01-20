@@ -219,7 +219,7 @@ public class SetupPresenter {
             Stage stage = new Stage();
             SimulationPresenter presenter = newSimulationApp.showSimulation(stage);
 
-            simulation.registerSimulationErrorObserver(presenter);
+            simulation.setPresenter(presenter);
 
             simulationsMap.put(simulationEngine, stage);
 
@@ -233,7 +233,7 @@ public class SetupPresenter {
                     simulationEngine.pauseSimulations();
                     simulationsMap.remove(simulationEngine);
                 } catch (InterruptedException e) {
-                    simulation.notifySimulationErrorObserver("The simulation could not be closed properly.");
+                    simulation.simulationErrorNotifyPresenter("The simulation could not be closed properly.");
                 }
             });
         } catch (FileAlreadyExistsException exception) {
