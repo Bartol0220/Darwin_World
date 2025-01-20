@@ -46,4 +46,4 @@ tasks.withType(JavaCompile).configureEach {
 tasks.withType(JavaExec).configureEach {
     jvmArgs += '--enable-preview'
 }
-
+//komentarz, bo sie zgubilem na linuxie
