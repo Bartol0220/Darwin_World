@@ -30,7 +30,7 @@ public class AnimalButton extends Button {
         String name = animal.getName();
         Optional<String> prefix = Optional.empty();
 
-        if (selectedAnimal.filter(presentSelectedAnimal -> presentSelectedAnimal.getPosition().equals(animal.getPosition())).isPresent()) {
+        if (selectedAnimal.filter(presentSelectedAnimal -> presentSelectedAnimal.getPosition().equals(animal.getPosition()) && presentSelectedAnimal.isAlive()).isPresent()) {
             prefix = Optional.of("selected-");
         } else if (positions.contains(animal.getPosition())) {
             prefix = Optional.of("gene-");
@@ -53,6 +53,6 @@ public class AnimalButton extends Button {
         this.setPrefSize(cellWidth * 0.9, cellWidth * 0.9);
         this.setMaxWidth(cellWidth * 0.9);
         this.setMaxHeight(cellWidth * 0.9);
-        this.animal = animal;
+        this.animal = map.getMapField(animal.getPosition()).listOfBestAnimals(0).getFirst();
     }
 }

@@ -4,12 +4,15 @@ import agh.ics.oop.model.Animal;
 import agh.ics.oop.model.genes.Genes;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 
 public class AnimalStats {
     private final Genes genes;
     private final Optional<Animal> parent1;
     private final Optional<Animal> parent2;
+    private final HashSet<Animal> predecessors = new HashSet<>();
     private Optional<Integer> deathDate = Optional.empty();
     private int energy;
     private int childrenCount=0;
@@ -22,18 +25,31 @@ public class AnimalStats {
         this.energy = energy;
         this.parent1 = Optional.ofNullable(parent1);
         this.parent2 = Optional.ofNullable(parent2);
+        this.parent1.ifPresent(presentParent ->{
+            this.predecessors.addAll(presentParent.getAnimalStats().getPredecessors());
+            this.predecessors.add(presentParent);
+        });
+        this.parent2.ifPresent(presentParent ->{
+            this.predecessors.addAll(presentParent.getAnimalStats().getPredecessors());
+            this.predecessors.add(presentParent);
+        });
     }
 
-    public void increaseSuccesorCount(){
-        parent1.ifPresent(presentParent -> {
-            presentParent.getAnimalStats().succesorCount++;
-            presentParent.getAnimalStats().increaseSuccesorCount();
-        });
-        parent2.ifPresent(presentParent -> {
-            presentParent.getAnimalStats().succesorCount++;
-            presentParent.getAnimalStats().increaseSuccesorCount();
+    public Optional<Integer> getDeathDate() {
+        return deathDate;
+    }
+
+    public List<Animal> getPredecessors() {
+        return predecessors.stream().toList();
+    }
+
+    public void increaseSuccesorCountForPredecessors(){
+        predecessors.forEach(animal -> {
+            animal.getAnimalStats().increaseSuccesorCount();
         });
     }
+
+    private void increaseSuccesorCount() {succesorCount++;}
 
     public int[] getGenotypeArray(){
         return genes.getGenes();

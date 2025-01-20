@@ -10,6 +10,7 @@ public class AnimalCreator {
     private final int startingEnergy;
     private final int energyUsedWhileBreeding;
     private final int energyProvidedByEatingGrass;
+    public int indexCounter = 0;
 
     public AnimalCreator(int startingEnergy, int energyUsedWhileBreeding, int energyProvidedByEatingGrass, GenesFactory genesFactory, Stats stats) {
         this.startingEnergy = startingEnergy;
@@ -21,16 +22,18 @@ public class AnimalCreator {
 
     public Animal createStartingAnimal(Vector2d position) {
         Genes genes = genesFactory.makeStartingGenes();
-        Animal newAnimal = new Animal(position, genes, startingEnergy, energyProvidedByEatingGrass);
+        Animal newAnimal = new Animal(indexCounter, position, genes, startingEnergy, energyProvidedByEatingGrass);
         stats.newAnimalPlaced(newAnimal);
+        indexCounter++;
         return newAnimal;
     }
 
     public Animal createAnimal(Animal stronger, Animal weaker) {
         Genes kidGenes = genesFactory.makeGenes(stronger, weaker);
         Vector2d position = stronger.getPosition();
-        Animal kid = new Animal(position, kidGenes, 2*energyUsedWhileBreeding, energyProvidedByEatingGrass, stronger, weaker);
+        Animal kid = new Animal(indexCounter, position, kidGenes, 2*energyUsedWhileBreeding, energyProvidedByEatingGrass, stronger, weaker);
         stats.newAnimalBorn(kid);
+        indexCounter++;
         return kid;
     }
 }
