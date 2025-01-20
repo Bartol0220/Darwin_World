@@ -31,7 +31,7 @@ application {
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(21))
+        languageVersion.set(JavaLanguageVersion.of(23))
     }
 }
 
@@ -46,4 +46,3 @@ tasks.withType(JavaCompile).configureEach {
 tasks.withType(JavaExec).configureEach {
     jvmArgs += '--enable-preview'
 }
-//komentarz, bo sie zgubilem na linuxie

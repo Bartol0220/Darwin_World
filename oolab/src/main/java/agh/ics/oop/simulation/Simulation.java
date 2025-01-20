@@ -6,7 +6,7 @@ import agh.ics.oop.model.grass.AbstractGrassMaker;
 import agh.ics.oop.model.grass.Grass;
 import agh.ics.oop.model.observers.AnimalDiedObserver;
 import agh.ics.oop.model.observers.NewDayObserver;
-import agh.ics.oop.model.observers.SimulationErrorObserver;
+import agh.ics.oop.presenter.SimulationPresenter;
 import agh.ics.oop.statistics.Stats;
 import agh.ics.oop.model.util.RandomVector2d;
 
@@ -19,7 +19,6 @@ import java.util.*;
 public class Simulation implements Runnable {
     private final List<AnimalDiedObserver> animalDiedObservers = new ArrayList<>();
     private final List<NewDayObserver> newDayObservers = new ArrayList<>();
-    private final List<SimulationErrorObserver> simulationErrorObservers = new ArrayList<>();
     private final List<Animal> animals = new LinkedList<>();
     private final GlobeMap map;
     private final AbstractGrassMaker grassMaker;
@@ -29,6 +28,7 @@ public class Simulation implements Runnable {
     private int dayNumber = 0;
     private int threadSleepTime = 700;
     private boolean running = true;
+    private SimulationPresenter presenter;
 
     public Simulation(GlobeMap map, AbstractGrassMaker grassMaker, Breeding breeding, AnimalCreator animalCreator, int startNumberOfAnimals, Stats stats) {
         this.map = map;
@@ -82,7 +82,7 @@ public class Simulation implements Runnable {
         } catch (InterruptedException exception) {
             Thread.currentThread().interrupt();
             pause();
-            notifySimulationErrorObserver("");
+            simulationErrorNotifyPresenter("");
         }
     }
 
@@ -114,14 +114,10 @@ public class Simulation implements Runnable {
         }
     }
 
-    public void registerSimulationErrorObserver(SimulationErrorObserver observer) { simulationErrorObservers.add(observer);}
+    public void setPresenter(SimulationPresenter presenter) { this.presenter = presenter;}
 
-    public void unregisterSimulationErrorObserver(SimulationErrorObserver observer) { simulationErrorObservers.remove(observer);}
-
-    public void notifySimulationErrorObserver(String message) {
-        for(SimulationErrorObserver observer : simulationErrorObservers){
-            observer.simulationErrorOccured(message);
-        }
+    public void simulationErrorNotifyPresenter(String message) {
+        presenter.simulationErrorOccured(message);
     }
 
     private void removeDeadAnimals() {
