@@ -3,6 +3,7 @@ package agh.ics.oop.model;
 import agh.ics.oop.model.genes.Genes;
 import agh.ics.oop.statistics.AnimalStats;
 
+import java.util.Objects;
 import java.util.Random;
 
 public class Animal implements WorldElement, Comparable<Animal> {
@@ -11,15 +12,17 @@ public class Animal implements WorldElement, Comparable<Animal> {
     private final int energyProvidedByEatingGrass;
     private final AnimalStats animalStats;
     private final Random random = new Random();
+    private final int id;
 
-    public Animal(Vector2d position, Genes genes, int energy, int energyProvidedByEatingGrass){
-        this(position, genes, energy, energyProvidedByEatingGrass, null, null);
+    public Animal(int id, Vector2d position, Genes genes, int energy, int energyProvidedByEatingGrass){
+        this(id, position, genes, energy, energyProvidedByEatingGrass, null, null);
     }
 
-    public Animal(Vector2d position, Genes genes, int energy, int energyProvidedByEatingGrass, Animal parent1, Animal parent2){
+    public Animal(int id, Vector2d position, Genes genes, int energy, int energyProvidedByEatingGrass, Animal parent1, Animal parent2){
         this.position = position;
         this.energyProvidedByEatingGrass = energyProvidedByEatingGrass;
         this.animalStats = new AnimalStats(genes, energy, parent1, parent2);
+        this.id = id;
     }
 
     public AnimalStats getAnimalStats(){
@@ -74,6 +77,10 @@ public class Animal implements WorldElement, Comparable<Animal> {
         animalStats.increaseEatenGrass();
     }
 
+    public boolean isAlive() {
+        return this.animalStats.getDeathDate().isEmpty();
+    }
+
     @Override
     public int compareTo(Animal otherAnimal) {
         AnimalStats thisStats = this.animalStats;
@@ -83,5 +90,17 @@ public class Animal implements WorldElement, Comparable<Animal> {
         if (thisStats.getChildrenCount() != otherStats.getChildrenCount()) return otherStats.getChildrenCount() - thisStats.getChildrenCount();
 
         return random.nextInt(-1, 2);
+    }
+
+    @Override
+    public int hashCode() {return id;}
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other)
+            return true;
+        if (!(other instanceof Animal that))
+            return false;
+        return this.id == that.id;
     }
 }

@@ -134,7 +134,7 @@ public class GlobeMap implements MoveValidator {
             Optional<Animal> kid = breeding.breedPair(breedingPair);
             kid.ifPresent(presentKid -> {
                 this.addAnimalToMap(presentKid);
-                presentKid.getAnimalStats().increaseSuccesorCount();
+                presentKid.getAnimalStats().increaseSuccesorCountForPredecessors();
                 simulation.addToAnimals(presentKid);
                 });
         }
