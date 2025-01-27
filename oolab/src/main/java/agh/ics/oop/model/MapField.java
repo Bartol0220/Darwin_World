@@ -1,6 +1,7 @@
 package agh.ics.oop.model;
 
 import agh.ics.oop.model.grass.Grass;
+
 import java.util.*;
 
 public class MapField {
@@ -14,33 +15,47 @@ public class MapField {
         this.position = position;
     }
 
-    public Vector2d getPosition() { return position;}
+    public Vector2d getPosition() {
+        return position;
+    }
 
     public Optional<Grass> getGrass() {
         return grass;
     }
 
-    public int getNumberOfAnimals(){ return animals.size();}
+    public int getNumberOfAnimals() {
+        return animals.size();
+    }
 
-    public int getLastDeathDate() { return lastDeathDate; }
+    public int getLastDeathDate() {
+        return lastDeathDate;
+    }
 
-    public boolean hasGrass() { return grass.isPresent();}
+    public boolean hasGrass() {
+        return grass.isPresent();
+    }
 
-    public boolean isBetterPosition() { return isBetterPosition;}
+    public boolean isBetterPosition() {
+        return isBetterPosition;
+    }
 
-    public void makePositionBetter() { this.isBetterPosition = true;}
+    public void makePositionBetter() {
+        this.isBetterPosition = true;
+    }
 
-    public void makePositionWorse() { this.isBetterPosition = false;}
+    public void makePositionWorse() {
+        this.isBetterPosition = false;
+    }
 
     public void animalDiedOnField(int date) {
         lastDeathDate = date;
     }
 
-    public void addGrass(Grass grass){
+    public void addGrass(Grass grass) {
         this.grass = Optional.of(grass);
     }
 
-    public void removeGrass(){
+    public void removeGrass() {
         this.grass = Optional.empty();
     }
 
@@ -63,8 +78,8 @@ public class MapField {
         return Collections.emptyList();
     }
 
-    public Optional<WorldElement> objectAt(){
-        if (!animals.isEmpty()){
+    public Optional<WorldElement> objectAt() {
+        if (!animals.isEmpty()) {
             return Optional.of(animals.getFirst());
         }
         return Optional.ofNullable(grass.orElse(null));
@@ -76,7 +91,7 @@ public class MapField {
     }
 
     @Override
-    public boolean equals(Object o){
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MapField that = (MapField) o;
@@ -84,7 +99,7 @@ public class MapField {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return position.toString();
     }
 }

@@ -6,8 +6,10 @@ import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.observers.AnimalDiedObserver;
 import agh.ics.oop.model.GlobeMap;
 import agh.ics.oop.model.grass.AbstractGrassMaker;
+
 import java.util.*;
 import java.util.stream.Collectors;
+
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
@@ -29,7 +31,7 @@ public class Stats implements AnimalDiedObserver {
     private HashArray mostCommonGenes;
     private List<Animal> animals;
 
-    public Stats(GlobeMap map, AbstractGrassMaker grassMaker, int startingGrassCount, int startingEnergy, int startingAnimalCount){
+    public Stats(GlobeMap map, AbstractGrassMaker grassMaker, int startingGrassCount, int startingEnergy, int startingAnimalCount) {
         this.map = map;
         this.grassMaker = grassMaker;
         this.minimumAnimalCount = startingAnimalCount;
@@ -38,61 +40,85 @@ public class Stats implements AnimalDiedObserver {
         averageEnergy = startingEnergy;
     }
 
-    public int getCurrentAnimalCount() { return  currentAnimalCount;}
-  
-    public int getDeadAnimalCount() { return  deadAnimalCount;}
-  
-    public int getMaximumAnimalCount() { return  maximumAnimalCount;}
-  
-    public int getMinimumAnimalCount() { return  minimumAnimalCount;}
-  
-    public int getAllAnimalCount() { return  allAnimalCount;}
-  
-    public int getGrassCount() { return  grassCount;}
-  
-    public int getFreeSpace() { return  freeSpace;}
-  
-    public HashArray getMostCommonGenes() { return  mostCommonGenes;}
-  
-    public double getAverageEnergy() { return  averageEnergy;}
+    public int getCurrentAnimalCount() {
+        return currentAnimalCount;
+    }
 
-    public double getDayMaximumEnergy() { return  dayMaximumEnergy;}
-  
-    public double getAverageLifespan() { return  averageLifespan;}
-  
-    public double getAverageBirthrate() { return  averageBirthrate;}
+    public int getDeadAnimalCount() {
+        return deadAnimalCount;
+    }
 
-    private void findNewMinimumAnimalCount(){
+    public int getMaximumAnimalCount() {
+        return maximumAnimalCount;
+    }
+
+    public int getMinimumAnimalCount() {
+        return minimumAnimalCount;
+    }
+
+    public int getAllAnimalCount() {
+        return allAnimalCount;
+    }
+
+    public int getGrassCount() {
+        return grassCount;
+    }
+
+    public int getFreeSpace() {
+        return freeSpace;
+    }
+
+    public HashArray getMostCommonGenes() {
+        return mostCommonGenes;
+    }
+
+    public double getAverageEnergy() {
+        return averageEnergy;
+    }
+
+    public double getDayMaximumEnergy() {
+        return dayMaximumEnergy;
+    }
+
+    public double getAverageLifespan() {
+        return averageLifespan;
+    }
+
+    public double getAverageBirthrate() {
+        return averageBirthrate;
+    }
+
+    private void findNewMinimumAnimalCount() {
         minimumAnimalCount = min(minimumAnimalCount, currentAnimalCount);
     }
 
-    private void findNewMaximumAnimalCount(){
+    private void findNewMaximumAnimalCount() {
         maximumAnimalCount = max(maximumAnimalCount, currentAnimalCount);
     }
 
-    private void increaseDeadAnimalCount(){
+    private void increaseDeadAnimalCount() {
         deadAnimalCount++;
     }
 
-    private void updateGrassCount(){
+    private void updateGrassCount() {
         grassCount = grassMaker.getCurrentGrassNumber();
     }
 
-    private void calculateFreeSpace(){
+    private void calculateFreeSpace() {
         freeSpace = map.getFreeSpace();
     }
 
-    private void calculateNewAverageEnergy(List<Animal> animals){
+    private void calculateNewAverageEnergy(List<Animal> animals) {
         averageEnergy = animals.stream().mapToInt(Animal::getEnergy).average().orElse(0.0);
     }
 
-    private void calculateNewDayMaximumEnergy(List<Animal> animals){
+    private void calculateNewDayMaximumEnergy(List<Animal> animals) {
         dayMaximumEnergy = animals.stream().mapToInt(Animal::getEnergy).max().orElse(1);
     }
 
-    private void addGenesToHashMap(Animal animal){
+    private void addGenesToHashMap(Animal animal) {
         HashArray arrayHashMap = new HashArray(animal.getGenes());
-        if (genesRecords.containsKey(arrayHashMap)){
+        if (genesRecords.containsKey(arrayHashMap)) {
             genesRecords.replace(arrayHashMap, genesRecords.get(arrayHashMap) + 1);
         } else {
             genesRecords.put(arrayHashMap, 1);
@@ -100,16 +126,16 @@ public class Stats implements AnimalDiedObserver {
         setMostCommonGenes();
     }
 
-    private void deleteGenesFromHashMap(Animal animal){
+    private void deleteGenesFromHashMap(Animal animal) {
         HashArray arrayHashMap = new HashArray(animal.getGenes());
         genesRecords.replace(arrayHashMap, genesRecords.get(arrayHashMap) - 1);
-        if (genesRecords.get(arrayHashMap) < 1){
+        if (genesRecords.get(arrayHashMap) < 1) {
             genesRecords.remove(arrayHashMap);
         }
         setMostCommonGenes();
     }
 
-    private void setMostCommonGenes(){
+    private void setMostCommonGenes() {
         this.mostCommonGenes = genesRecords.entrySet()
                 .stream()
                 .max(Comparator.comparingInt(Map.Entry::getValue))
@@ -117,42 +143,42 @@ public class Stats implements AnimalDiedObserver {
                 .orElse(null);
     }
 
-    public void calculateNewAverageLifeSpan(int ageWhenDied){
-        averageLifespan = averageLifespan + (ageWhenDied - averageLifespan)/deadAnimalCount;
+    public void calculateNewAverageLifeSpan(int ageWhenDied) {
+        averageLifespan = averageLifespan + (ageWhenDied - averageLifespan) / deadAnimalCount;
     }
 
-    public void calculateAverageBirthRate(List<Animal> animals){
+    public void calculateAverageBirthRate(List<Animal> animals) {
         averageBirthrate = animals.stream().mapToInt(animal -> animal.getAnimalStats().getChildrenCount()).average().orElse(0.0);
     }
 
-    public void newAnimalPlaced(Animal animal){
+    public void newAnimalPlaced(Animal animal) {
         allAnimalCount++;
         findNewMaximumAnimalCount();
         addGenesToHashMap(animal);
     }
 
-    public void newAnimalBorn(Animal animal){
+    public void newAnimalBorn(Animal animal) {
         newAnimalPlaced(animal);
     }
 
-    public void animalNotPlaced(Animal animal){
+    public void animalNotPlaced(Animal animal) {
         findNewMinimumAnimalCount();
         deleteGenesFromHashMap(animal);
         maximumAnimalCount--;
     }
 
-    public void animalDied(Animal animal){
+    public void animalDied(Animal animal) {
         findNewMinimumAnimalCount();
         increaseDeadAnimalCount();
         deleteGenesFromHashMap(animal);
     }
 
-    public void updateUponEating(){
+    public void updateUponEating() {
         updateGrassCount();
         calculateFreeSpace();
     }
 
-    public void updateGeneralStats(List<Animal> animals){
+    public void updateGeneralStats(List<Animal> animals) {
         this.animals = animals;
         this.currentAnimalCount = animals.size();
         allAnimalCount = max(allAnimalCount, currentAnimalCount);
@@ -172,7 +198,7 @@ public class Stats implements AnimalDiedObserver {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return "Animal count: %d\nGrass count: %d\nFree space: %d\nMost common genes: "
                 .formatted(currentAnimalCount, grassCount, freeSpace) + mostCommonGenes + "\nAverage energy: %f\nAverage lifespan: %f\nAverage children count: %f".formatted(averageEnergy, averageLifespan, averageBirthrate);
     }

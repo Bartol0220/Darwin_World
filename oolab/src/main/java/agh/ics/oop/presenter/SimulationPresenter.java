@@ -46,7 +46,7 @@ public class SimulationPresenter implements MapChangeObserver, FailedToSaveObser
     @FXML
     private Label maximumAnimalCount;
     @FXML
-    private Label minimumAnimalCount ;
+    private Label minimumAnimalCount;
     @FXML
     private Label allAnimalCount;
     @FXML
@@ -142,7 +142,7 @@ public class SimulationPresenter implements MapChangeObserver, FailedToSaveObser
 
     private void drawMap() {
         clearGrid();
-        Boundary currentBounds =  map.getCurrentBounds();
+        Boundary currentBounds = map.getCurrentBounds();
 
         updateMapInfo(currentBounds);
         drawHeader(currentBounds);
@@ -161,7 +161,7 @@ public class SimulationPresenter implements MapChangeObserver, FailedToSaveObser
 
     private void drawHeader(Boundary currentBounds) {
         Label label = new Label("y/x");
-        label.setFont(new Font("Arial", cellHeight*0.65));
+        label.setFont(new Font("Arial", cellHeight * 0.65));
         mapGridPane.add(label, 0, 0);
         GridPane.setHalignment(label, HPos.CENTER);
         mapGridPane.getColumnConstraints().add(new ColumnConstraints(cellWidth));
@@ -171,7 +171,7 @@ public class SimulationPresenter implements MapChangeObserver, FailedToSaveObser
         for (int j = currentBounds.lowerLeft().getX(); j < currentBounds.upperRight().getX() + 1; j++) {
             mapGridPane.getColumnConstraints().add(new ColumnConstraints(cellWidth));
             label = new Label(String.format("%d", j));
-            label.setFont(new Font("Arial", cellHeight*0.65));
+            label.setFont(new Font("Arial", cellHeight * 0.65));
             GridPane.setHalignment(label, HPos.CENTER);
             mapGridPane.add(label, cnt, 0);
             cnt++;
@@ -183,7 +183,7 @@ public class SimulationPresenter implements MapChangeObserver, FailedToSaveObser
         for (int j = currentBounds.upperRight().getY(); j > currentBounds.lowerLeft().getY() - 1; j--) {
             mapGridPane.getRowConstraints().add(new RowConstraints(cellHeight));
             Label label = new Label(String.format("%d", j));
-            label.setFont(new Font("Arial", cellHeight*0.60));
+            label.setFont(new Font("Arial", cellHeight * 0.60));
             GridPane.setHalignment(label, HPos.CENTER);
             mapGridPane.add(label, 0, cnt);
             cnt++;
@@ -191,7 +191,7 @@ public class SimulationPresenter implements MapChangeObserver, FailedToSaveObser
     }
 
     private void drawAllObjects(Boundary currentBounds) {
-        for(int y = 1; y < currentBounds.upperRight().getY() - currentBounds.lowerLeft().getY() + 2; y++) {
+        for (int y = 1; y < currentBounds.upperRight().getY() - currentBounds.lowerLeft().getY() + 2; y++) {
             for (int x = 1; x < currentBounds.upperRight().getX() - currentBounds.lowerLeft().getX() + 2; x++) {
                 Vector2d position = new Vector2d(currentBounds.lowerLeft().getX() + x - 1, currentBounds.upperRight().getY() - y + 1);
 
@@ -239,7 +239,7 @@ public class SimulationPresenter implements MapChangeObserver, FailedToSaveObser
             } else {
                 button.setOnAction(_ -> onSimulationAnimalClicked(button));
                 ProgressBar progressBar = new ProgressBar();
-                progressBar.setProgress(animal.getAnimalStats().getEnergy()/ simulationEngine.getStats().getDayMaximumEnergy());
+                progressBar.setProgress(animal.getAnimalStats().getEnergy() / simulationEngine.getStats().getDayMaximumEnergy());
                 vBox.getChildren().add(progressBar);
             }
             GridPane.setHalignment(button, HPos.CENTER);
@@ -275,7 +275,7 @@ public class SimulationPresenter implements MapChangeObserver, FailedToSaveObser
         freeSpace.setText(String.valueOf(stats.getFreeSpace()));
         averageEnergy.setText(String.format("%.1f", stats.getAverageEnergy()));
         averageBirthrate.setText(String.format("%.1f", stats.getAverageBirthrate()));
-        mostCommonGenes.setText(" "+stats.getMostCommonGenes());
+        mostCommonGenes.setText(" " + stats.getMostCommonGenes());
         deadAnimalCount.setText(String.valueOf(stats.getDeadAnimalCount()));
         averageLifespan.setText(String.format("%.1f", stats.getAverageLifespan()));
 
@@ -285,7 +285,7 @@ public class SimulationPresenter implements MapChangeObserver, FailedToSaveObser
                             animalStats.setText(animal.getAnimalStats().toString());
                             animalEnergyInfo.setText("Energy:");
                             animalEnergyProgressBar.setVisible(true);
-                            animalEnergyProgressBar.setProgress(animal.getAnimalStats().getEnergy()/stats.getDayMaximumEnergy());
+                            animalEnergyProgressBar.setProgress(animal.getAnimalStats().getEnergy() / stats.getDayMaximumEnergy());
                         }),
                         (() -> {
                             animalStats.setText("");

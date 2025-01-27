@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class AnimalTest {
 
     @Test
-    void animalsBreedEachother(){
+    void animalsBreedEachother() {
         GlobeMap map = new GlobeMap(3, 3, 0);
         GeneMutator geneMutator = new SlightCorrection(0, 3);
         GenesFactory genesFactory = new GenesFactory(geneMutator, 5);
@@ -24,14 +24,14 @@ class AnimalTest {
         AnimalCreator animalCreator = new AnimalCreator(10, 5, 10, genesFactory, stats);
         Genes genes = new Genes(5);
 
-        Vector2d position = new Vector2d(1,1);
+        Vector2d position = new Vector2d(1, 1);
         Animal stronger = new Animal(position, genes, 19, 10);
         Animal weaker = new Animal(position, genes, 13, 10);
 
         try {
             map.place(stronger);
             map.place(weaker);
-        } catch (IncorrectPositionException exception){
+        } catch (IncorrectPositionException exception) {
             exception.printStackTrace();
         }
 
@@ -45,9 +45,9 @@ class AnimalTest {
     }
 
     @Test
-    void animalEats(){
+    void animalEats() {
         Genes genes = new Genes(5);
-        Vector2d positiion = new Vector2d(2,2);
+        Vector2d positiion = new Vector2d(2, 2);
         Animal animal = new Animal(positiion, genes, 12, 10);
 
         animal.eat();
@@ -56,7 +56,7 @@ class AnimalTest {
     }
 
     @Test
-    void comparingAnimalsWorks(){
+    void comparingAnimalsWorks() {
         GlobeMap map = new GlobeMap(3, 3, 0);
         GeneMutator geneMutator = new SlightCorrection(0, 3);
         GenesFactory genesFactory = new GenesFactory(geneMutator, 5);
@@ -65,7 +65,7 @@ class AnimalTest {
         AnimalCreator animalCreator = new AnimalCreator(10, 0, 10, genesFactory, stats);
 
         Genes genes = new Genes(5);
-        Vector2d positiion = new Vector2d(2,2);
+        Vector2d positiion = new Vector2d(2, 2);
 
         Animal strongest = new Animal(positiion, genes, 12, 10);
         Animal younger = new Animal(positiion, genes, 10, 10);

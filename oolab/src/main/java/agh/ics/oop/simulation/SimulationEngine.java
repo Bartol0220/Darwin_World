@@ -13,7 +13,7 @@ public class SimulationEngine {
         this.simulation = simulation;
     }
 
-    public void awaitSimulationsEnd()  throws InterruptedException {
+    public void awaitSimulationsEnd() throws InterruptedException {
         for (Thread thread : threads) {
             thread.join();
         }
@@ -39,5 +39,7 @@ public class SimulationEngine {
         return simulation.getStats();
     }
 
-    public void changeSleepingTime(int time) { simulation.setThreadSleep(time); }
+    public void changeSleepingTime(int time) {
+        simulation.setThreadSleep(time);
+    }
 }

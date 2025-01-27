@@ -14,6 +14,6 @@ public class SlightCorrection extends AbstractGeneMutator {
         if (increase == 1) value = 1;
         else value = -1;
 
-        genes[geneToChange] = (genes[geneToChange]+value+8)%8;
+        genes[geneToChange] = (genes[geneToChange] + value + 8) % 8;
     }
 }

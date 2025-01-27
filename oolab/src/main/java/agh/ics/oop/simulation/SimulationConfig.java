@@ -60,7 +60,8 @@ public class SimulationConfig {
         if (startingEnergy <= 0) throw new HasToBePositiveException("Initial energy of animals");
 
         this.energyNeededForBreeding = energyNeededForBreeding;
-        if (energyNeededForBreeding < 0) throw new CanNotBeNegativeException("Energy needed to consider the animal as ready to breed");
+        if (energyNeededForBreeding < 0)
+            throw new CanNotBeNegativeException("Energy needed to consider the animal as ready to breed");
 
         this.energyUsedWhileBreeding = energyUsedWhileBreeding;
         if (energyUsedWhileBreeding < 0) throw new CanNotBeNegativeException("Energy used during reproduction");
@@ -109,7 +110,8 @@ public class SimulationConfig {
         if (startingEnergy <= 0) throw new HasToBePositiveException("Initial energy of animals");
 
         this.energyNeededForBreeding = configArray[8];
-        if (energyNeededForBreeding < 0) throw new CanNotBeNegativeException("Energy needed to consider the animal as ready to breed");
+        if (energyNeededForBreeding < 0)
+            throw new CanNotBeNegativeException("Energy needed to consider the animal as ready to breed");
 
         this.energyUsedWhileBreeding = configArray[9];
         if (energyUsedWhileBreeding < 0) throw new CanNotBeNegativeException("Energy used during reproduction");

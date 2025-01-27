@@ -16,7 +16,7 @@ public class StatsSaverCSV implements NewDayObserver {
     private final File simulationStatsCSV;
     private final List<FailedToSaveObserver> failedToSaveObserver = new ArrayList<>();
 
-    public StatsSaverCSV(Stats stats, String fileName) throws IOException{
+    public StatsSaverCSV(Stats stats, String fileName) throws IOException {
         this.stats = stats;
         this.simulationStatsCSV = new File(makeFullFileName(fileName));
         new File(System.getProperty("user.dir") + File.separator + "stats").mkdirs();
@@ -29,22 +29,22 @@ public class StatsSaverCSV implements NewDayObserver {
         }
     }
 
-    private String makeFullFileName(String fileName){
+    private String makeFullFileName(String fileName) {
         return System.getProperty("user.dir") +
                 File.separator + "stats" +
                 File.separator + fileName + ".csv";
     }
 
-    private String makeLine(String message){
+    private String makeLine(String message) {
         return "%s;%d;%d;%d;%s;%.2f;%.2f;%.2f\n".formatted(
-            message.split(" ")[1],
-            stats.getCurrentAnimalCount(),
-            stats.getGrassCount(),
-            stats.getFreeSpace(),
-            stats.getMostCommonGenes(),
-            stats.getAverageEnergy(),
-            stats.getAverageLifespan(),
-            stats.getAverageBirthrate());
+                message.split(" ")[1],
+                stats.getCurrentAnimalCount(),
+                stats.getGrassCount(),
+                stats.getFreeSpace(),
+                stats.getMostCommonGenes(),
+                stats.getAverageEnergy(),
+                stats.getAverageLifespan(),
+                stats.getAverageBirthrate());
     }
 
     @Override
@@ -57,12 +57,16 @@ public class StatsSaverCSV implements NewDayObserver {
 
     }
 
-    public void registerFailedToSaveObserver(FailedToSaveObserver observer) { failedToSaveObserver.add(observer);}
+    public void registerFailedToSaveObserver(FailedToSaveObserver observer) {
+        failedToSaveObserver.add(observer);
+    }
 
-    public void unregisterFailedToSaveObserver(FailedToSaveObserver observer) { failedToSaveObserver.remove(observer);}
+    public void unregisterFailedToSaveObserver(FailedToSaveObserver observer) {
+        failedToSaveObserver.remove(observer);
+    }
 
     public void notifyFailedToSaveObservers() {
-        for(FailedToSaveObserver observer : failedToSaveObserver){
+        for (FailedToSaveObserver observer : failedToSaveObserver) {
             observer.failedToSave();
         }
     }

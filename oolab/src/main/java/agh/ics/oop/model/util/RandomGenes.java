@@ -1,4 +1,4 @@
-package agh.ics.oop.model.util;
+package agh.ics.oop.model.util; // czemu to jest util, a nie genes?
 
 import java.util.*;
 
@@ -9,8 +9,8 @@ public class RandomGenes implements Iterable<Integer> {
 
     public RandomGenes(int maxValue, int without, int count) {
         this.count = count;
-        for (int i = 0; i<maxValue; i++){
-            if (i != without){
+        for (int i = 0; i < maxValue; i++) {
+            if (i != without) {
                 possibleValues.add(i);
             }
         }
@@ -22,17 +22,18 @@ public class RandomGenes implements Iterable<Integer> {
         return new Iterator<>() {
 
             @Override
-            public boolean hasNext() { return !possibleValues.isEmpty() && generated < count ;}
+            public boolean hasNext() {
+                return !possibleValues.isEmpty() && generated < count;
+            }
 
             @Override
             public Integer next() {
-                if(hasNext()) {
+                if (hasNext()) {
                     Integer number = possibleValues.getLast();
                     possibleValues.removeLast();
                     generated++;
                     return number;
-                }
-                else {
+                } else {
                     throw new NoSuchElementException();
                 }
             }

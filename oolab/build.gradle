@@ -1,7 +1,7 @@
 plugins {
     id 'application'
     id 'java'
-    id 'org.openjfx.javafxplugin' version '0.0.14'
+    id 'org.openjfx.javafxplugin' version '0.0.13'
 }
 
 group = 'org.example'
@@ -31,7 +31,7 @@ application {
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(23))
+        languageVersion.set(JavaLanguageVersion.of(21))
     }
 }
 

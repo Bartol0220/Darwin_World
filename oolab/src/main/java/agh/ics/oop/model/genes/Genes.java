@@ -7,14 +7,14 @@ import java.util.*;
 public class Genes {
     private final int[] genes;
     private int geneIndex;
-    private final Random random = new Random();
+    private final Random random = new Random(); // static?
 
-    public Genes(int numberOfGenes){
+    public Genes(int numberOfGenes) {
         genes = random.ints(numberOfGenes, 0, 8).toArray();
         geneIndex = random.nextInt(genes.length);
     }
 
-    public Genes(Animal stronger, Animal weaker, GeneMutator geneMutator, int numberOfGenes){
+    public Genes(Animal stronger, Animal weaker, GeneMutator geneMutator, int numberOfGenes) {
         geneIndex = random.nextInt(numberOfGenes);
 
         int[] genes = getGenesFromParents(stronger, weaker, numberOfGenes);
@@ -24,7 +24,7 @@ public class Genes {
 
     private int[] getGenesFromParents(Animal stronger, Animal weaker, int numberOfGenes) {
         int energySum = stronger.getEnergy() + weaker.getEnergy();
-        int strongerOnTheLeft = random.nextInt(0,2);
+        int strongerOnTheLeft = random.nextInt(0, 2);
         int weakerGenesCount = (int) ((double) weaker.getEnergy() / energySum * numberOfGenes);
         int strongerGenesCount = numberOfGenes - weakerGenesCount;
 
@@ -32,18 +32,20 @@ public class Genes {
         int[] weakerGenes = weaker.getGenes();
         int[] genes = new int[numberOfGenes];
 
-        if (strongerOnTheLeft == 1){
+        if (strongerOnTheLeft == 1) {
             if (strongerGenesCount >= 0) System.arraycopy(strongerGenes, 0, genes, 0, strongerGenesCount);
-            if (numberOfGenes - strongerGenesCount >= 0) System.arraycopy(weakerGenes, strongerGenesCount, genes, strongerGenesCount, numberOfGenes - strongerGenesCount);
+            if (numberOfGenes - strongerGenesCount >= 0)
+                System.arraycopy(weakerGenes, strongerGenesCount, genes, strongerGenesCount, numberOfGenes - strongerGenesCount);
         } else {
             if (weakerGenesCount >= 0) System.arraycopy(weakerGenes, 0, genes, 0, weakerGenesCount);
-            if (numberOfGenes - weakerGenesCount >= 0) System.arraycopy(strongerGenes, weakerGenesCount, genes, weakerGenesCount, numberOfGenes - weakerGenesCount);
+            if (numberOfGenes - weakerGenesCount >= 0)
+                System.arraycopy(strongerGenes, weakerGenesCount, genes, weakerGenesCount, numberOfGenes - weakerGenesCount);
         }
 
         return genes;
     }
 
-    public int getGeneIndex(){
+    public int getGeneIndex() {
         return geneIndex;
     }
 
@@ -51,13 +53,13 @@ public class Genes {
         return Arrays.copyOf(genes, genes.length);
     }
 
-    public int useCurrentGene(){
+    public int useCurrentGene() {
         int currentGene = genes[geneIndex];
-        geneIndex = (geneIndex + 1)%genes.length;
+        geneIndex = (geneIndex + 1) % genes.length;
         return currentGene;
     }
 
-    public int getCurrentGene(){
+    public int getCurrentGene() {
         return genes[geneIndex];
     }
 

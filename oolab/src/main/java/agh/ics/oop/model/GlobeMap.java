@@ -28,28 +28,36 @@ public class GlobeMap implements MoveValidator {
         this.width = width;
         this.height = height;
         bounds = new Boundary(new Vector2d(0, 0), new Vector2d(width - 1, height - 1));
-        for (int x = 0; x < width; x++){
-            for (int y = 0; y < height; y++){
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
                 Vector2d position = new Vector2d(x, y);
                 allFields.put(position, new MapField(position));
             }
         }
     }
 
-    public int getId() { return id;}
+    public int getId() {
+        return id;
+    }
 
-    public int getHeight() { return height;}
+    public int getHeight() {
+        return height;
+    }
 
-    public int getWidth() { return width;}
+    public int getWidth() {
+        return width;
+    }
 
-    public Boundary getCurrentBounds() { return bounds;}
+    public Boundary getCurrentBounds() {
+        return bounds;
+    }
 
-    public MapField getMapField(Vector2d position){
+    public MapField getMapField(Vector2d position) {
         return allFields.get(position);
     }
 
     public int getFreeSpace() {
-        return height*width - (int) Stream
+        return height * width - (int) Stream
                 .concat(
                         animalsMap.stream().map(MapField::getPosition),
                         grassMap.stream().map(MapField::getPosition)
@@ -58,20 +66,32 @@ public class GlobeMap implements MoveValidator {
                 .count();
     }
 
-    public boolean areMultipleAnimalsOnField(Vector2d position) { return allFields.get(position).getNumberOfAnimals() > 1;}
+    public boolean areMultipleAnimalsOnField(Vector2d position) {
+        return allFields.get(position).getNumberOfAnimals() > 1;
+    }
 
-    public boolean isFieldBetter(Vector2d position) { return allFields.get(position).isBetterPosition(); }
+    public boolean isFieldBetter(Vector2d position) {
+        return allFields.get(position).isBetterPosition();
+    }
 
-    public void changeFieldToBetter(Vector2d position) { allFields.get(position).makePositionBetter();}
+    public void changeFieldToBetter(Vector2d position) {
+        allFields.get(position).makePositionBetter();
+    }
 
-    public void changeFieldToWorse(Vector2d position) { allFields.get(position).makePositionWorse();}
+    public void changeFieldToWorse(Vector2d position) {
+        allFields.get(position).makePositionWorse();
+    }
 
-    public void registerObserver(MapChangeObserver observer) { observers.add(observer);}
+    public void registerObserver(MapChangeObserver observer) {
+        observers.add(observer);
+    }
 
-    public void unregisterObserver(MapChangeObserver observer) { observers.remove(observer);}
+    public void unregisterObserver(MapChangeObserver observer) {
+        observers.remove(observer);
+    }
 
     public void notifyObservers(String message) {
-        for(MapChangeObserver observer : observers){
+        for (MapChangeObserver observer : observers) {
             observer.mapChanged(this, message);
         }
     }
@@ -89,10 +109,9 @@ public class GlobeMap implements MoveValidator {
     }
 
     public void place(Animal animal) throws IncorrectPositionException {
-        if(canMoveTo(animal.getPosition())) {
+        if (canMoveTo(animal.getPosition())) {
             addAnimalToMap(animal);
-        }
-        else {
+        } else {
             throw new IncorrectPositionException(animal.getPosition());
         }
     }
@@ -105,7 +124,7 @@ public class GlobeMap implements MoveValidator {
 
     public Optional<WorldElement> objectAt(Vector2d position) {
         MapField mapField = allFields.get(position);
-        return  mapField.objectAt();
+        return mapField.objectAt();
     }
 
     @Override
@@ -113,8 +132,8 @@ public class GlobeMap implements MoveValidator {
         return position.follows(bounds.lowerLeft()) && position.precedes(bounds.upperRight());
     }
 
-    private void updateWhereAnimalsMeet(Vector2d position){
-        if (isOccupiedByAnimal(position)){
+    private void updateWhereAnimalsMeet(Vector2d position) {
+        if (isOccupiedByAnimal(position)) {
             whereAnimalsMeet.add(position);
         }
     }
@@ -127,8 +146,8 @@ public class GlobeMap implements MoveValidator {
         addAnimalOnGrass(animal);
     }
 
-    public void findAnimalsToBreed(Breeding breeding, Simulation simulation){
-        for (Vector2d position : whereAnimalsMeet){
+    public void findAnimalsToBreed(Breeding breeding, Simulation simulation) {
+        for (Vector2d position : whereAnimalsMeet) {
             MapField mapField = allFields.get(position);
             List<Animal> breedingPair = mapField.listOfBestAnimals(breeding.getEnergyNeededForBreeding());
             Optional<Animal> kid = breeding.breedPair(breedingPair);
@@ -136,7 +155,7 @@ public class GlobeMap implements MoveValidator {
                 this.addAnimalToMap(presentKid);
                 presentKid.getAnimalStats().increaseSuccesorCountForPredecessors();
                 simulation.addToAnimals(presentKid);
-                });
+            });
         }
         whereAnimalsMeet.clear();
     }
@@ -151,10 +170,10 @@ public class GlobeMap implements MoveValidator {
         return grassEaten;
     }
 
-    public Optional<Grass> findAnimalToFeed(Vector2d position){
+    public Optional<Grass> findAnimalToFeed(Vector2d position) {
         MapField mapField = allFields.get(position);
         List<Animal> bestAnimalsAtPosition = mapField.listOfBestAnimals(0);
-        if (!bestAnimalsAtPosition.isEmpty()){
+        if (!bestAnimalsAtPosition.isEmpty()) {
             Animal animal = bestAnimalsAtPosition.getFirst();
             animal.eat();
             return allFields.get(position).getGrass();
@@ -171,7 +190,7 @@ public class GlobeMap implements MoveValidator {
     public void removeAnimalFromMap(Animal animal) {
         MapField mapField = allFields.get(animal.getPosition());
         mapField.removeAnimal(animal);
-        if (mapField.getNumberOfAnimals() < 1){
+        if (mapField.getNumberOfAnimals() < 1) {
             animalsMap.remove(mapField);
         }
     }
@@ -184,8 +203,8 @@ public class GlobeMap implements MoveValidator {
     }
 
     @Override
-    public Vector2d handleBoundsPositions(Vector2d position){
-        return new Vector2d((position.getX()+width)%width, position.getY());
+    public Vector2d handleBoundsPositions(Vector2d position) {
+        return new Vector2d((position.getX() + width) % width, position.getY());
     }
 
     public String toString() {

@@ -20,6 +20,7 @@ import agh.ics.oop.statistics.Stats;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
 import java.util.HashMap;
@@ -114,12 +115,12 @@ public class SetupPresenter {
     }
 
     public void initialize() {
-        String [] grassMakerVariants = {"Forested equator", "Life-giving corpses"};
+        String[] grassMakerVariants = {"Forested equator", "Life-giving corpses"};
         grassMakerBox.getItems().clear();
         grassMakerBox.getItems().addAll(grassMakerVariants);
         grassMakerBox.getSelectionModel().select(0);
 
-        String [] genesMutatorVariants = {"Complete randomness", "Slight correction"};
+        String[] genesMutatorVariants = {"Complete randomness", "Slight correction"};
         genesMutatorBox.getItems().clear();
         genesMutatorBox.getItems().addAll(genesMutatorVariants);
         genesMutatorBox.getSelectionModel().select(0);
@@ -178,7 +179,7 @@ public class SetupPresenter {
             prepareSimulation(simulationConfig);
 
         } catch (HasToBePositiveException | HasToBeBit | BreedingCanNotKillAnimals | CanNotBeNegativeException |
-                MutationChangesCanNotExceedSize | MinMaxGeneException exception) {
+                 MutationChangesCanNotExceedSize | MinMaxGeneException exception) {
             errorLabel.setText(exception.getMessage());
         }
     }

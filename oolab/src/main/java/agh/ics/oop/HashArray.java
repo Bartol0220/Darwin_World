@@ -2,10 +2,12 @@ package agh.ics.oop;
 
 import java.util.Arrays;
 
-public class HashArray {
+public class HashArray { // myląca nazwa
     private final int[] array;
 
-    public HashArray(int[] array) { this.array = array.clone(); }
+    public HashArray(int[] array) {
+        this.array = array.clone();
+    }
 
     @Override
     public boolean equals(Object o) {

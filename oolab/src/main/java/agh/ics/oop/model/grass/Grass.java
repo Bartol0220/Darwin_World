@@ -18,5 +18,7 @@ public class Grass implements WorldElement {
         return "*";
     }
 
-    public String getName() { return "grass.png";}
+    public String getName() {
+        return "grass.png";
+    }
 }

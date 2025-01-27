@@ -20,13 +20,13 @@ public class SimulationSaverCSV {
         }
     }
 
-    private String makeFullFileName(String fileName){
+    private String makeFullFileName(String fileName) {
         return System.getProperty("user.dir") +
                 File.separator + "simconfig" +
                 File.separator + fileName + ".csv";
     }
 
-    private String makeSimulationMessage(SimulationConfig simulationConfig){
+    private String makeSimulationMessage(SimulationConfig simulationConfig) {
         return "%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d".formatted(
                 simulationConfig.getHeight(),
                 simulationConfig.getWidth(),

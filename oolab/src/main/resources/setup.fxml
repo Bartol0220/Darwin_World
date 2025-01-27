@@ -84,8 +84,8 @@
             </HBox>
         </VBox>
         <VBox spacing="25" alignment="CENTER" minWidth="350" maxWidth="400">
-            <Label fx:id="savedLabel" maxWidth="350" wrapText="true" />
-            <Label fx:id="errorLabel" maxWidth="350" wrapText="true" />
+            <Label fx:id="savedLabel" maxWidth="350" wrapText="true"/>
+            <Label fx:id="errorLabel" maxWidth="350" wrapText="true"/>
             <Button text="START" prefWidth="80" onAction="#onSetupStartClicked"/>
             <Button text="Reset" prefWidth="80" onAction="#onSetupResetClicked"/>
             <HBox spacing="10">

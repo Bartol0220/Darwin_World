@@ -42,7 +42,7 @@ public class Simulation implements Runnable {
 
     private void createAnimals(GlobeMap map, int startNumberOfAnimals) {
         RandomVector2d positions = new RandomVector2d(map.getWidth(), map.getHeight(), startNumberOfAnimals);
-        for(Vector2d position : positions) {
+        for (Vector2d position : positions) {
             Animal animal = animalCreator.createStartingAnimal(position);
             try {
                 map.place(animal);
@@ -80,8 +80,8 @@ public class Simulation implements Runnable {
                 notifyNewDayObservers(dayNumber);
             }
         } catch (InterruptedException exception) {
-            Thread.currentThread().interrupt();
-            pause();
+            Thread.currentThread().interrupt(); // jaki jest sens wysyłać interrupt sobie samemu?
+            pause(); // niejasne - dostaliśmy interrupt i coś pauzujemy?
             simulationErrorNotifyPresenter("");
         }
     }
@@ -94,35 +94,45 @@ public class Simulation implements Runnable {
         grassMaker.grow();
     }
 
-    public void registerAnimalDiedObserver(AnimalDiedObserver observer) { animalDiedObservers.add(observer);}
+    public void registerAnimalDiedObserver(AnimalDiedObserver observer) {
+        animalDiedObservers.add(observer);
+    }
 
-    public void unregisterAnimalDiedObserver(AnimalDiedObserver observer) { animalDiedObservers.remove(observer);}
+    public void unregisterAnimalDiedObserver(AnimalDiedObserver observer) {
+        animalDiedObservers.remove(observer);
+    }
 
-    private void notifyAnimalDiedObservers(Animal animal){
-        for(AnimalDiedObserver observer : animalDiedObservers){
+    private void notifyAnimalDiedObservers(Animal animal) {
+        for (AnimalDiedObserver observer : animalDiedObservers) {
             observer.animalDied(animal);
         }
     }
 
-    public void registerNewDayObserver(NewDayObserver observer) { newDayObservers.add(observer);}
+    public void registerNewDayObserver(NewDayObserver observer) {
+        newDayObservers.add(observer);
+    }
 
-    public void unregisterNewDayObserver(NewDayObserver observer) { newDayObservers.remove(observer);}
+    public void unregisterNewDayObserver(NewDayObserver observer) {
+        newDayObservers.remove(observer);
+    }
 
     private void notifyNewDayObservers(int dayNumber) {
-        for(NewDayObserver observer : newDayObservers){
+        for (NewDayObserver observer : newDayObservers) {
             observer.newDay(dayNumber);
         }
     }
 
-    public void setPresenter(SimulationPresenter presenter) { this.presenter = presenter;}
+    public void setPresenter(SimulationPresenter presenter) {
+        this.presenter = presenter;
+    }
 
-    public void simulationErrorNotifyPresenter(String message) {
+    public void simulationErrorNotifyPresenter(String message) { // nazwa
         presenter.simulationErrorOccured(message);
     }
 
     private void removeDeadAnimals() {
         animals.removeIf(animal -> {
-            if (animal.getEnergy() < 1){
+            if (animal.getEnergy() < 1) {
                 map.removeAnimalFromMap(animal);
                 notifyAnimalDiedObservers(animal);
                 animal.getAnimalStats().setDeathDate(dayNumber);
@@ -150,9 +160,15 @@ public class Simulation implements Runnable {
         }
     }
 
-    public void addToAnimals(Animal animal){ animals.add(animal); }
+    public void addToAnimals(Animal animal) {
+        animals.add(animal);
+    }
 
-    public Stats getStats() { return stats; }
+    public Stats getStats() {
+        return stats;
+    }
 
-    private List<Animal> getAnimals() { return List.copyOf(animals); }
+    private List<Animal> getAnimals() {
+        return List.copyOf(animals);
+    }
 }

@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class Vector2dTest {
 
     @Test
-    void precedesWorks(){
+    void precedesWorks() {
         Vector2d position1 = new Vector2d(2, 2);
         Vector2d position2 = new Vector2d(2, 2);
         Vector2d position3 = new Vector2d(3, 2);
@@ -24,7 +24,7 @@ class Vector2dTest {
     }
 
     @Test
-    void followsWorks(){
+    void followsWorks() {
         Vector2d position1 = new Vector2d(2, 2);
         Vector2d position2 = new Vector2d(2, 2);
         Vector2d position3 = new Vector2d(3, 2);
@@ -41,7 +41,7 @@ class Vector2dTest {
     }
 
     @Test
-    void addWorks(){
+    void addWorks() {
         Vector2d position1 = new Vector2d(2, 2);
         Vector2d position2 = new Vector2d(2, 2);
         Vector2d position3 = new Vector2d(3, 5);
@@ -56,7 +56,7 @@ class Vector2dTest {
     }
 
     @Test
-    void equalsWorks(){
+    void equalsWorks() {
         Vector2d position1 = new Vector2d(2, 2);
         Vector2d position2 = new Vector2d(2, 2);
         Vector2d position3 = new Vector2d(3, 5);

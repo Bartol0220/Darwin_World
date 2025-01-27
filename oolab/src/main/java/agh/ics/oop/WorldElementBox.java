@@ -1,4 +1,4 @@
-package agh.ics.oop;
+package agh.ics.oop; // to się nadaje do pakietu głównego poziomu?
 
 import agh.ics.oop.model.Animal;
 import agh.ics.oop.model.GlobeMap;

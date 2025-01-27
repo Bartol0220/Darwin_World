@@ -59,8 +59,8 @@ public enum MapDirection {
         };
     }
 
-    public MapDirection nextOrientation(int gene){
-        return MAP_DIRECTIONS[(this.getIndex() + gene)%MapDirection.values().length];
+    public MapDirection nextOrientation(int gene) {
+        return MAP_DIRECTIONS[(this.getIndex() + gene) % MapDirection.values().length];
     }
 
     public static MapDirection randomOrientation() {

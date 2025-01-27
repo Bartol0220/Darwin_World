@@ -32,12 +32,12 @@ public class RandomGrassGrow implements Iterable<Vector2d> {
         return new Iterator<>() {
             @Override
             public boolean hasNext() {
-                return (!freeBetterGrassPositions.isEmpty() || !freeWorseGrassPositions.isEmpty()) && generated < grassNumber ;
+                return (!freeBetterGrassPositions.isEmpty() || !freeWorseGrassPositions.isEmpty()) && generated < grassNumber;
             }
 
             @Override
             public Vector2d next() {
-                if(hasNext()) {
+                if (hasNext()) {
                     if (freeBetterGrassPositions.isEmpty()) {
                         return findVector(freeWorseGrassPositions);
                     } else if (freeWorseGrassPositions.isEmpty()) {
@@ -49,8 +49,7 @@ public class RandomGrassGrow implements Iterable<Vector2d> {
                             return findVector(freeWorseGrassPositions);
                         }
                     }
-                }
-                else {
+                } else {
                     throw new NoSuchElementException();
                 }
             }

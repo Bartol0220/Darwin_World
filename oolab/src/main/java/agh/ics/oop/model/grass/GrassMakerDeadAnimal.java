@@ -4,6 +4,7 @@ import agh.ics.oop.model.MapField;
 import agh.ics.oop.model.*;
 import agh.ics.oop.model.observers.AnimalDiedObserver;
 import agh.ics.oop.model.observers.NewDayObserver;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -11,16 +12,16 @@ import java.util.Set;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
-public class GrassMakerDeadAnimal extends AbstractGrassMaker implements AnimalDiedObserver, NewDayObserver {
+public class GrassMakerDeadAnimal extends AbstractGrassMaker implements AnimalDiedObserver, NewDayObserver { // nazwa
     public static final int FEW_DAYS = 5;
-    private int currentDay=0;
+    private int currentDay = 0;
     private final HashSet<MapField> temporrarilyBetter = new HashSet<>();
 
     public GrassMakerDeadAnimal(int startGrassNumber, int dayGrassNumber, GlobeMap map) {
         super(dayGrassNumber, map);
 
-        for (int y=0; y < map.getHeight(); y++) {
-            for (int x=0; x < map.getWidth(); x++) {
+        for (int y = 0; y < map.getHeight(); y++) {
+            for (int x = 0; x < map.getWidth(); x++) {
                 freeWorseGrassPositions.add(new Vector2d(x, y));
             }
         }
@@ -29,9 +30,9 @@ public class GrassMakerDeadAnimal extends AbstractGrassMaker implements AnimalDi
 
     @Override
     public void animalDied(Animal animal) {
-        for (int y=max(animal.getPosition().getY()-1, 0); y <= min(animal.getPosition().getY()+1, map.getHeight()-1); y++) {
-            for (int x=animal.getPosition().getX()-1; x <= animal.getPosition().getX()+1; x++) {
-                Vector2d currentPosition = new Vector2d(x,y);
+        for (int y = max(animal.getPosition().getY() - 1, 0); y <= min(animal.getPosition().getY() + 1, map.getHeight() - 1); y++) {
+            for (int x = animal.getPosition().getX() - 1; x <= animal.getPosition().getX() + 1; x++) {
+                Vector2d currentPosition = new Vector2d(x, y);
                 changePositionToBetter(map.handleBoundsPositions(currentPosition));
                 MapField mapField = map.getMapField(map.handleBoundsPositions(currentPosition));
                 mapField.animalDiedOnField(currentDay);
@@ -54,13 +55,13 @@ public class GrassMakerDeadAnimal extends AbstractGrassMaker implements AnimalDi
 
     public void changeFieldsPositionToWorseAfterFewDays() {
         List<MapField> fields = getPositionsToDowngrade();
-        for (MapField mapField : fields){
+        for (MapField mapField : fields) {
             changePositionToWorse(map.handleBoundsPositions(mapField.getPosition()));
             temporrarilyBetter.remove(mapField);
         }
     }
 
-    public Set<MapField> getTemporarilyBetterPositions(){
+    public Set<MapField> getTemporarilyBetterPositions() {
         return Set.copyOf(temporrarilyBetter);
     }
 }

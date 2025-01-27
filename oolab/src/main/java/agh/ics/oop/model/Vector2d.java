@@ -11,14 +11,21 @@ public class Vector2d {
         this.y = y;
     }
 
-    public int getX() {return x;}
-    public int getY() {return y;}
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
 
     public String toString() {
         return String.format("(%d,%d)", x, y);
     }
 
-    public boolean precedes(Vector2d other) { return x <= other.getX() && y <= other.getY();}
+    public boolean precedes(Vector2d other) {
+        return x <= other.getX() && y <= other.getY();
+    }
 
     public boolean follows(Vector2d other) {
         return x >= other.getX() && y >= other.getY();

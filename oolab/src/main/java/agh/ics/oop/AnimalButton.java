@@ -1,4 +1,4 @@
-package agh.ics.oop;
+package agh.ics.oop; // główny poziom?
 
 import agh.ics.oop.model.Animal;
 import agh.ics.oop.model.GlobeMap;
@@ -40,14 +40,14 @@ public class AnimalButton extends Button {
             name = prefix.map(presentPrefix -> presentPrefix + "wolfs.png").orElse("wolfs.png");
         } else {
             name = prefix.map(presentPrefix -> presentPrefix + animal.getName()).orElse(name);
-        }
+        } // wygląda znajomo
 
         Image image = loadImage(name);
         BackgroundSize backgroundSize = new BackgroundSize(cellWidth * 0.9, cellWidth * 0.9, false, false, true, true);
         BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, backgroundSize);
         Background background = new Background(backgroundImage);
 
-        this.setPadding(new Insets(0,0.5,0,0.5));
+        this.setPadding(new Insets(0, 0.5, 0, 0.5));
         this.setBackground(background);
         this.setAlignment(Pos.CENTER);
         this.setPrefSize(cellWidth * 0.9, cellWidth * 0.9);

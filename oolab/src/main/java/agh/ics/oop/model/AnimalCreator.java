@@ -31,7 +31,7 @@ public class AnimalCreator {
     public Animal createAnimal(Animal stronger, Animal weaker) {
         Genes kidGenes = genesFactory.makeGenes(stronger, weaker);
         Vector2d position = stronger.getPosition();
-        Animal kid = new Animal(indexCounter, position, kidGenes, 2*energyUsedWhileBreeding, energyProvidedByEatingGrass, stronger, weaker);
+        Animal kid = new Animal(indexCounter, position, kidGenes, 2 * energyUsedWhileBreeding, energyProvidedByEatingGrass, stronger, weaker);
         stats.newAnimalBorn(kid);
         indexCounter++;
         return kid;

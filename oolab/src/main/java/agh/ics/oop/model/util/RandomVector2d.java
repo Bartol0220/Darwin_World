@@ -4,7 +4,7 @@ import agh.ics.oop.model.Vector2d;
 
 import java.util.*;
 
-public class RandomVector2d implements Iterable<Vector2d> {
+public class RandomVector2d implements Iterable<Vector2d> { // nazwa
     private final double maximum;
     private final int mapWidth;
     private final int mapHeight;
@@ -23,19 +23,18 @@ public class RandomVector2d implements Iterable<Vector2d> {
 
             @Override
             public boolean hasNext() {
-                return generated < maximum ;
+                return generated < maximum;
             }
 
             @Override
             public Vector2d next() {
-                if(hasNext()) {
+                if (hasNext()) {
                     int x = random.nextInt(mapWidth);
                     int y = random.nextInt(mapHeight);
                     Vector2d vector = new Vector2d(x, y);
                     generated++;
                     return vector;
-                }
-                else {
+                } else {
                     throw new NoSuchElementException();
                 }
             }

@@ -15,21 +15,21 @@ public class AnimalStats {
     private final HashSet<Animal> predecessors = new HashSet<>();
     private Optional<Integer> deathDate = Optional.empty();
     private int energy;
-    private int childrenCount=0;
-    private int age=0;
+    private int childrenCount = 0;
+    private int age = 0;
     private int eatenGrass = 0;
     private int succesorCount = 0;
 
-    public AnimalStats(Genes genes, int energy, Animal parent1, Animal parent2){
+    public AnimalStats(Genes genes, int energy, Animal parent1, Animal parent2) {
         this.genes = genes;
         this.energy = energy;
         this.parent1 = Optional.ofNullable(parent1);
         this.parent2 = Optional.ofNullable(parent2);
-        this.parent1.ifPresent(presentParent ->{
+        this.parent1.ifPresent(presentParent -> {
             this.predecessors.addAll(presentParent.getAnimalStats().getPredecessors());
             this.predecessors.add(presentParent);
         });
-        this.parent2.ifPresent(presentParent ->{
+        this.parent2.ifPresent(presentParent -> {
             this.predecessors.addAll(presentParent.getAnimalStats().getPredecessors());
             this.predecessors.add(presentParent);
         });
@@ -43,31 +43,33 @@ public class AnimalStats {
         return predecessors.stream().toList();
     }
 
-    public void increaseSuccesorCountForPredecessors(){
+    public void increaseSuccesorCountForPredecessors() {
         predecessors.forEach(animal -> {
             animal.getAnimalStats().increaseSuccesorCount();
         });
     }
 
-    private void increaseSuccesorCount() {succesorCount++;}
+    private void increaseSuccesorCount() {
+        succesorCount++;
+    }
 
-    public int[] getGenotypeArray(){
+    public int[] getGenotypeArray() {
         return genes.getGenes();
     }
 
-    public int getGeneIndex(){
+    public int getGeneIndex() {
         return genes.getGeneIndex();
     }
 
-    public int getChildrenCount(){
+    public int getChildrenCount() {
         return childrenCount;
     }
 
-    public int getEnergy(){
+    public int getEnergy() {
         return energy;
     }
 
-    public int getAge(){
+    public int getAge() {
         return age;
     }
 
@@ -75,23 +77,23 @@ public class AnimalStats {
         return genes;
     }
 
-    public void increaseEnergy(int value){
+    public void increaseEnergy(int value) {
         energy += value;
     }
 
-    public void decreaseEnergy(int value){
+    public void decreaseEnergy(int value) {
         energy -= value;
     }
 
-    public void increaseChildrenCount(){
+    public void increaseChildrenCount() {
         childrenCount++;
     }
 
-    public void increaseEatenGrass(){
+    public void increaseEatenGrass() {
         eatenGrass++;
     }
 
-    public void increaseAge(){
+    public void increaseAge() {
         age++;
     }
 
@@ -100,7 +102,7 @@ public class AnimalStats {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return "Genotype: " + Arrays.toString(getGenotypeArray()) +
                 "\n\nCurrent gene: %d\n\nEnergy: %d\n\nNumber of children: %d\n\nNumber of succesors: %d\n\nAge [days]: %d\n\nAmount of grass eaten: %d\n\nDate of death: %s"
                         .formatted(

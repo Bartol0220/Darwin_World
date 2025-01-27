@@ -18,7 +18,9 @@ public abstract class AbstractGrassMaker implements GrassMaker {
         this.map = map;
     }
 
-    public int getCurrentGrassNumber() { return currentGrassNumber;}
+    public int getCurrentGrassNumber() {
+        return currentGrassNumber;
+    }
 
     @Override
     public void grow() {
@@ -27,7 +29,7 @@ public abstract class AbstractGrassMaker implements GrassMaker {
 
     protected void growNumberOfGrasss(int numberOfGrasss) {
         RandomGrassGrow randomPositionGenerator = new RandomGrassGrow(freeBetterGrassPositions, freeWorseGrassPositions, numberOfGrasss);
-        for(Vector2d grassPosition : randomPositionGenerator) {
+        for (Vector2d grassPosition : randomPositionGenerator) {
             map.addGrass(grassPosition);
             currentGrassNumber++;
         }

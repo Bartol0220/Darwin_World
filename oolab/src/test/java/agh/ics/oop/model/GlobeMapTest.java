@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class GlobeMapTest {
 
     @Test
-    void canHandleBoundPositions(){
+    void canHandleBoundPositions() {
         GlobeMap map = new GlobeMap(3, 3, 0);
         Vector2d outOfRightBound = new Vector2d(3, 2);
         Vector2d correctPosition = new Vector2d(1, 1);
@@ -30,7 +30,7 @@ class GlobeMapTest {
     }
 
     @Test
-    void cannotMoveOutOfBounds(){
+    void cannotMoveOutOfBounds() {
         GlobeMap map = new GlobeMap(3, 3, 0);
         Vector2d outOfUpperBound = new Vector2d(1, 4);
         Vector2d correctPosition = new Vector2d(1, 1);
@@ -42,7 +42,7 @@ class GlobeMapTest {
     }
 
     @Test
-    void animalIsPlacedOrThrowsException(){
+    void animalIsPlacedOrThrowsException() {
         GlobeMap map = new GlobeMap(3, 3, 0);
         Genes genes = new Genes(5);
 
@@ -59,7 +59,7 @@ class GlobeMapTest {
             map.place(animal1);
             map.place(animal2);
             map.place(animal3);
-        } catch (IncorrectPositionException exception){
+        } catch (IncorrectPositionException exception) {
             exception.printStackTrace();
         }
 
@@ -69,7 +69,7 @@ class GlobeMapTest {
     }
 
     @Test
-    void addsGrass(){
+    void addsGrass() {
         GlobeMap map = new GlobeMap(3, 3, 0);
 
         Vector2d position = new Vector2d(2, 2);
@@ -79,7 +79,7 @@ class GlobeMapTest {
     }
 
     @Test
-    void animalMovesAndLoosesEnergy(){
+    void animalMovesAndLoosesEnergy() {
         GlobeMap map = new GlobeMap(3, 3, 0);
         Vector2d placedPosition = new Vector2d(1, 1);
         Genes genes = new Genes(5);
@@ -92,7 +92,7 @@ class GlobeMapTest {
     }
 
     @Test
-    void animalEats(){
+    void animalEats() {
         GlobeMap map = new GlobeMap(3, 3, 0);
         //not used but places grass upon being created
         AbstractGrassMaker grassMaker = new GrassMakerDeadAnimal(9, 2, map);
@@ -109,7 +109,7 @@ class GlobeMapTest {
     }
 
     @Test
-    void findsOccupiedFields(){
+    void findsOccupiedFields() {
         GlobeMap map = new GlobeMap(3, 3, 0);
         Vector2d animalPosition = new Vector2d(2, 2);
         Vector2d grassPosition = new Vector2d(1, 2);
@@ -131,7 +131,7 @@ class GlobeMapTest {
     }
 
     @Test
-    void isOccupiedByAnimalWorksProperly(){
+    void isOccupiedByAnimalWorksProperly() {
         GlobeMap map = new GlobeMap(3, 3, 0);
         Genes genes = new Genes(5);
 
@@ -147,7 +147,7 @@ class GlobeMapTest {
             map.place(animal1);
             map.place(animal2);
             map.place(animal3);
-        } catch (IncorrectPositionException exception){
+        } catch (IncorrectPositionException exception) {
             exception.printStackTrace();
         }
 
@@ -156,7 +156,7 @@ class GlobeMapTest {
     }
 
     @Test
-    void breedingAnimals(){
+    void breedingAnimals() {
         GlobeMap map = new GlobeMap(3, 3, 0);
         GeneMutator geneMutator = new SlightCorrection(0, 3);
         GenesFactory genesFactory = new GenesFactory(geneMutator, 5);
@@ -172,7 +172,7 @@ class GlobeMapTest {
         Animal weakAnimal2 = new Animal(position, genes, 3, 10);
         Animal weakAnimal3 = new Animal(position, genes, 3, 10);
         Animal weakAnimal4 = new Animal(position, genes, 2, 10);
-        Animal strongAnimal1 = new Animal(position, genes,  16, 10);
+        Animal strongAnimal1 = new Animal(position, genes, 16, 10);
         Animal strongAnimal2 = new Animal(position, genes, 15, 10);
         Animal strongAnimal3 = new Animal(position, genes, 12, 10);
 

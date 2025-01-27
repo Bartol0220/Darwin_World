@@ -11,7 +11,7 @@ import java.util.Objects;
  *
  * @author apohllo, idzik
  */
-public class MapVisualizer {
+public class MapVisualizer { // czy to jest używane?
     private static final String EMPTY_CELL = " ";
     private static final String FRAME_SEGMENT = "-";
     private static final String CELL_SEGMENT = "|";

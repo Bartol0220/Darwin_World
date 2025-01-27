@@ -18,14 +18,16 @@ public class Breeding {
         this.animalCreator = animalCreator;
     }
 
-    public int getEnergyNeededForBreeding() { return energyNeededForBreeding;}
+    public int getEnergyNeededForBreeding() {
+        return energyNeededForBreeding;
+    }
 
     public void breedAnimals(Simulation simulation) {
         map.findAnimalsToBreed(this, simulation);
     }
 
     public Optional<Animal> breedPair(List<Animal> breedingPair) {
-        if (breedingPair.size() == 2){
+        if (breedingPair.size() == 2) {
             return Optional.of(breedingPair.getFirst().breed(breedingPair.get(1), energyUsedWhileBreeding, animalCreator));
         }
         return Optional.empty();

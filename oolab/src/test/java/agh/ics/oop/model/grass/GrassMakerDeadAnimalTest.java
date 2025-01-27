@@ -14,9 +14,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class GrassMakerDeadAnimalTest {
 
     @Test
-    void makesPositionsBetter(){
+    void makesPositionsBetter() {
         GlobeMap map = new GlobeMap(3, 3, 0);
-        GrassMakerDeadAnimal grassMaker = new GrassMakerDeadAnimal(3,3, map);
+        GrassMakerDeadAnimal grassMaker = new GrassMakerDeadAnimal(3, 3, map);
         Vector2d placedPosition = new Vector2d(0, 0);
         Genes genes = new Genes(5);
         Animal animal = new Animal(placedPosition, genes, 0, 10);
@@ -41,10 +41,10 @@ class GrassMakerDeadAnimalTest {
     }
 
     @Test
-    void removesAfterFewDays(){
+    void removesAfterFewDays() {
         //given
         GlobeMap map = new GlobeMap(3, 3, 0);
-        GrassMakerDeadAnimal grassMaker = new GrassMakerDeadAnimal(3,3, map);
+        GrassMakerDeadAnimal grassMaker = new GrassMakerDeadAnimal(3, 3, map);
         Vector2d placedPosition = new Vector2d(0, 0);
         Genes genes = new Genes(5);
         Animal animal = new Animal(placedPosition, genes, 0, 10);

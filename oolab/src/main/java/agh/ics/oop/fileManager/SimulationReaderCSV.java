@@ -6,12 +6,12 @@ import agh.ics.oop.errors.*;
 import java.io.*;
 import java.util.Arrays;
 
-public class SimulationReaderCSV {
+public class SimulationReaderCSV { // nazwa
 
     public SimulationConfig readFromCSV(String fileName) throws FailedToReadConfig {
         File file = new File(fileName);
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))){
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line = reader.readLine();
 
             int[] values = Arrays.stream(line.split(";"))
