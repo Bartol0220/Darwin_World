@@ -7,6 +7,6 @@ The application was implemented in **Java with JavaFX**, featuring an interactiv
 ## Project topic
 https://github.com/Soamid/obiektowe-lab/tree/master/proj
 
-## Athors
+## Authors
 - [Bartol0220](https://github.com/Bartol0220/)
 - [AdrianGlanowski](https://github.com/AdrianGlanowski/)
